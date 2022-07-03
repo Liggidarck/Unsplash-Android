@@ -1,4 +1,6 @@
-package com.george.unsplashapp;
+package com.george.unsplashapp.api;
+
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 
@@ -7,12 +9,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class HeaderInterceptor implements Interceptor {
-    private String clientId;
+    private final String clientId;
 
     public HeaderInterceptor(String clientId) {
         this.clientId = clientId;
     }
 
+    @NonNull
     @Override
     public Response intercept(Interceptor.Chain chain) throws IOException {
         Request request = chain.request();

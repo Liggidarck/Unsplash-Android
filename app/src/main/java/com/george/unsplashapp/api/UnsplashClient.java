@@ -1,4 +1,4 @@
-package com.george.unsplashapp;
+package com.george.unsplashapp.api;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -10,9 +10,9 @@ public class UnsplashClient {
     public static Retrofit getUnsplashClient() {
         if (retrofit == null) {
             OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(new HeaderInterceptor(Config.unsplash_access_key)).build();
+                    .addInterceptor(new HeaderInterceptor(Keys.UNSPLASH_ACCESS_KEY)).build();
             retrofit = new Retrofit.Builder()
-                    .baseUrl(Config.BASE_URL_UNSPLASH)
+                    .baseUrl(Keys.BASE_URL_UNSPLASH)
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

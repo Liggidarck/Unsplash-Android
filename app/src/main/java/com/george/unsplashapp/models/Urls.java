@@ -1,4 +1,4 @@
-package com.george.unsplashapp;
+package com.george.unsplashapp.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

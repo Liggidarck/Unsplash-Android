@@ -1,4 +1,6 @@
-package com.george.unsplashapp;
+package com.george.unsplashapp.api;
+
+import com.george.unsplashapp.models.Photo;
 
 import java.util.List;
 
@@ -10,9 +12,9 @@ import retrofit2.http.Query;
 public interface UnsplashInterface {
 
     @GET("photos/{id}")
-    Call<Photo> getPhoto(@Path("id")
-                                 String id, @Query("w")
-                                 Integer width, @Query("h") Integer height);
+    Call<Photo> getPhoto(@Path("id") String id,
+                         @Query("w") Integer width,
+                         @Query("h") Integer height);
 
     @GET("photos")
     Call<List<Photo>> getPhotos(@Query("page") Integer page,
@@ -43,9 +45,4 @@ public interface UnsplashInterface {
                                       @Query("orientation") String orientation,
                                       @Query("count") Integer count);
 
-    @GET("search/photos")
-    Call<SearchResults> searchPhotos(@Query("query") String query,
-                                     @Query("page") Integer page,
-                                     @Query("per_page") Integer perPage,
-                                     @Query("orientation") String orientation);
 }

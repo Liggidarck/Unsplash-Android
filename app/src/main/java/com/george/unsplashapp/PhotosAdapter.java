@@ -1,29 +1,25 @@
 package com.george.unsplashapp;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.george.unsplashapp.models.Photo;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder> {
 
-    private final List<Photo> photoList;
-    private Context mContext;
-    private OnPhotoClickedListener mListener;
+    List<Photo> photoList = new ArrayList<>();
+    private OnPhotoClickedListener listener;
 
-    public PhotosAdapter(List<Photo> photos, Context context, OnPhotoClickedListener listener) {
-        photoList = photos;
-        mContext = context;
-        mListener = listener;
-    }
-
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image, parent, false);
@@ -33,9 +29,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         Photo photo = photoList.get(position);
-
-        holder.imageView.setOnClickListener(v -> mListener.photoClicked(photoList.get(holder.getAdapterPosition()), (ImageView)v));
-
         Picasso.get()
                 .load(photo.getUrls().getRegular())
                 .resize(300, 300)
@@ -55,16 +48,28 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         return photoList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         public final ImageView imageView;
         public ViewHolder(View view) {
             super(view);
             imageView = view.findViewById(R.id.imgview);
+
+            imageView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.photoClicked(photoList.get(position), position);
+                }
+            });
+
         }
     }
 
     public interface OnPhotoClickedListener {
-        void photoClicked(Photo photo, ImageView imageView);
+        void photoClicked(Photo photo, int position);
+    }
+
+    public void setOnItemClickListener(OnPhotoClickedListener listener) {
+        this.listener = listener;
     }
 
 }

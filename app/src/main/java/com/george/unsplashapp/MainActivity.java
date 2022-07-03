@@ -1,27 +1,20 @@
 package com.george.unsplashapp;
 
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
+import com.george.unsplashapp.models.Exif;
+import com.george.unsplashapp.models.Photo;
+import com.george.unsplashapp.api.UnsplashClient;
+import com.george.unsplashapp.api.UnsplashInterface;
+import com.george.unsplashapp.models.Urls;
+import com.george.unsplashapp.databinding.ActivityMainBinding;
 
-import com.google.android.material.appbar.AppBarLayout;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -30,49 +23,45 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "mainActivity";
-    private int page = 1;
+    ActivityMainBinding binding;
 
-    AppBarLayout appBarLayout;
-    RecyclerView recyclerView;
-    ProgressBar progressBar;
-
-    PhotosAdapter adapter;
-    PhotosAdapter.OnPhotoClickedListener photoClickListener;
-
+    PhotosAdapter adapter = new PhotosAdapter();
     UnsplashInterface dataService;
+
+    private static final String TAG = "mainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.act_img_picker);
-
-        appBarLayout = findViewById(R.id.app_bar_layout);
-        recyclerView = findViewById(R.id.recyclerView);
-        progressBar = findViewById(R.id.progressBar);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         dataService = UnsplashClient.getUnsplashClient().create(UnsplashInterface.class);
 
-        photoClickListener = (photo, imageView) -> {
-            Intent intent = new Intent();
-            intent.putExtra("image", photo);
-            Log.d(TAG, "image - " + photo);
-            setResult(RESULT_OK, intent);
-        };
-
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new PhotosAdapter(new ArrayList<>(), this, photoClickListener);
-        recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(layoutManager);
+
+        adapter.setOnItemClickListener((photo, position) -> {
+            Log.d(TAG, "photo id: " + photo.getId());
+            Log.d(TAG, "photo downloads: " + photo.getDownloads());
+            Log.d(TAG, "photo likes: " + photo.getLikes());
+            Log.d(TAG, "photo description: " + photo.getDescription());
+
+            Urls urls = photo.getUrls();
+            Log.d(TAG, "url: " + urls.getRegular());
+
+            Exif exif = photo.getExif();
+            Log.d(TAG, "exif: " + exif);
+        });
 
         loadPhotos();
 
     }
 
     private void loadPhotos() {
-        progressBar.setVisibility(View.VISIBLE);
+        binding.progressBar.setVisibility(View.VISIBLE);
 
-        dataService.getPhotos(page,null,"latest")
+        dataService.getPhotos(1,null,"popular")
                 .enqueue(new Callback<List<Photo>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
@@ -80,17 +69,15 @@ public class MainActivity extends AppCompatActivity {
                         List<Photo> photos = response.body();
                         assert photos != null;
                         Log.d("Photos", "Photos Fetched " + photos.size());
-                        //add to adapter
-                        page++;
+
                         adapter.addPhotos(photos);
-                        recyclerView.setAdapter(adapter);
-                        progressBar.setVisibility(View.GONE);
+                        binding.recyclerView.setAdapter(adapter);
+                        binding.progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<List<Photo>> call, @NonNull Throwable t) {
-                        progressBar.setVisibility(View.GONE);
-
+                        binding.progressBar.setVisibility(View.GONE);
                     }
                 });
 
