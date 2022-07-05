@@ -1,11 +1,9 @@
-package com.george.unsplashapp.models;
+package com.george.unsplashapp.network.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
-public class Exif implements Serializable {
+public class Exif {
 
     @SerializedName("make")
     @Expose

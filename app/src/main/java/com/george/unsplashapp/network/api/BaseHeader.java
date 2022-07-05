@@ -1,4 +1,4 @@
-package com.george.unsplashapp.api;
+package com.george.unsplashapp.network.api;
 
 import androidx.annotation.NonNull;
 
@@ -8,10 +8,10 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class HeaderInterceptor implements Interceptor {
+public class BaseHeader implements Interceptor {
     private final String clientId;
 
-    public HeaderInterceptor(String clientId) {
+    public BaseHeader(String clientId) {
         this.clientId = clientId;
     }
 

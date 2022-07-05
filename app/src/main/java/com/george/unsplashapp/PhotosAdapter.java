@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.george.unsplashapp.models.Photo;
+import com.george.unsplashapp.network.models.Photo;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder> {
 
-    List<Photo> photoList = new ArrayList<>();
+    final List<Photo> photoList = new ArrayList<>();
     private OnPhotoClickedListener listener;
 
     @NonNull

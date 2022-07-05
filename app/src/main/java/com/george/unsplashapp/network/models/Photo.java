@@ -1,6 +1,5 @@
-package com.george.unsplashapp.models;
+package com.george.unsplashapp.network.models;
 
-import com.george.unsplashapp.models.Urls;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
