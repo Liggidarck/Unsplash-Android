@@ -1,4 +1,4 @@
-package com.george.unsplashapp.network.api;
+package com.george.unsplashapp.network.api.header;
 
 import androidx.annotation.NonNull;
 

@@ -8,8 +8,13 @@
         <entry key="..\:/Users/GeorgeFilatov/AndroidStudioProjects/UnsplashApp/app/src/main/res/menu/menu_unsplash_picker.xml" value="0.36666666666666664" />
         <entry key="app/src/main/res/drawable/line_black.xml" value="0.294" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.35054347826086957" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.3536458333333333" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/home_content_fragment.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.3536458333333333" />
         <entry key="app/src/main/res/layout/item_image.xml" value="0.2463768115942029" />
+        <entry key="app/src/main/res/layout/profile_fragment.xml" value="0.3536458333333333" />
+        <entry key="app/src/main/res/layout/statistic_fragment.xml" value="0.3536458333333333" />
+        <entry key="app/src/main/res/menu/main_nav_menu.xml" value="0.3536458333333333" />
       </map>
     </option>
   </component>

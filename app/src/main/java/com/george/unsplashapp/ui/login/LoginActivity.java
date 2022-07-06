@@ -1,12 +1,12 @@
-package com.george.unsplashapp.ui;
+package com.george.unsplashapp.ui.login;
 
-import static com.george.unsplashapp.network.api.Keys.RESPONSE_URL;
-import static com.george.unsplashapp.network.api.Keys.SECRET_KEY;
-import static com.george.unsplashapp.network.api.Keys.UNSPLASH_ACCESS_KEY;
-import static com.george.unsplashapp.network.api.Keys.USER_PREFERENCES;
-import static com.george.unsplashapp.network.api.Keys.USER_SCOPE;
-import static com.george.unsplashapp.network.api.Keys.USER_TOKEN;
-import static com.george.unsplashapp.network.api.Keys.USER_TOKEN_TYPE;
+import static com.george.unsplashapp.utils.Keys.RESPONSE_URL;
+import static com.george.unsplashapp.utils.Keys.SECRET_KEY;
+import static com.george.unsplashapp.utils.Keys.UNSPLASH_ACCESS_KEY;
+import static com.george.unsplashapp.utils.Keys.USER_PREFERENCES;
+import static com.george.unsplashapp.utils.Keys.USER_SCOPE;
+import static com.george.unsplashapp.utils.Keys.USER_TOKEN;
+import static com.george.unsplashapp.utils.Keys.USER_TOKEN_TYPE;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,10 +21,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 
 import com.george.unsplashapp.databinding.ActivityLoginBinding;
-import com.george.unsplashapp.network.api.Keys;
+import com.george.unsplashapp.network.models.Token;
+import com.george.unsplashapp.utils.Keys;
 import com.george.unsplashapp.network.api.UnsplashBaseClient;
 import com.george.unsplashapp.network.api.UnsplashInterface;
-import com.george.unsplashapp.network.models.Auth;
+import com.george.unsplashapp.ui.main.MainActivity;
 import com.george.unsplashapp.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -94,14 +95,14 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         unsplashInterface.getToken(UNSPLASH_ACCESS_KEY, SECRET_KEY, RESPONSE_URL, code, "authorization_code")
-                .enqueue(new Callback<Auth>() {
+                .enqueue(new Callback<Token>() {
                     @Override
-                    public void onResponse(@NonNull Call<Auth> call, @NonNull Response<Auth> response) {
-                        Auth auth = response.body();
-                        assert auth != null;
-                        String accessToken = auth.getAccess_token();
-                        String token_type = auth.getToken_type();
-                        String scope = auth.getScope();
+                    public void onResponse(@NonNull Call<Token> call, @NonNull Response<Token> response) {
+                        Token token = response.body();
+                        assert token != null;
+                        String accessToken = token.getAccess_token();
+                        String token_type = token.getToken_type();
+                        String scope = token.getScope();
                         Log.i(TAG, "onResponse: token: " + accessToken);
 
                         editor.putString(USER_TOKEN, accessToken);
@@ -115,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<Auth> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<Token> call, @NonNull Throwable t) {
                         Log.e(TAG, "onFailure: " + t.getMessage());
                         binding.progressBarLogin.setVisibility(View.INVISIBLE);
                         Snackbar.make(binding.loginCoordinator, "Ошибка! " + t.getMessage(), Snackbar.LENGTH_SHORT).show();

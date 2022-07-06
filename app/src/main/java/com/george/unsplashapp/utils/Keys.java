@@ -1,4 +1,4 @@
-package com.george.unsplashapp.network.api;
+package com.george.unsplashapp.utils;
 
 public class Keys {
     public final static String BASE_URL_AUTH = "https://unsplash.com/oauth";

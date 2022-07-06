@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UnsplashApp">
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.login.LoginActivity"
             android:exported="true"
             android:launchMode="singleTop">
 
@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
-                    android:host="unsplash-auth-callback"
+                    android:host="unsplash-token-callback"
                     android:scheme="kraken" />
             </intent-filter>
 
@@ -35,7 +35,7 @@
 
         </activity>
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"/>
     </application>
 

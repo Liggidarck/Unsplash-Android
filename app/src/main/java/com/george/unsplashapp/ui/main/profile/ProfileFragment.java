@@ -1,39 +1,43 @@
-package com.george.unsplashapp.ui;
+package com.george.unsplashapp.ui.main.profile;
 
-import static com.george.unsplashapp.network.api.Keys.USER_BIO;
-import static com.george.unsplashapp.network.api.Keys.USER_DOWNLOADS;
-import static com.george.unsplashapp.network.api.Keys.USER_EMAIL;
-import static com.george.unsplashapp.network.api.Keys.USER_FIRST_NAME;
-import static com.george.unsplashapp.network.api.Keys.USER_FOLLOWED_BY_USER;
-import static com.george.unsplashapp.network.api.Keys.USER_HTML;
-import static com.george.unsplashapp.network.api.Keys.USER_ID;
-import static com.george.unsplashapp.network.api.Keys.USER_INSTAGRAM_USERNAME;
-import static com.george.unsplashapp.network.api.Keys.USER_LAST_NAME;
-import static com.george.unsplashapp.network.api.Keys.USER_LIKES;
-import static com.george.unsplashapp.network.api.Keys.USER_LOCATION;
-import static com.george.unsplashapp.network.api.Keys.USER_PHOTOS;
-import static com.george.unsplashapp.network.api.Keys.USER_PORTFOLIO;
-import static com.george.unsplashapp.network.api.Keys.USER_PORTFOLIO_URL;
-import static com.george.unsplashapp.network.api.Keys.USER_PREFERENCES;
-import static com.george.unsplashapp.network.api.Keys.USER_SELF;
-import static com.george.unsplashapp.network.api.Keys.USER_TOKEN;
-import static com.george.unsplashapp.network.api.Keys.USER_TOTAL_COLLECTIONS;
-import static com.george.unsplashapp.network.api.Keys.USER_TOTAL_LIKES;
-import static com.george.unsplashapp.network.api.Keys.USER_TOTAL_PHOTOS;
-import static com.george.unsplashapp.network.api.Keys.USER_TWITTER_USERNAME;
-import static com.george.unsplashapp.network.api.Keys.USER_UPLOADS_REMAINING;
-import static com.george.unsplashapp.network.api.Keys.USER_USERNAME;
+import static com.george.unsplashapp.utils.Keys.USER_BIO;
+import static com.george.unsplashapp.utils.Keys.USER_DOWNLOADS;
+import static com.george.unsplashapp.utils.Keys.USER_EMAIL;
+import static com.george.unsplashapp.utils.Keys.USER_FIRST_NAME;
+import static com.george.unsplashapp.utils.Keys.USER_FOLLOWED_BY_USER;
+import static com.george.unsplashapp.utils.Keys.USER_HTML;
+import static com.george.unsplashapp.utils.Keys.USER_ID;
+import static com.george.unsplashapp.utils.Keys.USER_INSTAGRAM_USERNAME;
+import static com.george.unsplashapp.utils.Keys.USER_LAST_NAME;
+import static com.george.unsplashapp.utils.Keys.USER_LIKES;
+import static com.george.unsplashapp.utils.Keys.USER_LOCATION;
+import static com.george.unsplashapp.utils.Keys.USER_PHOTOS;
+import static com.george.unsplashapp.utils.Keys.USER_PORTFOLIO;
+import static com.george.unsplashapp.utils.Keys.USER_PORTFOLIO_URL;
+import static com.george.unsplashapp.utils.Keys.USER_PREFERENCES;
+import static com.george.unsplashapp.utils.Keys.USER_SELF;
+import static com.george.unsplashapp.utils.Keys.USER_TOKEN;
+import static com.george.unsplashapp.utils.Keys.USER_TOTAL_COLLECTIONS;
+import static com.george.unsplashapp.utils.Keys.USER_TOTAL_LIKES;
+import static com.george.unsplashapp.utils.Keys.USER_TOTAL_PHOTOS;
+import static com.george.unsplashapp.utils.Keys.USER_TWITTER_USERNAME;
+import static com.george.unsplashapp.utils.Keys.USER_UPLOADS_REMAINING;
+import static com.george.unsplashapp.utils.Keys.USER_USERNAME;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import com.george.unsplashapp.databinding.ActivityMainBinding;
-import com.george.unsplashapp.network.api.UnsplashMainInterface;
+import com.george.unsplashapp.databinding.ProfileFragmentBinding;
+import com.george.unsplashapp.network.api.UnsplashInterface;
 import com.george.unsplashapp.network.api.UnsplashTokenClient;
 import com.george.unsplashapp.network.models.Links;
 import com.george.unsplashapp.network.models.User;
@@ -42,28 +46,30 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class ProfileFragment extends Fragment {
 
-    ActivityMainBinding binding;
-    UnsplashMainInterface unsplashInterface;
+    ProfileFragmentBinding binding;
+
+    UnsplashInterface unsplashInterface;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
-    private static final String TAG = "mainActivity";
+    public static final String TAG = "ProfileFragment";
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = ProfileFragmentBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-        sharedPreferences = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
         String token = sharedPreferences.getString(USER_TOKEN, "");
 
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashMainInterface.class);
+        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
 
+        return root;
     }
 
     void getUserData() {
@@ -126,5 +132,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }

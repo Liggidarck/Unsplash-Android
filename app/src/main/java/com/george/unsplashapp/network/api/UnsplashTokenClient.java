@@ -1,6 +1,8 @@
 package com.george.unsplashapp.network.api;
 
-import static com.george.unsplashapp.network.api.Keys.BASE_API_URL_UNSPLASH;
+import static com.george.unsplashapp.utils.Keys.BASE_API_URL_UNSPLASH;
+
+import com.george.unsplashapp.network.api.header.TokenHeader;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
