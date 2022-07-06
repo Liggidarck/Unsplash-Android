@@ -7,26 +7,26 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.george.unsplashapp.ui.main.home.HomeFragment"
+        android:name="com.george.unsplash.ui.main.home.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/home_fragment"/>
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.george.unsplashapp.ui.main.profile.ProfileFragment"
+        android:name="com.george.unsplash.ui.main.profile.ProfileFragment"
         android:label="ProfileFragment"
         tools:layout="@layout/profile_fragment" />
 
     <fragment
         android:id="@+id/navigation_statistics"
-        android:name="com.george.unsplashapp.ui.main.statistic.StatisticFragment"
+        android:name="com.george.unsplash.ui.main.statistic.StatisticFragment"
         android:label="StatisticsFragment"
         tools:layout="@layout/profile_fragment" />
 
     <fragment
-        android:id="@+id/home_content"
-        android:name="com.george.unsplashapp.ui.main.home.HomeContentFragment"
-        android:label="ContentHome"
-        tools:layout="@layout/home_content_fragment" />
+        android:id="@+id/navigation_search"
+        android:name="com.george.unsplash.ui.main.search.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/search_fragment"/>
 
 </navigation>

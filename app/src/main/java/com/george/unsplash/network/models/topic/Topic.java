@@ -1,0 +1,49 @@
+package com.george.unsplash.network.models.topic;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class Topic implements Serializable {
+
+    @SerializedName("id")
+    @Expose
+    private String id;
+
+    @SerializedName("title")
+    @Expose
+    private String title;
+
+    @SerializedName("description")
+    @Expose
+    private String description;
+
+    @SerializedName("total_photos")
+    @Expose
+    private int total_photos;
+
+    @SerializedName("cover_photo")
+    @Expose
+    CoverPhoto cover_photo;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getTotal_photos() {
+        return total_photos;
+    }
+
+    public CoverPhoto getCover_photo() {
+        return cover_photo;
+    }
+}
