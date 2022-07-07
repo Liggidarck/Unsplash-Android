@@ -40,7 +40,7 @@ import com.george.unsplash.databinding.ProfileFragmentBinding;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.user.Links;
-import com.george.unsplash.network.models.user.User;
+import com.george.unsplash.network.models.user.Me;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -73,29 +73,29 @@ public class ProfileFragment extends Fragment {
     }
 
     void getUserData() {
-        unsplashInterface.getUsersData().enqueue(new Callback<User>() {
+        unsplashInterface.getUsersData().enqueue(new Callback<Me>() {
             @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                User user = response.body();
-                assert user != null;
-                String id = user.getId();
-                String username = user.getUsername();
-                String firstName = user.getFirst_name();
-                String lastName = user.getLast_name();
-                String twitterUsername = user.getTwitter_username();
-                String portfolioUrl = user.getPortfolio_url();
-                String bio = user.getBio();
-                String location = user.getLocation();
-                int totalLikes = user.getTotal_likes();
-                int totalPhotos = user.getTotal_photos();
-                int totalCollections = user.getTotal_collections();
-                boolean followedByUser = user.isFollowed_by_user();
-                int downloads = user.getDownloads();
-                int uploadsRemaining = user.getUploads_remaining();
-                String instagramUsername = user.getInstagram_username();
-                String email = user.getEmail();
+            public void onResponse(@NonNull Call<Me> call, @NonNull Response<Me> response) {
+                Me me = response.body();
+                assert me != null;
+                String id = me.getId();
+                String username = me.getUsername();
+                String firstName = me.getFirstName();
+                String lastName = me.getLastName();
+                String twitterUsername = me.getTwitterUsername();
+                String portfolioUrl = me.getPortfolioUrl();
+                String bio = me.getBio();
+                String location = me.getLocation();
+                int totalLikes = me.getTotalLikes();
+                int totalPhotos = me.getTotalPhotos();
+                int totalCollections = me.getTotalCollections();
+                boolean followedByUser = me.isFollowedByUser();
+                int downloads = me.getDownloads();
+                int uploadsRemaining = me.getUploadsRemaining();
+                String instagramUsername = me.getInstagramUsername();
+                String email = me.getEmail();
 
-                Links links = user.getLinks();
+                Links links = me.getLinks();
                 String self = links.getSelf();
                 String html = links.getHtml();
                 String photos = links.getPhotos();
@@ -127,7 +127,7 @@ public class ProfileFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<Me> call, @NonNull Throwable t) {
                 Log.d(TAG, "onFailure: " + t.getMessage());
             }
         });

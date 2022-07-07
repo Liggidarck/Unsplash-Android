@@ -3,7 +3,7 @@ package com.george.unsplash.network.api;
 import com.george.unsplash.network.models.topic.Topic;
 import com.george.unsplash.network.models.user.Token;
 import com.george.unsplash.network.models.photo.Photo;
-import com.george.unsplash.network.models.user.User;
+import com.george.unsplash.network.models.user.Me;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public interface UnsplashInterface {
                          @Query("code") String code,
                          @Query("grant_type") String grant_type);
     @GET("me")
-    Call<User> getUsersData();
+    Call<Me> getUsersData();
 
     @GET("photos/random")
     Call<Photo> getRandomPhoto(@Query("orientation") String orientation);
@@ -33,10 +33,12 @@ public interface UnsplashInterface {
     @GET("topics/{id_or_slug}")
     Call<Topic> getTopic(@Path("id_or_slug") String slug);
 
+    @GET("/topics/{id_or_slug}/photos")
+    Call<List<Photo>> getTopicPhotos(@Path("id_or_slug") String slug,
+                                     @Query("page") int page);
+
     @GET("photos")
-    Call<List<Photo>> getPhotos(@Query("page") Integer page,
-                                @Query("per_page") Integer perPage,
-                                @Query("order_by") String orderBy);
+    Call<List<Photo>> getPhotos(@Query("page") int page);
 
     @GET("photos/{id}")
     Call<Photo> getPhoto(@Path("id") String id,

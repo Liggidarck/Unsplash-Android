@@ -21,11 +21,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 
 import com.george.unsplash.databinding.ActivityLoginBinding;
-import com.george.unsplash.network.models.user.Token;
-import com.george.unsplash.utils.Keys;
 import com.george.unsplash.network.api.UnsplashBaseClient;
 import com.george.unsplash.network.api.UnsplashInterface;
+import com.george.unsplash.network.models.user.Token;
 import com.george.unsplash.ui.main.MainActivity;
+import com.george.unsplash.utils.Keys;
 import com.george.unsplash.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -49,12 +49,13 @@ public class LoginActivity extends AppCompatActivity {
     UnsplashInterface unsplashInterface;
     SharedPreferences sharedPreferences;
 
+    Utils utils = new Utils();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Utils utils = new Utils();
         sharedPreferences = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
         unsplashInterface = UnsplashBaseClient.getBaseUnsplashClient().create(UnsplashInterface.class);
 
@@ -98,21 +99,25 @@ public class LoginActivity extends AppCompatActivity {
                 .enqueue(new Callback<Token>() {
                     @Override
                     public void onResponse(@NonNull Call<Token> call, @NonNull Response<Token> response) {
-                        Token token = response.body();
-                        assert token != null;
-                        String accessToken = token.getAccess_token();
-                        String token_type = token.getToken_type();
-                        String scope = token.getScope();
-                        Log.i(TAG, "onResponse: token: " + accessToken);
+                        if(response.code() == 200) {
+                            Token token = response.body();
+                            assert token != null;
+                            String accessToken = token.getAccess_token();
+                            String token_type = token.getToken_type();
+                            String scope = token.getScope();
+                            Log.i(TAG, "onResponse: token: " + accessToken);
 
-                        editor.putString(USER_TOKEN, accessToken);
-                        editor.putString(USER_TOKEN_TYPE, token_type);
-                        editor.putString(USER_SCOPE, scope);
-                        editor.putString(USER_SCOPE, scope);
-                        editor.apply();
+                            editor.putString(USER_TOKEN, accessToken);
+                            editor.putString(USER_TOKEN_TYPE, token_type);
+                            editor.putString(USER_SCOPE, scope);
+                            editor.putString(USER_SCOPE, scope);
+                            editor.apply();
 
-                        binding.progressBarLogin.setVisibility(View.INVISIBLE);
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            binding.progressBarLogin.setVisibility(View.INVISIBLE);
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        } else {
+                            utils.showAlertDialog(LoginActivity.this, response.code());
+                        }
                     }
 
                     @Override

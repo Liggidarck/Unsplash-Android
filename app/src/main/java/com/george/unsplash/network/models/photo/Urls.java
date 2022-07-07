@@ -29,6 +29,10 @@ public class Urls {
         return full;
     }
 
+    public String getRaw() {
+        return raw;
+    }
+
     public void setFull(String full) {
         this.full = full;
     }

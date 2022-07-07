@@ -1,12 +1,10 @@
-package com.george.unsplash.network.models.user;
+package com.george.unsplash.network.models.user.common;
 
 import com.george.unsplash.network.models.user.Links;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
-public class User implements Serializable {
+public class User {
 
     @SerializedName("id")
     @Expose
@@ -60,6 +58,9 @@ public class User implements Serializable {
     @Expose
     private Links links;
 
+    @Expose
+    private ProfileImage profile_image;
+
     public String getId() {
         return id;
     }
@@ -68,19 +69,19 @@ public class User implements Serializable {
         return username;
     }
 
-    public String getFirst_name() {
+    public String getFirstName() {
         return first_name;
     }
 
-    public String getLast_name() {
+    public String getLastName() {
         return last_name;
     }
 
-    public String getTwitter_username() {
+    public String getTwitterUsername() {
         return twitter_username;
     }
 
-    public String getPortfolio_url() {
+    public String getPortfolioUrl() {
         return portfolio_url;
     }
 
@@ -92,19 +93,19 @@ public class User implements Serializable {
         return location;
     }
 
-    public int getTotal_likes() {
+    public int getTotalLikes() {
         return total_likes;
     }
 
-    public int getTotal_photos() {
+    public int getTotalPhotos() {
         return total_photos;
     }
 
-    public int getTotal_collections() {
+    public int getTotalCollections() {
         return total_collections;
     }
 
-    public boolean isFollowed_by_user() {
+    public boolean isFollowedByUser() {
         return followed_by_user;
     }
 
@@ -112,11 +113,11 @@ public class User implements Serializable {
         return downloads;
     }
 
-    public int getUploads_remaining() {
+    public int getUploadsRemaining() {
         return uploads_remaining;
     }
 
-    public String getInstagram_username() {
+    public String getInstagramUsername() {
         return instagram_username;
     }
 
@@ -126,5 +127,9 @@ public class User implements Serializable {
 
     public Links getLinks() {
         return links;
+    }
+
+    public ProfileImage getProfileImage() {
+        return profile_image;
     }
 }

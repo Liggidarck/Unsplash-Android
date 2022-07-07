@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.george.unsplash.databinding.SearchFragmentBinding;
+import com.george.unsplash.utils.Utils;
 
 public class SearchFragment extends Fragment {
 

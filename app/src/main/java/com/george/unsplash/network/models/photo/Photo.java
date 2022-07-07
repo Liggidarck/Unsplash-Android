@@ -1,5 +1,7 @@
 package com.george.unsplash.network.models.photo;
 
+import com.george.unsplash.network.models.user.Me;
+import com.george.unsplash.network.models.user.common.User;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -27,6 +29,9 @@ public class Photo implements Serializable {
     @Expose
     private Exif exif;
 
+    @Expose
+    private User user;
+
     public String getId() {
         return id;
     }
@@ -49,5 +54,9 @@ public class Photo implements Serializable {
 
     public Exif getExif() {
         return exif;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

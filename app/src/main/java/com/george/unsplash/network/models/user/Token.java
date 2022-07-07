@@ -35,7 +35,7 @@ public class Token implements Serializable {
         return scope;
     }
 
-    public String getCreated_at() {
+    public String getCreatedAt() {
         return created_at;
     }
 }

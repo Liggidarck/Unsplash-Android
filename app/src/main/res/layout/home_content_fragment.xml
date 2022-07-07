@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/loadingContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/homeContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -20,7 +35,8 @@
                     android:id="@+id/homeMainImage"
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
-                    android:scaleType="center" />
+                    android:scaleType="center"
+                    android:src="@color/black" />
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -55,6 +71,20 @@
                 android:id="@+id/homeRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/loadPhotoBtn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="load photos" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 

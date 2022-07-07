@@ -1,6 +1,7 @@
 package com.george.unsplash.ui.main.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.topic.Topic;
 import com.george.unsplash.ui.photos.TopicAdapter;
 import com.george.unsplash.ui.photos.TopicDatabaseViewModel;
+import com.george.unsplash.utils.Utils;
 
 import java.util.List;
 
@@ -39,25 +41,13 @@ public class HomeFragment extends Fragment {
     PreferencesViewModel preferencesViewModel;
     TopicDatabaseViewModel topicDatabaseViewModel;
 
+    Utils utils = new Utils();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = HomeFragmentBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-
-        if (savedInstanceState == null) {
-            Fragment fragmentContent = new HomeContentFragment();
-
-            Bundle bundle = new Bundle();
-            bundle.putInt("position", 0);
-
-            fragmentContent.setArguments(bundle);
-
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frameHomeRoot, fragmentContent)
-                    .commit();
-        }
 
         binding.topicRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
                 LinearLayoutManager.HORIZONTAL, false));
@@ -71,7 +61,14 @@ public class HomeFragment extends Fragment {
 
         unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
 
-        topicDatabaseViewModel.getAllTopics().observe(HomeFragment.this.requireActivity(), topicData -> topicAdapter.addTopics(topicData));
+        topicDatabaseViewModel.getAllTopics().observe(HomeFragment.this.requireActivity(), topicData -> {
+            Log.d(TAG, "onCreateView: empty: " + topicData.isEmpty());
+            if (topicData.isEmpty()) {
+                getTopicsFromApi();
+            }
+            topicAdapter.addTopics(topicData);
+        });
+
         topicAdapter.setOnClickItemListener((topic, position) -> {
             Fragment fragmentContent = new HomeContentFragment();
 
@@ -90,19 +87,24 @@ public class HomeFragment extends Fragment {
     }
 
     void getTopicsFromApi() {
+        Log.d(TAG, "getTopicsFromApi: getDataSet");
         unsplashInterface
                 .getTopics()
                 .enqueue(new Callback<List<Topic>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Topic>> call, @NonNull Response<List<Topic>> response) {
-                        List<Topic> topics = response.body();
-                        assert topics != null;
-                        saveTopics(topics);
+                        if(response.code() == 200) {
+                            List<Topic> topics = response.body();
+                            assert topics != null;
+                            saveTopics(topics);
+                        } else {
+                            utils.showAlertDialog(HomeFragment.this.requireActivity(), response.code());
+                        }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<List<Topic>> call, @NonNull Throwable t) {
-
+                        Log.e(TAG, "onFailure: " + t.getMessage());
                     }
                 });
     }
@@ -112,8 +114,9 @@ public class HomeFragment extends Fragment {
             Topic topic = topics.get(i);
             String title = topic.getTitle();
             String description = topic.getDescription();
-            int totalPhotos = topic.getTotal_photos();
-            TopicData topicData = new TopicData(title, description, totalPhotos);
+            String slug = topic.getSlug();
+            int totalPhotos = topic.getTotalPhotos();
+            TopicData topicData = new TopicData(title, description, totalPhotos, slug);
             topicDatabaseViewModel.insert(topicData);
         }
     }

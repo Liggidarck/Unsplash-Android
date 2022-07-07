@@ -15,18 +15,6 @@
             android:name=".ui.login.LoginActivity"
             android:exported="true"
             android:launchMode="singleTop">
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="unsplash-token-callback"
-                    android:scheme="kraken" />
-            </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -45,7 +45,7 @@ public class Exif {
         return name;
     }
 
-    public String getExposure_time() {
+    public String getExposureTime() {
         return exposure_time;
     }
 
@@ -53,7 +53,7 @@ public class Exif {
         return aperture;
     }
 
-    public String getFocal_length() {
+    public String getFocalLength() {
         return focal_length;
     }
 

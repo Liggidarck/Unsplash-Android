@@ -47,11 +47,11 @@ public class Topic implements Serializable {
         return description;
     }
 
-    public int getTotal_photos() {
+    public int getTotalPhotos() {
         return total_photos;
     }
 
-    public CoverPhoto getCover_photo() {
+    public CoverPhoto getCoverPhoto() {
         return cover_photo;
     }
 }
