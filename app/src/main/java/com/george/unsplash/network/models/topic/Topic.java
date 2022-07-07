@@ -11,6 +11,14 @@ public class Topic implements Serializable {
     @Expose
     private String id;
 
+    @SerializedName("slug")
+    @Expose
+    private String slug;
+
+    public String getSlug() {
+        return slug;
+    }
+
     @SerializedName("title")
     @Expose
     private String title;

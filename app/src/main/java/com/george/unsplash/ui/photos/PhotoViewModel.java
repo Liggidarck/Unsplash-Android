@@ -14,6 +14,7 @@ import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.photo.Urls;
+import com.george.unsplash.network.models.topic.Topic;
 
 import retrofit2.Call;
 import retrofit2.Callback;

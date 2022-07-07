@@ -1,7 +1,6 @@
 package com.george.unsplash.ui.main.home;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.HomeFragmentBinding;
 import com.george.unsplash.localdata.PreferencesViewModel;
+import com.george.unsplash.localdata.topic.TopicData;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.topic.Topic;
 import com.george.unsplash.ui.photos.TopicAdapter;
-import com.google.android.material.tabs.TabLayout;
+import com.george.unsplash.ui.photos.TopicDatabaseViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,8 +34,10 @@ public class HomeFragment extends Fragment {
     public static final String TAG = "HomeFragment";
 
     TopicAdapter topicAdapter = new TopicAdapter();
-    PreferencesViewModel preferencesViewModel;
     UnsplashInterface unsplashInterface;
+
+    PreferencesViewModel preferencesViewModel;
+    TopicDatabaseViewModel topicDatabaseViewModel;
 
     @Nullable
     @Override
@@ -46,12 +47,17 @@ public class HomeFragment extends Fragment {
 
         if (savedInstanceState == null) {
             Fragment fragmentContent = new HomeContentFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", 0);
+
+            fragmentContent.setArguments(bundle);
+
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.frameHomeRoot, fragmentContent)
                     .commit();
         }
-
 
         binding.topicRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
                 LinearLayoutManager.HORIZONTAL, false));
@@ -59,17 +65,39 @@ public class HomeFragment extends Fragment {
         binding.topicRecyclerView.setAdapter(topicAdapter);
 
         preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
+        topicDatabaseViewModel = new ViewModelProvider(this).get(TopicDatabaseViewModel.class);
+
         String token = preferencesViewModel.getToken();
 
         unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
 
+        topicDatabaseViewModel.getAllTopics().observe(HomeFragment.this.requireActivity(), topicData -> topicAdapter.addTopics(topicData));
+        topicAdapter.setOnClickItemListener((topic, position) -> {
+            Fragment fragmentContent = new HomeContentFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", position);
+
+            fragmentContent.setArguments(bundle);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frameHomeRoot, fragmentContent)
+                    .commit();
+        });
+
+        return view;
+    }
+
+    void getTopicsFromApi() {
         unsplashInterface
                 .getTopics()
                 .enqueue(new Callback<List<Topic>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Topic>> call, @NonNull Response<List<Topic>> response) {
-                        ArrayList<Topic> topics = (ArrayList<Topic>) response.body();
-                        topicAdapter.addTopics(topics);
+                        List<Topic> topics = response.body();
+                        assert topics != null;
+                        saveTopics(topics);
                     }
 
                     @Override
@@ -77,12 +105,17 @@ public class HomeFragment extends Fragment {
 
                     }
                 });
-
-        topicAdapter.setOnClickItemListener(topic -> {
-            Log.d(TAG, "onCreateView: " + topic.getTitle());
-            Log.d(TAG, "onCreateView: " + topic.getDescription());
-        });
-
-        return view;
     }
+
+    void saveTopics(List<Topic> topics) {
+        for (int i = 0; i < topics.size(); i++) {
+            Topic topic = topics.get(i);
+            String title = topic.getTitle();
+            String description = topic.getDescription();
+            int totalPhotos = topic.getTotal_photos();
+            TopicData topicData = new TopicData(title, description, totalPhotos);
+            topicDatabaseViewModel.insert(topicData);
+        }
+    }
+
 }

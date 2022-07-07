@@ -10,14 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.george.unsplash.R;
-import com.george.unsplash.network.models.topic.Topic;
+import com.george.unsplash.localdata.topic.TopicData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> {
 
-    private final List<Topic> topics = new ArrayList<>();
+    private final List<TopicData> topics = new ArrayList<>();
     onItemClickListener listener;
 
     @NonNull
@@ -29,7 +29,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Topic topic = topics.get(position);
+        TopicData topic = topics.get(position);
         holder.titleTopic.setText(topic.getTitle());
     }
 
@@ -39,9 +39,13 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void addTopics(List<Topic> topics) {
+    public void addTopics(List<TopicData> topics) {
         this.topics.addAll(topics);
         notifyDataSetChanged();
+    }
+
+    public TopicData getTopicAt(int position) {
+        return topics.get(position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -53,14 +57,14 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if(listener != null && position != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(topics.get(position));
+                    listener.onItemClick(topics.get(position), position);
                 }
             });
         }
     }
 
     public interface onItemClickListener {
-        void onItemClick(Topic topic);
+        void onItemClick(TopicData topic, int position);
     }
 
     public void setOnClickItemListener(onItemClickListener listener) {

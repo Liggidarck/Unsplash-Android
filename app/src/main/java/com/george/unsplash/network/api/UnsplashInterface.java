@@ -30,6 +30,9 @@ public interface UnsplashInterface {
     @GET("topics")
     Call<List<Topic>> getTopics();
 
+    @GET("topics/{id_or_slug}")
+    Call<Topic> getTopic(@Path("id_or_slug") String slug);
+
     @GET("photos")
     Call<List<Photo>> getPhotos(@Query("page") Integer page,
                                 @Query("per_page") Integer perPage,
