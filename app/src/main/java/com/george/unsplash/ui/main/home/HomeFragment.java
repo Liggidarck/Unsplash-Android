@@ -19,8 +19,7 @@ import com.george.unsplash.localdata.topic.TopicData;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.topic.Topic;
-import com.george.unsplash.ui.photos.TopicAdapter;
-import com.george.unsplash.ui.photos.TopicDatabaseViewModel;
+import com.george.unsplash.ui.adapters.TopicAdapter;
 import com.george.unsplash.utils.Utils;
 
 import java.util.List;
@@ -49,51 +48,59 @@ public class HomeFragment extends Fragment {
         binding = HomeFragmentBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        binding.topicRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
-                LinearLayoutManager.HORIZONTAL, false));
-        binding.topicRecyclerView.setHasFixedSize(true);
-        binding.topicRecyclerView.setAdapter(topicAdapter);
+        initRecyclerView();
 
         preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
         topicDatabaseViewModel = new ViewModelProvider(this).get(TopicDatabaseViewModel.class);
 
         String token = preferencesViewModel.getToken();
 
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
-
         topicDatabaseViewModel.getAllTopics().observe(HomeFragment.this.requireActivity(), topicData -> {
-            Log.d(TAG, "onCreateView: empty: " + topicData.isEmpty());
             if (topicData.isEmpty()) {
-                getTopicsFromApi();
+                getTopicsFromApi(token);
             }
             topicAdapter.addTopics(topicData);
         });
 
-        topicAdapter.setOnClickItemListener((topic, position) -> {
-            Fragment fragmentContent = new HomeContentFragment();
+        topicAdapter.setOnClickItemListener((topic, position) -> startContentFragment(position));
 
-            Bundle bundle = new Bundle();
-            bundle.putInt("position", position);
-
-            fragmentContent.setArguments(bundle);
-
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frameHomeRoot, fragmentContent)
-                    .commit();
-        });
+        if (savedInstanceState == null)
+            startContentFragment(0);
 
         return view;
     }
 
-    void getTopicsFromApi() {
-        Log.d(TAG, "getTopicsFromApi: getDataSet");
+    private void startContentFragment(int position) {
+        Log.d(TAG, "onCreateView: start content fragment");
+
+        Fragment fragmentContent = new HomeContentFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", position);
+
+        fragmentContent.setArguments(bundle);
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frameHomeRoot, fragmentContent)
+                .commit();
+    }
+
+    private void initRecyclerView() {
+        binding.topicRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                LinearLayoutManager.HORIZONTAL, false));
+        binding.topicRecyclerView.setHasFixedSize(true);
+        binding.topicRecyclerView.setAdapter(topicAdapter);
+    }
+
+    void getTopicsFromApi(String token) {
+        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
         unsplashInterface
                 .getTopics()
                 .enqueue(new Callback<List<Topic>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Topic>> call, @NonNull Response<List<Topic>> response) {
-                        if(response.code() == 200) {
+                        if (response.code() == 200) {
                             List<Topic> topics = response.body();
                             assert topics != null;
                             saveTopics(topics);

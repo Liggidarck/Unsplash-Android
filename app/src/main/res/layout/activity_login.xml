@@ -16,8 +16,8 @@
         style="@style/Widget.MaterialComponents.Toolbar.Surface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="Авторизация"
-        android:elevation="3dp"/>
+        android:elevation="3dp"
+        app:title="Authorization" />
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressBarLogin"
@@ -42,18 +42,18 @@
                 android:id="@+id/mainLogo"
                 android:layout_width="match_parent"
                 android:layout_height="230dp"
-                android:src="@drawable/ic_unsplash"
+                android:layout_marginTop="30dp"
                 android:padding="40dp"
-                android:layout_marginTop="30dp"/>
+                android:src="@drawable/ic_unsplash" />
 
             <TextView
                 android:id="@+id/textCodeGenerate"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="20dp"
                 android:layout_below="@id/mainLogo"
-                android:textSize="16sp"
-                android:text="Для входа в приложение получите код" />
+                android:layout_marginStart="20dp"
+                android:text="Get a code to enter the application"
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/codeBtn"
@@ -64,7 +64,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:backgroundTint="@color/black"
-                android:text="получить код" />
+                android:text="get the code" />
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:hint="Полученный код"
+                android:hint="Received code"
                 app:errorEnabled="true"
                 android:layout_below="@id/codeBtn"
                 android:layout_marginTop="30dp">
@@ -95,7 +95,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:backgroundTint="@color/black"
-                android:text="воход" />
+                android:text="login" />
 
 
         </RelativeLayout>

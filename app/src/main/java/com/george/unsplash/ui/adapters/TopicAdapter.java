@@ -1,4 +1,4 @@
-package com.george.unsplash.ui.photos;
+package com.george.unsplash.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -49,7 +49,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTopic;
+        final TextView titleTopic;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTopic = itemView.findViewById(R.id.titleTextView);

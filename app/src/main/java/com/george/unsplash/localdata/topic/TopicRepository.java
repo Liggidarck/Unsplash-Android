@@ -10,9 +10,9 @@ import java.util.concurrent.Executors;
 
 public class TopicRepository {
 
-    TopicDao topicDao;
-    LiveData<List<TopicData>> allTopics;
-    ExecutorService service = Executors.newSingleThreadExecutor();
+    final TopicDao topicDao;
+    final LiveData<List<TopicData>> allTopics;
+    final ExecutorService service = Executors.newSingleThreadExecutor();
 
     public TopicRepository(Application application) {
         TopicDatabase database = TopicDatabase.getInstance(application);

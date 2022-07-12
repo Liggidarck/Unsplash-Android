@@ -2,46 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="20dp">
+    android:layout_margin="2dp">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/imageViewPhoto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profilePicPhoto"
-                android:layout_width="35dp"
-                android:src="@color/black"
-                android:layout_height="35dp" />
-
-            <TextView
-                android:id="@+id/profileNamePhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@id/profilePicPhoto"
-                android:text="George Filatov"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
-
-        </RelativeLayout>
-
-        <ImageView
-            android:id="@+id/imageViewPhoto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@color/black"
-            android:scaleType="centerCrop"/>
-
-    </LinearLayout>
+        android:layout_height="230dp"
+        android:scaleType="centerCrop" />
 
 </RelativeLayout>

@@ -12,8 +12,8 @@ import androidx.lifecycle.AndroidViewModel;
 
 public class PreferencesViewModel extends AndroidViewModel {
 
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+    final SharedPreferences sharedPreferences;
+    final SharedPreferences.Editor editor;
 
     public PreferencesViewModel(@NonNull Application application) {
         super(application);

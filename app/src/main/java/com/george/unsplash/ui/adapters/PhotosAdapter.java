@@ -1,12 +1,10 @@
-package com.george.unsplash.ui.photos;
+package com.george.unsplash.ui.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,19 +12,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.george.unsplash.R;
 import com.george.unsplash.network.models.photo.Photo;
-import com.george.unsplash.network.models.user.common.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder> {
 
-    final List<Photo> photoList = new ArrayList<>();
+    private final List<Photo> photoList;
     private OnPhotoClickedListener listener;
-    Context context;
+    final Context context;
 
-    public PhotosAdapter(Context context) {
+    public PhotosAdapter(Context context, List<Photo> photoList) {
         this.context = context;
+        this.photoList = photoList;
     }
 
     @NonNull
@@ -37,37 +34,12 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Photo photo = photoList.get(position);
-        User user = photo.getUser();
-
-        String firstName = user.getFirstName();
-        String lastName = user.getLastName();
-        if(lastName == null)
-            lastName = "";
-        String username = firstName + " " + lastName;
-
-        holder.profileName.setText(username);
 
         Glide.with(context)
                 .load(photo.getUrls().getRegular())
                 .into(holder.imageViewPhoto);
-
-        Glide.with(context)
-                .load(user.getProfileImage().getLarge())
-                .into(holder.profilePicPhoto);
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void addPhotos(List<Photo> photos) {
-        photoList.addAll(photos);
-        notifyDataSetChanged();
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void clear() {
-        photoList.clear();
-        notifyDataSetChanged();
     }
 
     @Override
@@ -76,15 +48,11 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageViewPhoto;
-        ImageView profilePicPhoto;
-        TextView profileName, textLikePhoto;
+        final ImageView imageViewPhoto;
 
         public ViewHolder(View view) {
             super(view);
             imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
-            profilePicPhoto = view.findViewById(R.id.profilePicPhoto);
-            profileName = view.findViewById(R.id.profileNamePhoto);
 
             view.setOnClickListener(v -> {
                 int position = getAdapterPosition();

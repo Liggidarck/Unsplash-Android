@@ -41,8 +41,6 @@ public interface UnsplashInterface {
     Call<List<Photo>> getPhotos(@Query("page") int page);
 
     @GET("photos/{id}")
-    Call<Photo> getPhoto(@Path("id") String id,
-                         @Query("w") Integer width,
-                         @Query("h") Integer height);
+    Call<Photo> getPhoto(@Path("id") String id);
 
 }

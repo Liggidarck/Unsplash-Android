@@ -1,5 +1,7 @@
 package com.george.unsplash.ui.main.home;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,9 +10,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.george.unsplash.databinding.HomeContentFragmentBinding;
@@ -22,12 +25,13 @@ import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.photo.Urls;
 import com.george.unsplash.network.models.topic.CoverPhoto;
 import com.george.unsplash.network.models.topic.Topic;
-import com.george.unsplash.ui.photos.PhotoViewModel;
-import com.george.unsplash.ui.photos.PhotosAdapter;
-import com.george.unsplash.ui.photos.TopicAdapter;
-import com.george.unsplash.ui.photos.TopicDatabaseViewModel;
+import com.george.unsplash.ui.adapters.PhotoViewModel;
+import com.george.unsplash.ui.adapters.PhotosAdapter;
+import com.george.unsplash.ui.adapters.TopicAdapter;
+import com.george.unsplash.ui.main.photos.FullScreenPhotoActivity;
 import com.george.unsplash.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,6 +39,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeContentFragment extends Fragment {
+
+    public static final String TAG = HomeContentFragment.class.getSimpleName();
 
     HomeContentFragmentBinding binding;
 
@@ -45,12 +51,18 @@ public class HomeContentFragment extends Fragment {
     UnsplashInterface unsplashInterface;
     TopicAdapter topicAdapter = new TopicAdapter();
     PhotosAdapter photosAdapter;
+    private List<Photo> photos;
 
     Utils utils = new Utils();
 
-    public static final String TAG = "HomeContentFragment";
+    private int page = 1;
 
-    int page = 1;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        photos = new ArrayList<>();
+    }
 
     @Nullable
     @Override
@@ -61,45 +73,47 @@ public class HomeContentFragment extends Fragment {
         Bundle args = getArguments();
         assert args != null;
 
-        photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
-        preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
-        topicDatabaseViewModel = new ViewModelProvider(this).get(TopicDatabaseViewModel.class);
-
-        photosAdapter = new PhotosAdapter(HomeContentFragment.this.requireActivity());
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(HomeContentFragment.this.requireActivity());
-        binding.homeRecyclerView.setLayoutManager(layoutManager);
-        binding.homeRecyclerView.setHasFixedSize(true);
-        binding.homeRecyclerView.setAdapter(photosAdapter);
+        initViewModels();
 
         String token = preferencesViewModel.getToken();
         int position = args.getInt("position");
 
-        topicDatabaseViewModel.getAllTopics().observe(HomeContentFragment.this.requireActivity(), topicData -> {
-            topicAdapter.addTopics(topicData);
+        initRecyclerView();
 
-            TopicData topic = topicAdapter.getTopicAt(position);
-            binding.titleHomeTextView.setText(topic.getTitle());
-            binding.descriptionHomeTextView.setText(topic.getDescription());
-            setUpHomePage(token, topic.getSlug());
-
-            binding.loadPhotoBtn.setOnClickListener(v -> {
-                photosAdapter.clear();
-                getPhotos(topic.getSlug());
-            });
-        });
-
-
+        initHomePage(token, position);
 
         return root;
     }
 
-    void setUpHomePage(String token, String topicSlug) {
+    private void initHomePage(String token, int position) {
+        topicDatabaseViewModel
+                .getAllTopics()
+                .observe(HomeContentFragment.this.requireActivity(), topicData -> {
+                    topicAdapter.addTopics(topicData);
+
+                    TopicData topic = topicAdapter.getTopicAt(position);
+                    binding.titleHomeTextView.setText(topic.getTitle());
+                    binding.descriptionHomeTextView.setText(topic.getDescription());
+                    getMainImage(token, topic.getSlug());
+
+                    binding.homeContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                            (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                                if (v.getChildAt(v.getChildCount() - 1) != null) {
+                                    if ((scrollY >= (v.getChildAt(v.getChildCount() - 1)
+                                            .getMeasuredHeight() - v.getMeasuredHeight())) && scrollY > oldScrollY) {
+                                        fetchPhotos(topic.getSlug());
+                                    }
+                                }
+                            });
+                });
+    }
+
+    void getMainImage(String token, String topicSlug) {
         unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
         unsplashInterface.getTopic(topicSlug).enqueue(new Callback<Topic>() {
             @Override
             public void onResponse(@NonNull Call<Topic> call, @NonNull Response<Topic> response) {
-                if(response.code() == 200) {
+                if (response.code() == 200) {
                     Topic topic = response.body();
                     assert topic != null;
                     CoverPhoto coverPhoto = topic.getCoverPhoto();
@@ -119,23 +133,19 @@ public class HomeContentFragment extends Fragment {
             }
         });
 
-        getPhotos(topicSlug);
+        fetchPhotos(topicSlug);
     }
 
-    void getPhotos(String topicSlug) {
-        binding.loadingContent.setVisibility(View.VISIBLE);
-        binding.homeContent.setVisibility(View.INVISIBLE);
-
+    void fetchPhotos(String topicSlug) {
         unsplashInterface.getTopicPhotos(topicSlug, page).enqueue(new Callback<List<Photo>>() {
+
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
-                Log.d(TAG, "onResponse: " + response.code());
-                if(response.code() == 200) {
-                    List<Photo> photos = response.body();
-                    photosAdapter.addPhotos(photos);
-
-                    binding.loadingContent.setVisibility(View.INVISIBLE);
-                    binding.homeContent.setVisibility(View.VISIBLE);
+                if (response.code() == 200) {
+                    assert response.body() != null;
+                    photos.addAll(response.body());
+                    photosAdapter.notifyDataSetChanged();
                 } else {
                     utils.showAlertDialog(HomeContentFragment.this.requireActivity(), response.code());
                 }
@@ -147,7 +157,43 @@ public class HomeContentFragment extends Fragment {
             }
         });
 
-        page++;
+        page += 1;
     }
 
+    private void initViewModels() {
+        photoViewModel = new ViewModelProvider(this)
+                .get(PhotoViewModel.class);
+
+        preferencesViewModel = new ViewModelProvider(this)
+                .get(PreferencesViewModel.class);
+
+        topicDatabaseViewModel = new ViewModelProvider(this)
+                .get(TopicDatabaseViewModel.class);
+    }
+
+    private void initRecyclerView() {
+        photosAdapter = new PhotosAdapter(HomeContentFragment.this.requireActivity(), photos);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        binding.homeRecyclerView.setLayoutManager(gridLayoutManager);
+        binding.homeRecyclerView.setHasFixedSize(true);
+        binding.homeRecyclerView.setAdapter(photosAdapter);
+
+        photosAdapter.setOnItemClickListener((photo, position) -> showFullScreenImage(photo));
+    }
+
+    private void showFullScreenImage(Photo photo) {
+        Intent intent = new Intent(HomeContentFragment.this.requireActivity(), FullScreenPhotoActivity.class);
+        intent.putExtra("photoId", photo.getId());
+        intent.putExtra("downloads", photo.getDownloads());
+        intent.putExtra("likes", photo.getLikes());
+        intent.putExtra("description", photo.getDescription());
+        intent.putExtra("fullUrl", photo.getUrls().getFull());
+
+        intent.putExtra("userId", photo.getUser().getId());
+        intent.putExtra("userUsername", photo.getUser().getUsername());
+        intent.putExtra("userFirstName", photo.getUser().getFirstName());
+        intent.putExtra("userLastName", photo.getUser().getLastName());
+        intent.putExtra("userProfileImage", photo.getUser().getProfileImage().getLarge());
+        startActivity(intent);
+    }
 }

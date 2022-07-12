@@ -10,7 +10,7 @@
         style="@style/Widget.MaterialComponents.Toolbar.Primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="Главная" />
+        app:title="Home" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/topicRecyclerView"

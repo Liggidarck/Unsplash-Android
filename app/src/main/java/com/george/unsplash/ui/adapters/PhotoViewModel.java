@@ -1,4 +1,4 @@
-package com.george.unsplash.ui.photos;
+package com.george.unsplash.ui.adapters;
 
 import android.app.Application;
 import android.content.Context;
@@ -9,12 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.photo.Urls;
-import com.george.unsplash.network.models.topic.Topic;
 
 import retrofit2.Call;
 import retrofit2.Callback;

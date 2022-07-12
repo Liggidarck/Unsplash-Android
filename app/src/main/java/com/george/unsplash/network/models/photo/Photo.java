@@ -1,6 +1,5 @@
 package com.george.unsplash.network.models.photo;
 
-import com.george.unsplash.network.models.user.Me;
 import com.george.unsplash.network.models.user.common.User;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -20,12 +19,17 @@ public class Photo implements Serializable {
     private int likes;
 
     @Expose
+    private int width;
+
+    @Expose
+    private int height;
+
+    @Expose
     private String description;
 
     @Expose
     private Urls urls;
 
-    @SerializedName("exif")
     @Expose
     private Exif exif;
 
@@ -58,5 +62,13 @@ public class Photo implements Serializable {
 
     public User getUser() {
         return user;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

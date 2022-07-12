@@ -1,4 +1,4 @@
-package com.george.unsplash.ui.photos;
+package com.george.unsplash.ui.main.home;
 
 import android.app.Application;
 
@@ -13,8 +13,8 @@ import java.util.List;
 
 public class TopicDatabaseViewModel extends AndroidViewModel {
 
-    TopicRepository repository;
-    LiveData<List<TopicData>> allTopics;
+    final TopicRepository repository;
+    final LiveData<List<TopicData>> allTopics;
 
     public TopicDatabaseViewModel(@NonNull Application application) {
         super(application);

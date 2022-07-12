@@ -59,10 +59,6 @@ public class LoginActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
         unsplashInterface = UnsplashBaseClient.getBaseUnsplashClient().create(UnsplashInterface.class);
 
-        String token = sharedPreferences.getString(USER_TOKEN, "");
-        if(!token.equals("")) {
-            startActivity(new Intent(this, MainActivity.class));
-        }
 
         binding.codeBtn.setOnClickListener(v -> {
             Uri uri = Uri.parse(url);
