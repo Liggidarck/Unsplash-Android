@@ -1,7 +1,6 @@
 package com.george.unsplash.ui.main.home;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +26,7 @@ import com.george.unsplash.network.models.topic.CoverPhoto;
 import com.george.unsplash.network.models.topic.Topic;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.ui.adapters.TopicAdapter;
-import com.george.unsplash.ui.main.photos.FullScreenPhotoActivity;
+import com.george.unsplash.ui.main.photos.PhotoViewModel;
 import com.george.unsplash.utils.Utils;
 
 import java.util.ArrayList;
@@ -39,20 +38,20 @@ import retrofit2.Response;
 
 public class HomeContentFragment extends Fragment {
 
-    public static final String TAG = HomeContentFragment.class.getSimpleName();
+    private HomeContentFragmentBinding binding;
 
-    HomeContentFragmentBinding binding;
+    private AppPreferences appPreferences;
+    private TopicDatabaseViewModel topicDatabaseViewModel;
+    private PhotoViewModel photoViewModel;
 
-    AppPreferences appPreferences;
-    TopicDatabaseViewModel topicDatabaseViewModel;
-
-    UnsplashInterface unsplashInterface;
+    private UnsplashInterface unsplashInterface;
     TopicAdapter topicAdapter = new TopicAdapter();
     PhotosAdapter photosAdapter;
     private List<Photo> photos;
 
-    Utils utils = new Utils();
+    private final Utils utils = new Utils();
 
+    public static final String TAG = HomeContentFragment.class.getSimpleName();
     private int page = 1;
 
     @Override
@@ -159,6 +158,9 @@ public class HomeContentFragment extends Fragment {
     }
 
     private void initViewModels() {
+        photoViewModel = new ViewModelProvider(this)
+                .get(PhotoViewModel.class);
+
         appPreferences = new AppPreferences(HomeContentFragment.this.requireActivity());
 
         topicDatabaseViewModel = new ViewModelProvider(this)
@@ -172,25 +174,7 @@ public class HomeContentFragment extends Fragment {
         binding.homeRecyclerView.setHasFixedSize(true);
         binding.homeRecyclerView.setAdapter(photosAdapter);
 
-        photosAdapter.setOnItemClickListener((photo, position) -> showFullScreenImage(photo));
-    }
-
-    private void showFullScreenImage(Photo photo) {
-        Intent intent = new Intent(HomeContentFragment.this.requireActivity(), FullScreenPhotoActivity.class);
-        intent.putExtra("photoId", photo.getId());
-        intent.putExtra("downloads", photo.getDownloads());
-        intent.putExtra("likes", photo.getLikes());
-        intent.putExtra("description", photo.getDescription());
-        intent.putExtra("fullUrl", photo.getUrls().getFull());
-        intent.putExtra("liked_by_user", photo.isLiked_by_user());
-        intent.putExtra("htmlLink", photo.getLinks().getHtml());
-        intent.putExtra("downloadLink", photo.getLinks().getDownload());
-
-        intent.putExtra("userId", photo.getUser().getId());
-        intent.putExtra("userUsername", photo.getUser().getUsername());
-        intent.putExtra("userFirstName", photo.getUser().getFirstName());
-        intent.putExtra("userLastName", photo.getUser().getLastName());
-        intent.putExtra("userProfileImage", photo.getUser().getProfileImage().getLarge());
-        startActivity(intent);
+        photosAdapter.setOnItemClickListener((photo, position) -> photoViewModel
+                .showFullScreenImage(photo, HomeContentFragment.this.requireActivity()));
     }
 }

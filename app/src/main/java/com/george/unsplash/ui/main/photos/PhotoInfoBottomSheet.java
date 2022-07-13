@@ -25,13 +25,14 @@ import retrofit2.Response;
 
 public class PhotoInfoBottomSheet extends BottomSheetDialogFragment {
 
+    private PhotoInfoBottomSheetBinding binding;
+    private AppPreferences appPreferences;
+
+    private UnsplashInterface unsplashInterface;
+
+    private final Utils utils = new Utils();
+
     public static final String TAG = PhotoInfoBottomSheet.class.getSimpleName();
-
-    PhotoInfoBottomSheetBinding binding;
-    AppPreferences appPreferences;
-
-    UnsplashInterface unsplashInterface;
-    Utils utils = new Utils();
 
     @Nullable
     @Override

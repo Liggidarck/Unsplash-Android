@@ -1,5 +1,6 @@
 package com.george.unsplash.network.api;
 
+import com.george.unsplash.network.models.search.Search;
 import com.george.unsplash.network.models.topic.Topic;
 import com.george.unsplash.network.models.user.Token;
 import com.george.unsplash.network.models.photo.Photo;
@@ -46,5 +47,11 @@ public interface UnsplashInterface {
 
     @DELETE("photos/{id}/like")
     Call<Photo> unlikePhoto(@Path("id") String id);
+
+    @GET("search/photos")
+    Call<Search> findPhotos(@Query("query") String query,
+                            @Query("page") int page,
+                            @Query("color") String color,
+                            @Query("orientation") String orientation);
 
 }

@@ -30,17 +30,15 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
-    HomeFragmentBinding binding;
+    private HomeFragmentBinding binding;
 
-    public static final String TAG = "HomeFragment";
+    private final TopicAdapter topicAdapter = new TopicAdapter();
 
-    TopicAdapter topicAdapter = new TopicAdapter();
-    UnsplashInterface unsplashInterface;
+    private TopicDatabaseViewModel topicDatabaseViewModel;
 
-    AppPreferences appPreferences;
-    TopicDatabaseViewModel topicDatabaseViewModel;
+    private final Utils utils = new Utils();
 
-    Utils utils = new Utils();
+    public static final String TAG = HomeFragment.class.getSimpleName();
 
     @Nullable
     @Override
@@ -50,7 +48,7 @@ public class HomeFragment extends Fragment {
 
         initRecyclerView();
 
-        appPreferences = new AppPreferences(HomeFragment.this.requireActivity());
+        AppPreferences appPreferences = new AppPreferences(HomeFragment.this.requireActivity());
         topicDatabaseViewModel = new ViewModelProvider(this).get(TopicDatabaseViewModel.class);
 
         String token = appPreferences.getToken();
@@ -94,7 +92,7 @@ public class HomeFragment extends Fragment {
     }
 
     void getTopicsFromApi(String token) {
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
+        UnsplashInterface unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
         unsplashInterface
                 .getTopics()
                 .enqueue(new Callback<List<Topic>>() {

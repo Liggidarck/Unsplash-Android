@@ -25,15 +25,13 @@ import com.bumptech.glide.request.target.Target;
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.ActivityFullScreenPhotoBinding;
 import com.george.unsplash.localdata.AppPreferences;
-import com.george.unsplash.network.api.UnsplashInterface;
-import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 
 public class FullScreenPhotoActivity extends AppCompatActivity {
 
-    ActivityFullScreenPhotoBinding binding;
+    private ActivityFullScreenPhotoBinding binding;
 
     private DownloadManager.Request downloadRequest;
 
@@ -43,17 +41,16 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
     int downloads, likes;
     boolean likedByUser;
 
-    public static final String TAG = FullScreenPhotoActivity.class.getSimpleName();
+    private PhotoViewModel photoViewModel;
 
-    AppPreferences appPreferences;
-    PhotoViewModel photoViewModel;
+    public static final String TAG = FullScreenPhotoActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityFullScreenPhotoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        appPreferences = new AppPreferences(this);
+        AppPreferences appPreferences = new AppPreferences(this);
         photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
 
         String token = appPreferences.getToken();
