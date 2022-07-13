@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp" >
+    android:padding="16dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,16 +15,16 @@
             android:layout_height="wrap_content"
             android:text="Information"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <ProgressBar
             android:id="@+id/progressBarInformation"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_toEndOf="@id/titleInfo"
             android:layout_centerVertical="true"
-            android:layout_marginStart="10dp"/>
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/titleInfo" />
 
         <ImageView
             android:id="@+id/closeBtn"
@@ -43,19 +43,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Author"
-        android:textSize="20sp"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp" />
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/fullNameTextViewInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:layout_marginTop="5dp"
         android:textColor="@color/black"
-        android:layout_marginTop="5dp"/>
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/usernameTextViewInfo"
@@ -67,73 +67,73 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Image"
-        android:textSize="20sp"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp" />
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 
     <TextView
         android:id="@+id/likesTextViewInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:layout_marginTop="5dp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/downloadsTextViewInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:layout_marginTop="5dp" />
+        android:textSize="16sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Dimensions"
-        android:textSize="20sp"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp" />
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/resolutionTextViewInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:layout_marginTop="5dp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/cameraTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Camera"
-        android:textSize="20sp"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp" />
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/cameraTextViewInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:layout_marginTop="5dp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/lensTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Lens"
-        android:textSize="20sp"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp" />
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/lensTextViewInfo"
@@ -147,16 +147,16 @@
         android:id="@+id/exposeTimeTextViewInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:layout_marginTop="5dp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/isoTextViewInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:layout_marginTop="5dp" />
+        android:textSize="16sp" />
 
 </LinearLayout>

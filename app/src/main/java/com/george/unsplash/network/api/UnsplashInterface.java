@@ -1,10 +1,12 @@
 package com.george.unsplash.network.api;
 
+import com.george.unsplash.network.models.collection.CollectionPhotos;
 import com.george.unsplash.network.models.search.Search;
 import com.george.unsplash.network.models.topic.Topic;
 import com.george.unsplash.network.models.user.Token;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.user.Me;
+import com.george.unsplash.network.models.user.common.User;
 
 import java.util.List;
 
@@ -24,7 +26,10 @@ public interface UnsplashInterface {
                          @Query("code") String code,
                          @Query("grant_type") String grant_type);
     @GET("me")
-    Call<Me> getUsersData();
+    Call<Me> getMeData();
+
+    @GET("users/{username}")
+    Call<User> getUserData(@Path("username") String userName);
 
     @GET("photos/random")
     Call<Photo> getRandomPhoto(@Query("orientation") String orientation);
@@ -53,5 +58,20 @@ public interface UnsplashInterface {
                             @Query("page") int page,
                             @Query("color") String color,
                             @Query("orientation") String orientation);
+
+    @GET("users/{username}/photos")
+    Call<List<Photo>> getUserPhotos(@Path("username") String username,
+                                    @Query("page") int page,
+                                    @Query("per_page") int per_page);
+
+    @GET("users/{username}/likes")
+    Call<List<Photo>> getUserLikePhotos(@Path("username") String username,
+                                        @Query("page") int page,
+                                        @Query("per_page") int per_page);
+
+    @GET("/users/{username}/collections")
+    Call<List<CollectionPhotos>> getUserCollection(@Path("username") String username,
+                                                   @Query("page") int page,
+                                                   @Query("per_page") int per_page);
 
 }

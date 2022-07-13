@@ -38,6 +38,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.5.0'
     implementation 'androidx.navigation:navigation-ui:2.5.0'
     implementation 'androidx.preference:preference:1.1.1'
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     testImplementation 'junit:junit:'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

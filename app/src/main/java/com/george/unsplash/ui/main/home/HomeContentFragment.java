@@ -87,21 +87,29 @@ public class HomeContentFragment extends Fragment {
                 .getAllTopics()
                 .observe(HomeContentFragment.this.requireActivity(), topicData -> {
                     topicAdapter.addTopics(topicData);
+                    try {
+                        TopicData topic = topicAdapter.getTopicAt(position);
+                        binding.titleHomeTextView.setText(topic.getTitle());
+                        binding.descriptionHomeTextView.setText(topic.getDescription());
+                        getMainImage(token, topic.getSlug());
 
-                    TopicData topic = topicAdapter.getTopicAt(position);
-                    binding.titleHomeTextView.setText(topic.getTitle());
-                    binding.descriptionHomeTextView.setText(topic.getDescription());
-                    getMainImage(token, topic.getSlug());
-
-                    binding.homeContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
-                            (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                                if (v.getChildAt(v.getChildCount() - 1) != null) {
-                                    if ((scrollY >= (v.getChildAt(v.getChildCount() - 1)
-                                            .getMeasuredHeight() - v.getMeasuredHeight())) && scrollY > oldScrollY) {
-                                        fetchPhotos(topic.getSlug());
+                        binding.homeContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                                    if (v.getChildAt(v.getChildCount() - 1) != null) {
+                                        if ((scrollY >= (v.getChildAt(v.getChildCount() - 1)
+                                                .getMeasuredHeight() - v.getMeasuredHeight())) && scrollY > oldScrollY) {
+                                            fetchPhotos(topic.getSlug());
+                                        }
                                     }
-                                }
-                            });
+                                });
+
+                        binding.swipeRefreshHomeContent.setOnRefreshListener(() -> {
+                            fetchPhotos(topic.getSlug());
+                            binding.swipeRefreshHomeContent.setRefreshing(false);
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 });
     }
 

@@ -18,12 +18,16 @@
         <entry key="app/src/main/res/layout/activity_loading.xml" value="0.35052083333333334" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.35054347826086957" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/collections_profile_fragment.xml" value="0.3494791666666667" />
         <entry key="app/src/main/res/layout/dropdown_menu_categories.xml" value="0.3494791666666667" />
         <entry key="app/src/main/res/layout/home_content_fragment.xml" value="0.34512820512820513" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.3536458333333333" />
+        <entry key="app/src/main/res/layout/item_collection.xml" value="0.35052083333333334" />
         <entry key="app/src/main/res/layout/item_image.xml" value="0.34512820512820513" />
         <entry key="app/src/main/res/layout/item_topic.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/layout/likes_profile_fragment.xml" value="0.3494791666666667" />
         <entry key="app/src/main/res/layout/photo_info_bottom_sheet.xml" value="0.3494791666666667" />
+        <entry key="app/src/main/res/layout/photos_profile_fragment.xml" value="0.3494791666666667" />
         <entry key="app/src/main/res/layout/profile_fragment.xml" value="0.3536458333333333" />
         <entry key="app/src/main/res/layout/search_fragment.xml" value="0.31760264275601696" />
         <entry key="app/src/main/res/layout/settings_activity.xml" value="0.35052083333333334" />

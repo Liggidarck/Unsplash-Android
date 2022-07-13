@@ -5,6 +5,29 @@ import com.google.gson.annotations.SerializedName;
 
 public class Me {
 
+    public Me(String id, String username, String first_name, String last_name, String twitter_username,
+              String portfolio_url, String bio, String location, int total_likes, int total_photos,
+              int total_collections, boolean followed_by_user, int downloads, int uploads_remaining,
+              String instagram_username, String email, Links links) {
+        this.id = id;
+        this.username = username;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.twitter_username = twitter_username;
+        this.portfolio_url = portfolio_url;
+        this.bio = bio;
+        this.location = location;
+        this.total_likes = total_likes;
+        this.total_photos = total_photos;
+        this.total_collections = total_collections;
+        this.followed_by_user = followed_by_user;
+        this.downloads = downloads;
+        this.uploads_remaining = uploads_remaining;
+        this.instagram_username = instagram_username;
+        this.email = email;
+        this.links = links;
+    }
+
     @SerializedName("id")
     @Expose
     private String id;

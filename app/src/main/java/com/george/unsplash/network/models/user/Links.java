@@ -5,6 +5,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class Links {
 
+    public Links(String self, String html, String photos, String likes, String portfolio) {
+        this.self = self;
+        this.html = html;
+        this.photos = photos;
+        this.likes = likes;
+        this.portfolio = portfolio;
+    }
+
     @SerializedName("self")
     @Expose
     private String self;
