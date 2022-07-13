@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.george.unsplash.R;
 import com.george.unsplash.network.models.collection.CollectionPhotos;
-import com.george.unsplash.network.models.topic.CoverPhoto;
 
 import java.util.List;
 

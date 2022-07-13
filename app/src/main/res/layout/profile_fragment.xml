@@ -6,7 +6,6 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbarProfile"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="Profile" />
