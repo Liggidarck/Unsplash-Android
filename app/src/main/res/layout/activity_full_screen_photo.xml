@@ -7,6 +7,12 @@
     tools:context=".ui.main.photos.FullScreenPhotoActivity"
     android:background="@color/black">
 
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorImageActivity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/dataImageView"/>
+
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbarPhotoScreen"
         style="@style/Widget.MaterialComponents.Toolbar.Primary"
@@ -25,14 +31,17 @@
         android:id="@+id/mainImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"/>
+        tools:ignore="ContentDescription"
+        android:layout_below="@id/userView"
+        android:layout_above="@id/dataImageView"/>
 
     <RelativeLayout
         android:id="@+id/userView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbarPhotoScreen"
-        android:padding="12dp">
+        android:padding="12dp"
+        android:background="@color/black">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userProfileImage"
@@ -58,14 +67,17 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent">
+        android:background="@color/black">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            tools:ignore="UselessParent">
 
             <RelativeLayout
+                android:id="@+id/likeView"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5">

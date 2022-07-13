@@ -11,11 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.george.unsplash.databinding.PhotoInfoBottomSheetBinding;
-import com.george.unsplash.localdata.PreferencesViewModel;
+import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Exif;
 import com.george.unsplash.network.models.photo.Photo;
+import com.george.unsplash.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import retrofit2.Call;
@@ -27,9 +28,10 @@ public class PhotoInfoBottomSheet extends BottomSheetDialogFragment {
     public static final String TAG = PhotoInfoBottomSheet.class.getSimpleName();
 
     PhotoInfoBottomSheetBinding binding;
-    PreferencesViewModel preferencesViewModel;
+    AppPreferences appPreferences;
 
     UnsplashInterface unsplashInterface;
+    Utils utils = new Utils();
 
     @Nullable
     @Override
@@ -37,13 +39,13 @@ public class PhotoInfoBottomSheet extends BottomSheetDialogFragment {
         binding = PhotoInfoBottomSheetBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
+        appPreferences = new AppPreferences(PhotoInfoBottomSheet.this.requireActivity());
 
         Bundle args = getArguments();
         assert args != null;
 
         String photoId = args.getString("photoId");
-        String token = preferencesViewModel.getToken();
+        String token = appPreferences.getToken();
 
         unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
         unsplashInterface
@@ -85,6 +87,11 @@ public class PhotoInfoBottomSheet extends BottomSheetDialogFragment {
                             binding.likesTextViewInfo.setText(likes);
                             binding.downloadsTextViewInfo.setText(downloads);
                             binding.resolutionTextViewInfo.setText(resolution);
+
+                            binding.progressBarInformation.setVisibility(View.INVISIBLE);
+                        } else {
+                            utils.showAlertDialog(PhotoInfoBottomSheet.this.requireActivity(), response.code());
+                            binding.progressBarInformation.setVisibility(View.INVISIBLE);
                         }
                     }
 

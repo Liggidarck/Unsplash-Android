@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.george.unsplash.databinding.HomeContentFragmentBinding;
-import com.george.unsplash.localdata.PreferencesViewModel;
+import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.localdata.topic.TopicData;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
@@ -25,7 +25,6 @@ import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.photo.Urls;
 import com.george.unsplash.network.models.topic.CoverPhoto;
 import com.george.unsplash.network.models.topic.Topic;
-import com.george.unsplash.ui.adapters.PhotoViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.ui.adapters.TopicAdapter;
 import com.george.unsplash.ui.main.photos.FullScreenPhotoActivity;
@@ -44,8 +43,7 @@ public class HomeContentFragment extends Fragment {
 
     HomeContentFragmentBinding binding;
 
-    PhotoViewModel photoViewModel;
-    PreferencesViewModel preferencesViewModel;
+    AppPreferences appPreferences;
     TopicDatabaseViewModel topicDatabaseViewModel;
 
     UnsplashInterface unsplashInterface;
@@ -75,7 +73,7 @@ public class HomeContentFragment extends Fragment {
 
         initViewModels();
 
-        String token = preferencesViewModel.getToken();
+        String token = appPreferences.getToken();
         int position = args.getInt("position");
 
         initRecyclerView();
@@ -161,11 +159,7 @@ public class HomeContentFragment extends Fragment {
     }
 
     private void initViewModels() {
-        photoViewModel = new ViewModelProvider(this)
-                .get(PhotoViewModel.class);
-
-        preferencesViewModel = new ViewModelProvider(this)
-                .get(PreferencesViewModel.class);
+        appPreferences = new AppPreferences(HomeContentFragment.this.requireActivity());
 
         topicDatabaseViewModel = new ViewModelProvider(this)
                 .get(TopicDatabaseViewModel.class);
@@ -188,6 +182,9 @@ public class HomeContentFragment extends Fragment {
         intent.putExtra("likes", photo.getLikes());
         intent.putExtra("description", photo.getDescription());
         intent.putExtra("fullUrl", photo.getUrls().getFull());
+        intent.putExtra("liked_by_user", photo.isLiked_by_user());
+        intent.putExtra("htmlLink", photo.getLinks().getHtml());
+        intent.putExtra("downloadLink", photo.getLinks().getDownload());
 
         intent.putExtra("userId", photo.getUser().getId());
         intent.putExtra("userUsername", photo.getUser().getUsername());

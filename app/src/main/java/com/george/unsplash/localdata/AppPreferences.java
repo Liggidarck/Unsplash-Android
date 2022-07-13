@@ -10,14 +10,13 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-public class PreferencesViewModel extends AndroidViewModel {
+public class AppPreferences {
 
     final SharedPreferences sharedPreferences;
     final SharedPreferences.Editor editor;
 
-    public PreferencesViewModel(@NonNull Application application) {
-        super(application);
-        sharedPreferences = application.getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
+    public AppPreferences(@NonNull Context context) {
+        sharedPreferences = context.getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
     }
 

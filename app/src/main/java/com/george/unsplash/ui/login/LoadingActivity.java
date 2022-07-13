@@ -3,26 +3,27 @@ package com.george.unsplash.ui.login;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.george.unsplash.databinding.ActivityLoadingBinding;
-import com.george.unsplash.localdata.PreferencesViewModel;
+import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.ui.main.MainActivity;
 
 public class LoadingActivity extends AppCompatActivity {
 
     ActivityLoadingBinding binding;
-    PreferencesViewModel preferencesViewModel;
+    AppPreferences appPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityLoadingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
+        appPreferences = new AppPreferences(this);
 
-        String token = preferencesViewModel.getToken();
+        String token = appPreferences.getToken();
         if(!token.equals("")) {
             startActivity(new Intent(this, MainActivity.class));
         } else {

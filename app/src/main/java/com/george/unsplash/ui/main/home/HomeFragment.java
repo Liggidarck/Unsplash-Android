@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.HomeFragmentBinding;
-import com.george.unsplash.localdata.PreferencesViewModel;
+import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.localdata.topic.TopicData;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment {
     TopicAdapter topicAdapter = new TopicAdapter();
     UnsplashInterface unsplashInterface;
 
-    PreferencesViewModel preferencesViewModel;
+    AppPreferences appPreferences;
     TopicDatabaseViewModel topicDatabaseViewModel;
 
     Utils utils = new Utils();
@@ -50,10 +50,10 @@ public class HomeFragment extends Fragment {
 
         initRecyclerView();
 
-        preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
+        appPreferences = new AppPreferences(HomeFragment.this.requireActivity());
         topicDatabaseViewModel = new ViewModelProvider(this).get(TopicDatabaseViewModel.class);
 
-        String token = preferencesViewModel.getToken();
+        String token = appPreferences.getToken();
 
         topicDatabaseViewModel.getAllTopics().observe(HomeFragment.this.requireActivity(), topicData -> {
             if (topicData.isEmpty()) {
@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment {
         topicAdapter.setOnClickItemListener((topic, position) -> startContentFragment(position));
 
         if (savedInstanceState == null)
-            startContentFragment(0);
+            startContentFragment(1);
 
         return view;
     }

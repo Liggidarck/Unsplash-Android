@@ -8,6 +8,7 @@ import com.george.unsplash.network.models.user.Me;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -37,10 +38,13 @@ public interface UnsplashInterface {
     Call<List<Photo>> getTopicPhotos(@Path("id_or_slug") String slug,
                                      @Query("page") int page);
 
-    @GET("photos")
-    Call<List<Photo>> getPhotos(@Query("page") int page);
-
     @GET("photos/{id}")
     Call<Photo> getPhoto(@Path("id") String id);
+
+    @POST("photos/{id}/like")
+    Call<Photo> likePhoto(@Path("id") String id);
+
+    @DELETE("photos/{id}/like")
+    Call<Photo> unlikePhoto(@Path("id") String id);
 
 }

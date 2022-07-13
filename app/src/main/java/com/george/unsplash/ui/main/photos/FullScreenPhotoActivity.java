@@ -1,11 +1,5 @@
 package com.george.unsplash.ui.main.photos;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentManager;
-
 import android.Manifest;
 import android.app.DownloadManager;
 import android.content.pm.PackageManager;
@@ -17,12 +11,23 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.george.unsplash.R;
 import com.george.unsplash.databinding.ActivityFullScreenPhotoBinding;
+import com.george.unsplash.localdata.AppPreferences;
+import com.george.unsplash.network.api.UnsplashInterface;
+import com.george.unsplash.network.api.UnsplashTokenClient;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 
@@ -31,17 +36,27 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
     ActivityFullScreenPhotoBinding binding;
 
     private DownloadManager.Request downloadRequest;
-    public static final String TAG = FullScreenPhotoActivity.class.getSimpleName();
 
     String fullUrl, photoId, description, userId, username,
-            firstName, lastName, profileImage, fullName, likesCount;
+            firstName, lastName, profileImage, fullName, likesCount,
+            htmlLink, downloadLink;
     int downloads, likes;
+    boolean likedByUser;
+
+    public static final String TAG = FullScreenPhotoActivity.class.getSimpleName();
+
+    AppPreferences appPreferences;
+    PhotoViewModel photoViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityFullScreenPhotoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        appPreferences = new AppPreferences(this);
+        photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
+
+        String token = appPreferences.getToken();
 
         binding.toolbarPhotoScreen.setNavigationOnClickListener(v -> onBackPressed());
 
@@ -57,6 +72,9 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
             photoInfoBottomSheet.show(getSupportFragmentManager(), "PhotoInfoBottomSheet");
         });
 
+        binding.likeView.setOnClickListener(v -> photoViewModel
+                .likePhotoBehavior(token, likedByUser, photoId, likes, this,
+                        binding.imageLikes, binding.likesTextView));
     }
 
     private void getImageData() {
@@ -66,6 +84,9 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
         likes = extras.getInt("likes");
         description = extras.getString("description");
         fullUrl = extras.getString("fullUrl");
+        likedByUser = extras.getBoolean("liked_by_user");
+        htmlLink = extras.getString("htmlLink");
+        downloadLink = extras.getString("downloadLink");
 
         userId = extras.getString("userId");
         username = extras.getString("userUsername");
@@ -110,11 +131,14 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
 
         binding.fullNameTextView.setText(fullName);
         binding.likesTextView.setText(likesCount);
+
+        if(likedByUser)
+            binding.imageLikes.setImageResource(R.drawable.ic_baseline_favorite_24);
     }
 
     private void downloadPhoto() {
         try {
-            downloadRequest = new DownloadManager.Request(Uri.parse(fullUrl));
+            downloadRequest = new DownloadManager.Request(Uri.parse(downloadLink));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
@@ -128,6 +152,7 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
             Log.d(TAG, "downloadPhoto: directory created " + result);
         }
 
+        Snackbar.make(binding.coordinatorImageActivity, "Image download started", Snackbar.LENGTH_SHORT).show();
         downloadRequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
         downloadRequest.setTitle(fileName);
 

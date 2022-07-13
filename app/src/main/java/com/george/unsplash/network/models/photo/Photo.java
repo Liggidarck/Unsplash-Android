@@ -28,10 +28,15 @@ public class Photo implements Serializable {
     private String description;
 
     @Expose
+    private boolean liked_by_user;
+
+    @Expose
     private Urls urls;
 
     @Expose
     private Exif exif;
+
+    @Expose Links links;
 
     @Expose
     private User user;
@@ -68,7 +73,15 @@ public class Photo implements Serializable {
         return width;
     }
 
+    public boolean isLiked_by_user() {
+        return liked_by_user;
+    }
+
     public int getHeight() {
         return height;
+    }
+
+    public Links getLinks() {
+        return links;
     }
 }

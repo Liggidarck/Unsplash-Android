@@ -39,6 +39,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
         Glide.with(context)
                 .load(photo.getUrls().getRegular())
+                .placeholder(R.color.gray)
                 .into(holder.imageViewPhoto);
     }
 
