@@ -4,10 +4,20 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <Button
+        android:id="@+id/createCollectionFragBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create new collection"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/collectionUserProfile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_collection"/>
+        tools:listitem="@layout/item_collection"
+        android:layout_below="@id/createCollectionFragBtn"/>
 
 </RelativeLayout>

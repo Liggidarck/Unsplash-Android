@@ -10,7 +10,7 @@ public class CollectionPhotos implements Serializable {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private String id;
 
     @Expose
     private String title;
@@ -28,7 +28,7 @@ public class CollectionPhotos implements Serializable {
     @Expose
     private CoverPhoto cover_photo;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

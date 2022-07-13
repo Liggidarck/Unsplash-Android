@@ -14,6 +14,7 @@ import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -29,7 +30,7 @@ public interface UnsplashInterface {
     Call<Me> getMeData();
 
     @GET("users/{username}")
-    Call<User> getUserData(@Path("username") String userName);
+    Call<User> getUserData(@Path("username") String username);
 
     @GET("photos/random")
     Call<Photo> getRandomPhoto(@Query("orientation") String orientation);
@@ -73,5 +74,23 @@ public interface UnsplashInterface {
     Call<List<CollectionPhotos>> getUserCollection(@Path("username") String username,
                                                    @Query("page") int page,
                                                    @Query("per_page") int per_page);
+
+    @GET("/collections/{id}/photos")
+    Call<List<Photo>> getCollectionPhotos(@Path("id") String id,
+                                          @Query("page") int page);
+
+    @POST("collections")
+    Call<CollectionPhotos> createNewCollection(@Query("title") String title,
+                                               @Query("description") String description,
+                                               @Query("private") boolean isPrivate);
+
+    @PUT("collections/{id}")
+    Call<CollectionPhotos> updateCollection(@Path("id") String id,
+                                            @Query("title") String title,
+                                            @Query("description") String description,
+                                            @Query("private") boolean isPrivate);
+
+    @DELETE("collections/{id}")
+    Call<CollectionPhotos> deleteCollection(@Path("id") String id);
 
 }

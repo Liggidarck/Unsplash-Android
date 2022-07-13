@@ -2,6 +2,7 @@ package com.george.unsplash.ui.main.photos;
 
 import android.Manifest;
 import android.app.DownloadManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +27,7 @@ import com.bumptech.glide.request.target.Target;
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.ActivityFullScreenPhotoBinding;
 import com.george.unsplash.localdata.AppPreferences;
+import com.george.unsplash.ui.main.profile.UserActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
@@ -68,10 +71,14 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
             photoInfoBottomSheet.setArguments(bundle);
             photoInfoBottomSheet.show(getSupportFragmentManager(), "PhotoInfoBottomSheet");
         });
-
         binding.likeView.setOnClickListener(v -> photoViewModel
                 .likePhotoBehavior(token, likedByUser, photoId, likes, this,
                         binding.imageLikes, binding.likesTextView));
+        binding.userView.setOnClickListener(v -> {
+            Intent intent = new Intent(this, UserActivity.class);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
     }
 
     private void getImageData() {
@@ -107,6 +114,9 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
                                                 Object model,
                                                 Target<Drawable> target,
                                                 boolean isFirstResource) {
+                        binding.progressBarFullImage.setVisibility(View.INVISIBLE);
+                        Toast.makeText(FullScreenPhotoActivity.this, "ERROR!", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "onLoadFailed: ", e);
                         return false;
                     }
 

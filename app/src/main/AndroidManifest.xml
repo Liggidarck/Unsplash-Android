@@ -14,8 +14,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UnsplashApp">
         <activity
+            android:name=".ui.main.profile.UserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.collections.CollectionActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.login.LoadingActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +37,7 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop" />
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true" />

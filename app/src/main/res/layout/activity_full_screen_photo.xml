@@ -40,8 +40,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbarPhotoScreen"
-        android:padding="12dp"
-        android:background="@color/black">
+        android:background="@color/black"
+        android:padding="12dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userProfileImage"

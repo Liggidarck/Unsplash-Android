@@ -21,6 +21,7 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
 
     private final Context context;
     private final List<CollectionPhotos> collectionPhotosList;
+    private onItemClickListener listener;
 
     public CollectionsAdapter(Context context, List<CollectionPhotos> collectionPhotosList) {
         this.context = context;
@@ -75,6 +76,36 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
             countPhotosCollection = itemView.findViewById(R.id.countPhotosCollection);
             privateCollectionImageView = itemView.findViewById(R.id.privateCollectionImageView);
             coverPhoto = itemView.findViewById(R.id.coverPhoto);
+
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(collectionPhotosList.get(position));
+                }
+            });
+
+            itemView.setOnLongClickListener(view -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(collectionPhotosList.get(position));
+                    return true;
+                }
+                return false;
+            });
+
         }
     }
+
+    public interface onItemClickListener {
+        void onItemClick(CollectionPhotos collectionPhotos);
+    }
+
+    public void setOnItemClickListener(onItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public void setOnLongClickListener(onItemClickListener listener) {
+        this.listener = listener;
+    }
+
 }
