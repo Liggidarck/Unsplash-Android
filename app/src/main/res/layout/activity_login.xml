@@ -9,98 +9,103 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/loginCoordinator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbarLogin"
-        style="@style/Widget.MaterialComponents.Toolbar.Surface"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="3dp"
-        app:title="Authorization" />
-
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progressBarLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbarLogin"
-        android:indeterminate="true"
-        android:visibility="invisible" />
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/progressBarLogin"
-        android:clipToPadding="false"
-        android:paddingBottom="100dp">
-
-        <RelativeLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/mainLogo"
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBarAuth"
                 android:layout_width="match_parent"
-                android:layout_height="230dp"
-                android:layout_marginTop="30dp"
-                android:padding="40dp"
-                android:src="@drawable/ic_unsplash" />
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/black"
+                app:title="Auth"
+                app:titleTextColor="@color/white" />
 
-            <TextView
-                android:id="@+id/textCodeGenerate"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_below="@id/mainLogo"
-                android:layout_marginStart="20dp"
-                android:text="Get a code to enter the application"
-                android:textSize="16sp" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-            <Button
-                android:id="@+id/codeBtn"
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textCodeGenerate"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:backgroundTint="@color/black"
-                android:text="get the code" />
+                android:layout_height="match_parent">
 
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/userKeyEditText"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/codeBtn"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="20dp"
-                android:hint="Received code"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progressBarLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textVisiblePassword" />
+                    android:indeterminate="true"
+                    android:visibility="invisible" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <ImageView
+                    android:id="@+id/mainLogo"
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:layout_marginTop="30dp"
+                    android:padding="40dp"
+                    android:src="@drawable/ic_unsplash" />
 
-            <Button
-                android:id="@+id/loginBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/userKeyEditText"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:backgroundTint="@color/black"
-                android:text="login" />
+                <TextView
+                    android:id="@+id/textCodeGenerate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/mainLogo"
+                    android:layout_marginStart="20dp"
+                    android:text="Get a code to enter the application"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/codeBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textCodeGenerate"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:backgroundTint="@color/black"
+                    android:text="Get the code" />
 
 
-        </RelativeLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/userKeyEditText"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/codeBtn"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:hint="Received code"
+                    app:errorEnabled="true">
 
-    </androidx.core.widget.NestedScrollView>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textVisiblePassword" />
 
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/loginBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/userKeyEditText"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:backgroundTint="@color/black"
+                    android:text="Login" />
+
+
+            </RelativeLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>

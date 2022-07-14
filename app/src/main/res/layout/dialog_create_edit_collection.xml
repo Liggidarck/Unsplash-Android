@@ -85,13 +85,13 @@
             android:id="@+id/saveCollectionBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="save" />
+            android:text="Save" />
 
         <Button
             android:id="@+id/deleteCollectionBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="#fc0303"
+            android:backgroundTint="#cc0000"
             android:text="Delete"
             android:layout_marginStart="20dp"/>
     </LinearLayout>

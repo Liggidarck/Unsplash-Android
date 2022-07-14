@@ -36,8 +36,8 @@ public class UserActivity extends AppCompatActivity {
         binding = ProfileFragmentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.toolbarProfile.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
-        binding.toolbarProfile.setNavigationOnClickListener(view -> onBackPressed());
+        binding.topAppBarProfile.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        binding.topAppBarProfile.setNavigationOnClickListener(view -> onBackPressed());
 
         Bundle extras = getIntent().getExtras();
 

@@ -65,10 +65,11 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp">
 
-                <ProgressBar
+                <com.google.android.material.progressindicator.CircularProgressIndicator
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true" />
+                    android:layout_centerHorizontal="true"
+                    android:indeterminate="true" />
 
             </RelativeLayout>
 
