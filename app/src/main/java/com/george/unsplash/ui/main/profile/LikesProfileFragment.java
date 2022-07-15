@@ -2,7 +2,6 @@ package com.george.unsplash.ui.main.profile;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,32 +9,28 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.george.unsplash.databinding.LikesProfileFragmentBinding;
-import com.george.unsplash.localdata.AppPreferences;
-import com.george.unsplash.network.api.UnsplashInterface;
-import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
+import com.george.unsplash.network.viewmodel.PhotoViewModel;
+import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class LikesProfileFragment extends Fragment {
 
     private LikesProfileFragmentBinding binding;
 
-    private AppPreferences appPreferences;
+    private PhotoViewModel photoViewModel;
 
-    private UnsplashInterface unsplashInterface;
     private List<Photo> photos;
     private PhotosAdapter photosAdapter;
+    private PhotoViewModelFuture photoViewModelFuture;
 
     private String username;
 
@@ -51,7 +46,11 @@ public class LikesProfileFragment extends Fragment {
         assert args != null;
         username = args.getString("username");
 
-        appPreferences = new AppPreferences(LikesProfileFragment.this.requireActivity());
+        photoViewModel = new ViewModelProvider(this)
+                .get(PhotoViewModel.class);
+
+        photoViewModelFuture = new ViewModelProvider(this)
+                .get(PhotoViewModelFuture.class);
 
         photos = new ArrayList<>();
     }
@@ -69,27 +68,14 @@ public class LikesProfileFragment extends Fragment {
         return root;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void getLikedPhotos() {
-        String token = appPreferences.getToken();
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
-        unsplashInterface.getUserLikePhotos(username, 1, 50).enqueue(new Callback<List<Photo>>() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
-                if(response.code() == 200) {
-                    assert response.body() != null;
-                    photos.addAll(response.body());
+        photoViewModelFuture
+                .getUserLikePhotos(username, 1, 10)
+                .observe(LikesProfileFragment.this.requireActivity(), photoList -> {
+                    photos.addAll(photoList);
                     photosAdapter.notifyDataSetChanged();
-                } else {
-                    utils.showAlertDialog(LikesProfileFragment.this.requireActivity(), response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Photo>> call, @NonNull Throwable t) {
-                Log.e(TAG, "onFailure: ", t);
-            }
-        });
+                });
     }
 
     private void initRecyclerView() {
@@ -98,5 +84,14 @@ public class LikesProfileFragment extends Fragment {
         binding.likesPhotoProfileRecyclerView.setLayoutManager(gridLayoutManager);
         binding.likesPhotoProfileRecyclerView.setHasFixedSize(false);
         binding.likesPhotoProfileRecyclerView.setAdapter(photosAdapter);
+
+        photosAdapter.setOnItemClickListener((photo, position) -> photoViewModel
+                .showFullScreenImage(photo, LikesProfileFragment.this.requireActivity()));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

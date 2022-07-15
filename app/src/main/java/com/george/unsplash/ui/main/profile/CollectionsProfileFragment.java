@@ -17,14 +17,13 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.CollectionsProfileFragmentBinding;
-import com.george.unsplash.localdata.AppPreferences;
-import com.george.unsplash.network.api.UnsplashInterface;
-import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.collection.CollectionPhotos;
+import com.george.unsplash.network.viewmodel.CollectionViewModel;
 import com.george.unsplash.ui.adapters.CollectionsAdapter;
 import com.george.unsplash.ui.main.collections.CollectionActivity;
 import com.george.unsplash.utils.Utils;
@@ -34,17 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class CollectionsProfileFragment extends Fragment {
 
     private CollectionsProfileFragmentBinding binding;
 
-    private UnsplashInterface unsplashInterface;
     private List<CollectionPhotos> collectionPhotosList;
     private CollectionsAdapter collectionsAdapter;
+
+    private CollectionViewModel collectionViewModel;
 
     Utils utils = new Utils();
 
@@ -60,10 +56,8 @@ public class CollectionsProfileFragment extends Fragment {
         assert args != null;
         username = args.getString("username");
 
-        AppPreferences appPreferences = new AppPreferences(CollectionsProfileFragment.this.requireActivity());
-        String token = appPreferences.getToken();
-
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
+        collectionViewModel = new ViewModelProvider(this)
+                .get(CollectionViewModel.class);
 
         collectionPhotosList = new ArrayList<>();
 
@@ -83,25 +77,14 @@ public class CollectionsProfileFragment extends Fragment {
         return root;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void getCollections() {
-        unsplashInterface.getUserCollection(username, 1, 50).enqueue(new Callback<List<CollectionPhotos>>() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(@NonNull Call<List<CollectionPhotos>> call, @NonNull Response<List<CollectionPhotos>> response) {
-                if (response.code() == 200) {
-                    assert response.body() != null;
-                    collectionPhotosList.addAll(response.body());
+        collectionViewModel
+                .getCollections(username, 1, 20)
+                .observe(CollectionsProfileFragment.this.requireActivity(), collectionPhotos -> {
+                    collectionPhotosList.addAll(collectionPhotos);
                     collectionsAdapter.notifyDataSetChanged();
-                } else {
-                    utils.showAlertDialog(CollectionsProfileFragment.this.requireActivity(), response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<CollectionPhotos>> call, @NonNull Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage(), t);
-            }
-        });
+                });
     }
 
     void initRecyclerView() {
@@ -114,6 +97,7 @@ public class CollectionsProfileFragment extends Fragment {
             Log.d(TAG, "initRecyclerView: " + collectionPhotos.getId());
             Intent intent = new Intent(CollectionsProfileFragment.this.requireActivity(), CollectionActivity.class);
             intent.putExtra("collectionId", collectionPhotos.getId());
+            intent.putExtra("collectionTitle", collectionPhotos.getTitle());
             startActivity(intent);
         });
 
@@ -150,45 +134,18 @@ public class CollectionsProfileFragment extends Fragment {
                 return;
             }
 
-            unsplashInterface.updateCollection(id, updateTitle, updateDescription, updateIsPrivate)
-                    .enqueue(new Callback<CollectionPhotos>() {
-                        @Override
-                        public void onResponse(@NonNull Call<CollectionPhotos> call,
-                                               @NonNull Response<CollectionPhotos> response) {
-                            if (response.code() == 200) {
-                                dialog.dismiss();
-                            } else {
-                                utils.showAlertDialog(CollectionsProfileFragment.this.requireActivity(),
-                                        response.code());
-                            }
-                            progressBarCollection.setVisibility(View.INVISIBLE);
-                        }
+            collectionViewModel
+                    .updateCollection(id, updateTitle, updateDescription, updateIsPrivate)
+                    .observe(CollectionsProfileFragment.this.requireActivity(),
+                            collectionPhotos -> dialog.dismiss());
 
-                        @Override
-                        public void onFailure(@NonNull Call<CollectionPhotos> call,
-                                              @NonNull Throwable t) {
-                            Log.e(TAG, "onFailure: ", t);
-                        }
-                    });
         });
 
-        deleteCollectionBtn.setOnClickListener(v -> unsplashInterface.deleteCollection(id)
-                        .enqueue(new Callback<CollectionPhotos>() {
-                            @Override
-                            public void onResponse(@NonNull Call<CollectionPhotos> call, @NonNull Response<CollectionPhotos> response) {
-                                if (response.code() == 204) {
-                                    dialog.dismiss();
-                                } else {
-                                    utils.showAlertDialog(CollectionsProfileFragment.this.requireActivity(),
-                                            response.code());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<CollectionPhotos> call, @NonNull Throwable t) {
-                                Log.e(TAG, "onFailure: ", t);
-                            }
-                        }));
+        deleteCollectionBtn.setOnClickListener(v ->
+                collectionViewModel
+                        .deleteCollection(id)
+                        .observe(CollectionsProfileFragment.this.requireActivity(),
+                                collectionPhotos -> dialog.dismiss()));
 
         closeBtn.setOnClickListener(v -> dialog.dismiss());
 
@@ -222,25 +179,17 @@ public class CollectionsProfileFragment extends Fragment {
                 return;
             }
 
-            unsplashInterface.createNewCollection(nameCollection, descriptionCollection, isPrivate)
-                    .enqueue(new Callback<CollectionPhotos>() {
-                        @Override
-                        public void onResponse(@NonNull Call<CollectionPhotos> call, @NonNull Response<CollectionPhotos> response) {
-                            if (response.code() == 201) {
-                                dialog.dismiss();
-                            } else {
-                                utils.showAlertDialog(CollectionsProfileFragment.this.requireActivity(),
-                                        response.code());
-                            }
-                            progressBarCollection.setVisibility(View.INVISIBLE);
-                        }
+            collectionViewModel
+                    .createNewCollection(nameCollection, descriptionCollection, isPrivate)
+                    .observe(CollectionsProfileFragment.this.requireActivity(), collectionPhotos -> dialog.dismiss());
 
-                        @Override
-                        public void onFailure(@NonNull Call<CollectionPhotos> call, @NonNull Throwable t) {
-                            Log.e(TAG, "onFailure: ", t);
-                        }
-                    });
         });
         dialog.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

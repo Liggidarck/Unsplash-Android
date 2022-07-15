@@ -2,7 +2,6 @@ package com.george.unsplash.ui.main.home;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,23 +17,18 @@ import com.bumptech.glide.Glide;
 import com.george.unsplash.databinding.HomeContentFragmentBinding;
 import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.localdata.topic.TopicData;
-import com.george.unsplash.network.api.UnsplashInterface;
-import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.photo.Urls;
 import com.george.unsplash.network.models.topic.CoverPhoto;
-import com.george.unsplash.network.models.topic.Topic;
+import com.george.unsplash.network.viewmodel.PhotoViewModel;
+import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
+import com.george.unsplash.network.viewmodel.TopicDatabaseViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.ui.adapters.TopicAdapter;
-import com.george.unsplash.ui.main.photos.PhotoViewModel;
 import com.george.unsplash.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HomeContentFragment extends Fragment {
 
@@ -43,8 +37,8 @@ public class HomeContentFragment extends Fragment {
     private AppPreferences appPreferences;
     private TopicDatabaseViewModel topicDatabaseViewModel;
     private PhotoViewModel photoViewModel;
+    private PhotoViewModelFuture photoViewModelFuture;
 
-    private UnsplashInterface unsplashInterface;
     TopicAdapter topicAdapter = new TopicAdapter();
     PhotosAdapter photosAdapter;
     private List<Photo> photos;
@@ -91,7 +85,7 @@ public class HomeContentFragment extends Fragment {
                         TopicData topic = topicAdapter.getTopicAt(position);
                         binding.titleHomeTextView.setText(topic.getTitle());
                         binding.descriptionHomeTextView.setText(topic.getDescription());
-                        getMainImage(token, topic.getSlug());
+                        getMainImage(topic.getSlug());
 
                         binding.homeContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -113,54 +107,31 @@ public class HomeContentFragment extends Fragment {
                 });
     }
 
-    void getMainImage(String token, String topicSlug) {
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
-        unsplashInterface.getTopic(topicSlug).enqueue(new Callback<Topic>() {
-            @Override
-            public void onResponse(@NonNull Call<Topic> call, @NonNull Response<Topic> response) {
-                if (response.code() == 200) {
-                    Topic topic = response.body();
-                    assert topic != null;
+    void getMainImage(String topicSlug) {
+        photoViewModelFuture
+                .getTopic(topicSlug)
+                .observe(HomeContentFragment.this.requireActivity(), topic -> {
                     CoverPhoto coverPhoto = topic.getCoverPhoto();
                     Urls urls = coverPhoto.getUrls();
 
                     Glide.with(HomeContentFragment.this.requireActivity())
                             .load(urls.getRegular())
                             .into(binding.homeMainImage);
-                } else {
-                    utils.showAlertDialog(HomeContentFragment.this.requireActivity(), response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Topic> call, @NonNull Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage());
-            }
-        });
+                });
 
         fetchPhotos(topicSlug);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     void fetchPhotos(String topicSlug) {
-        unsplashInterface.getTopicPhotos(topicSlug, page).enqueue(new Callback<List<Photo>>() {
+        photos.clear();
 
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
-                if (response.code() == 200) {
-                    assert response.body() != null;
-                    photos.addAll(response.body());
+        photoViewModelFuture
+                .getTopicsPhotos(topicSlug, page)
+                .observe(HomeContentFragment.this.requireActivity(), photoResponse -> {
+                    photos.addAll(photoResponse);
                     photosAdapter.notifyDataSetChanged();
-                } else {
-                    utils.showAlertDialog(HomeContentFragment.this.requireActivity(), response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Photo>> call, @NonNull Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage());
-            }
-        });
+                });
 
         page += 1;
     }
@@ -168,6 +139,9 @@ public class HomeContentFragment extends Fragment {
     private void initViewModels() {
         photoViewModel = new ViewModelProvider(this)
                 .get(PhotoViewModel.class);
+
+        photoViewModelFuture = new ViewModelProvider(this)
+                .get(PhotoViewModelFuture.class);
 
         appPreferences = new AppPreferences(HomeContentFragment.this.requireActivity());
 
@@ -184,5 +158,11 @@ public class HomeContentFragment extends Fragment {
 
         photosAdapter.setOnItemClickListener((photo, position) -> photoViewModel
                 .showFullScreenImage(photo, HomeContentFragment.this.requireActivity()));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

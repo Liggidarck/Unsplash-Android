@@ -27,6 +27,7 @@ import com.bumptech.glide.request.target.Target;
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.ActivityFullScreenPhotoBinding;
 import com.george.unsplash.localdata.AppPreferences;
+import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.ui.main.profile.UserActivity;
 import com.google.android.material.snackbar.Snackbar;
 

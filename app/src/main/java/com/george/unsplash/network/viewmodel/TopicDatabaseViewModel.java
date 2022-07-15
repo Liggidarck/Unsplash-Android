@@ -1,4 +1,4 @@
-package com.george.unsplash.ui.main.home;
+package com.george.unsplash.network.viewmodel;
 
 import android.app.Application;
 

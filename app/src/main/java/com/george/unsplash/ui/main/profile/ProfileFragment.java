@@ -37,19 +37,19 @@ public class ProfileFragment extends Fragment {
 
         getUserData();
 
-        if(savedInstanceState == null) {
-            Fragment fragment = new PhotosProfileFragment();
 
-            bundle.putString("username", username);
+        Fragment fragment = new PhotosProfileFragment();
 
-            fragment.setArguments(bundle);
+        bundle.putString("username", username);
 
-            requireActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.profileContainer, fragment)
-                    .commit();
-        }
+        fragment.setArguments(bundle);
+
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.profileContainer, fragment)
+                .commit();
+
 
         tabsBehaviour();
 
@@ -65,7 +65,7 @@ public class ProfileFragment extends Fragment {
         String profileImage = appPreferences.getUserLargeImage();
         username = me.getUsername();
 
-        if(bio.equals(""))
+        if (bio.equals(""))
             bio = "Download free, beautiful high-quality photos curated by " + me.getFirstName();
 
         binding.nameUser.setText(fullName);
@@ -125,4 +125,9 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

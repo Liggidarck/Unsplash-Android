@@ -1,5 +1,6 @@
 package com.george.unsplash.network.api;
 
+import com.george.unsplash.network.models.Statistic.Statistic;
 import com.george.unsplash.network.models.collection.CollectionPhotos;
 import com.george.unsplash.network.models.search.Search;
 import com.george.unsplash.network.models.topic.Topic;
@@ -31,9 +32,6 @@ public interface UnsplashInterface {
 
     @GET("users/{username}")
     Call<User> getUserData(@Path("username") String username);
-
-    @GET("photos/random")
-    Call<Photo> getRandomPhoto(@Query("orientation") String orientation);
 
     @GET("topics")
     Call<List<Topic>> getTopics();
@@ -92,5 +90,8 @@ public interface UnsplashInterface {
 
     @DELETE("collections/{id}")
     Call<CollectionPhotos> deleteCollection(@Path("id") String id);
+
+    @GET("users/{username}/statistics")
+    Call<Statistic> getUserStatistic(@Path("username") String username);
 
 }

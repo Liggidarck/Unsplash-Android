@@ -21,6 +21,7 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
     private final Context context;
     private final List<CollectionPhotos> collectionPhotosList;
     private onItemClickListener listener;
+    private onLongItemClickListener longListener;
 
     public CollectionsAdapter(Context context, List<CollectionPhotos> collectionPhotosList) {
         this.context = context;
@@ -85,8 +86,8 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
 
             itemView.setOnLongClickListener(view -> {
                 int position = getAdapterPosition();
-                if (listener != null && position != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(collectionPhotosList.get(position));
+                if (longListener != null && position != RecyclerView.NO_POSITION) {
+                    longListener.onLongItemClick(collectionPhotosList.get(position));
                     return true;
                 }
                 return false;
@@ -99,12 +100,16 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
         void onItemClick(CollectionPhotos collectionPhotos);
     }
 
+    public interface onLongItemClickListener {
+        void onLongItemClick(CollectionPhotos collectionPhotos);
+    }
+
     public void setOnItemClickListener(onItemClickListener listener) {
         this.listener = listener;
     }
 
-    public void setOnLongClickListener(onItemClickListener listener) {
-        this.listener = listener;
+    public void setOnLongClickListener(onLongItemClickListener longListener) {
+        this.longListener = longListener;
     }
 
 }

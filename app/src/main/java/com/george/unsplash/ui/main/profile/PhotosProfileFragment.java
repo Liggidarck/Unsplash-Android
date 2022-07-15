@@ -18,8 +18,9 @@ import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
+import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
-import com.george.unsplash.ui.main.photos.PhotoViewModel;
+import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.utils.Utils;
 
 import java.util.ArrayList;
@@ -34,9 +35,9 @@ public class PhotosProfileFragment extends Fragment {
     private PhotosProfileFragmentBinding binding;
 
     private PhotoViewModel photoViewModel;
+    private PhotoViewModelFuture photoViewModelFuture;
 
     private PhotosAdapter photosAdapter;
-    private UnsplashInterface unsplashInterface;
     private List<Photo> photos;
 
     private final Utils utils = new Utils();
@@ -53,10 +54,8 @@ public class PhotosProfileFragment extends Fragment {
         photoViewModel = new ViewModelProvider(this)
                 .get(PhotoViewModel.class);
 
-        AppPreferences appPreferences = new AppPreferences(PhotosProfileFragment.this.requireActivity());
-        String token = appPreferences.getToken();
-
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
+        photoViewModelFuture = new ViewModelProvider(this)
+                .get(PhotoViewModelFuture.class);
 
         photos = new ArrayList<>();
     }
@@ -80,25 +79,14 @@ public class PhotosProfileFragment extends Fragment {
         return root;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void getUserPhotos() {
-        unsplashInterface.getUserPhotos(username, page, 50).enqueue(new Callback<List<Photo>>() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
-                if (response.code() == 200) {
-                    assert response.body() != null;
-                    photos.addAll(response.body());
+        photoViewModelFuture
+                .getUserPhotos(username, page, 15)
+                .observe(PhotosProfileFragment.this.requireActivity(), photoList -> {
+                    photos.addAll(photoList);
                     photosAdapter.notifyDataSetChanged();
-                } else {
-                    utils.showAlertDialog(PhotosProfileFragment.this.requireActivity(), response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Photo>> call, @NonNull Throwable t) {
-                Log.e(TAG, "onFailure: ", t);
-            }
-        });
+                });
 
         page += 1;
     }
@@ -112,5 +100,11 @@ public class PhotosProfileFragment extends Fragment {
 
         photosAdapter.setOnItemClickListener((photo, position) -> photoViewModel
                 .showFullScreenImage(photo, PhotosProfileFragment.this.requireActivity()));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

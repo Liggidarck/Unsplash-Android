@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,32 +19,25 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.SearchFragmentBinding;
-import com.george.unsplash.localdata.AppPreferences;
-import com.george.unsplash.network.api.UnsplashInterface;
-import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
-import com.george.unsplash.network.models.search.Search;
+import com.george.unsplash.network.viewmodel.PhotoViewModel;
+import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
-import com.george.unsplash.ui.main.photos.PhotoViewModel;
 import com.george.unsplash.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class SearchFragment extends Fragment {
 
     private SearchFragmentBinding binding;
 
-    private UnsplashInterface unsplashInterface;
     private List<Photo> photos;
     private PhotosAdapter photosAdapter;
 
     private PhotoViewModel photoViewModel;
+    private PhotoViewModelFuture photoViewModelFuture;
 
     private final Utils utils = new Utils();
 
@@ -59,6 +51,9 @@ public class SearchFragment extends Fragment {
         photoViewModel = new ViewModelProvider(this)
                 .get(PhotoViewModel.class);
 
+        photoViewModelFuture = new ViewModelProvider(this)
+                .get(PhotoViewModelFuture.class);
+
         photos = new ArrayList<>();
     }
 
@@ -68,14 +63,9 @@ public class SearchFragment extends Fragment {
         binding = SearchFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        AppPreferences appPreferences = new AppPreferences(SearchFragment.this.requireActivity());
-        String token = appPreferences.getToken();
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
-
         initFragmentViews();
 
         binding.searchBtn.setOnClickListener(v -> search());
-
 
         binding.searchContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -115,35 +105,20 @@ public class SearchFragment extends Fragment {
         startSearch();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     void fetchPhotos(String searchQuery, String color, String orientation) {
+        photos.clear();
         binding.progressBarSearch.setVisibility(View.VISIBLE);
-        unsplashInterface
+        photoViewModelFuture
                 .findPhotos(searchQuery, page, color, orientation)
-                .enqueue(new Callback<Search>() {
-                    @SuppressLint("NotifyDataSetChanged")
-                    @Override
-                    public void onResponse(@NonNull Call<Search> call,
-                                           @NonNull Response<Search> response) {
-                        Log.d(TAG, "onResponse: " + response.code());
-                        if (response.code() == 200) {
-                            Search search = response.body();
-                            assert search != null;
-                            int totalPhotos = search.getTotal();
-                            photos.addAll(search.getResults());
-                            photosAdapter.notifyDataSetChanged();
+                .observe(SearchFragment.this.requireActivity(), search -> {
+                    int totalPhotos = search.getTotal();
+                    photos.addAll(search.getResults());
+                    photosAdapter.notifyDataSetChanged();
 
-                            String findResultsText = "Images found: " + totalPhotos;
-                            binding.pages.setText(findResultsText);
-                        } else
-                            utils.showAlertDialog(SearchFragment.this.requireActivity(),
-                                    response.code());
-
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<Search> call, @NonNull Throwable t) {
-                        Log.e(TAG, "onFailure: ", t);
-                    }
+                    String findResultsText = "Images found: " + totalPhotos;
+                    binding.pages.setText(findResultsText);
+                    binding.progressBarSearch.setVisibility(View.INVISIBLE);
                 });
 
         page += 1;
@@ -215,4 +190,9 @@ public class SearchFragment extends Fragment {
                 .showFullScreenImage(photo, SearchFragment.this.requireActivity()));
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

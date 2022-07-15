@@ -1,11 +1,8 @@
 package com.george.unsplash.ui.login;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.george.unsplash.databinding.ActivityLoadingBinding;
 import com.george.unsplash.localdata.AppPreferences;

@@ -15,7 +15,7 @@ import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
-import com.george.unsplash.ui.main.photos.PhotoViewModel;
+import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.utils.Utils;
 
 import java.util.ArrayList;
@@ -55,6 +55,9 @@ public class CollectionActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         collectionId = extras.getString("collectionId");
+        String collectionTitle = extras.getString("collectionTitle");
+
+        binding.toolbarCollection.setTitle(collectionTitle);
 
         initRecycler();
         getNewPhotos();

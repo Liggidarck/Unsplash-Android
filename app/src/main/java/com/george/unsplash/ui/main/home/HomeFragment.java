@@ -16,17 +16,13 @@ import com.george.unsplash.R;
 import com.george.unsplash.databinding.HomeFragmentBinding;
 import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.localdata.topic.TopicData;
-import com.george.unsplash.network.api.UnsplashInterface;
-import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.topic.Topic;
+import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
+import com.george.unsplash.network.viewmodel.TopicDatabaseViewModel;
 import com.george.unsplash.ui.adapters.TopicAdapter;
 import com.george.unsplash.utils.Utils;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
@@ -35,6 +31,7 @@ public class HomeFragment extends Fragment {
     private final TopicAdapter topicAdapter = new TopicAdapter();
 
     private TopicDatabaseViewModel topicDatabaseViewModel;
+    private PhotoViewModelFuture photoViewModelFuture;
 
     private final Utils utils = new Utils();
 
@@ -48,14 +45,12 @@ public class HomeFragment extends Fragment {
 
         initRecyclerView();
 
-        AppPreferences appPreferences = new AppPreferences(HomeFragment.this.requireActivity());
         topicDatabaseViewModel = new ViewModelProvider(this).get(TopicDatabaseViewModel.class);
-
-        String token = appPreferences.getToken();
+        photoViewModelFuture = new ViewModelProvider(this).get(PhotoViewModelFuture.class);
 
         topicDatabaseViewModel.getAllTopics().observe(HomeFragment.this.requireActivity(), topicData -> {
             if (topicData.isEmpty()) {
-                getTopicsFromApi(token);
+                getTopicsFromApi();
             }
             topicAdapter.addTopics(topicData);
         });
@@ -91,27 +86,10 @@ public class HomeFragment extends Fragment {
         binding.topicRecyclerView.setAdapter(topicAdapter);
     }
 
-    void getTopicsFromApi(String token) {
-        UnsplashInterface unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
-        unsplashInterface
-                .getTopics()
-                .enqueue(new Callback<List<Topic>>() {
-                    @Override
-                    public void onResponse(@NonNull Call<List<Topic>> call, @NonNull Response<List<Topic>> response) {
-                        if (response.code() == 200) {
-                            List<Topic> topics = response.body();
-                            assert topics != null;
-                            saveTopics(topics);
-                        } else {
-                            utils.showAlertDialog(HomeFragment.this.requireActivity(), response.code());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<List<Topic>> call, @NonNull Throwable t) {
-                        Log.e(TAG, "onFailure: " + t.getMessage());
-                    }
-                });
+    void getTopicsFromApi() {
+        photoViewModelFuture
+                .getListTopic()
+                .observe(HomeFragment.this.requireActivity(), this::saveTopics);
     }
 
     void saveTopics(List<Topic> topics) {
@@ -126,4 +104,9 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

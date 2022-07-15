@@ -1,4 +1,4 @@
-package com.george.unsplash.ui.main.photos;
+package com.george.unsplash.network.viewmodel;
 
 import android.app.Application;
 import android.content.Context;
@@ -37,26 +37,6 @@ public class PhotoViewModel extends AndroidViewModel {
 
     void init(String token) {
         unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
-    }
-
-    public void getRandomPhoto(ImageView imageView, Context context) {
-        unsplashInterface.getRandomPhoto("landscape").enqueue(new Callback<Photo>() {
-            @Override
-            public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
-                Photo photo = response.body();
-                assert photo != null;
-                Urls urls = photo.getUrls();
-                String small = urls.getRegular();
-                Glide.with(context)
-                        .load(small)
-                        .into(imageView);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Photo> call, @NonNull Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage());
-            }
-        });
     }
 
     public void likePhotoBehavior(String token, boolean likedByUser, String photoId, int likes,
@@ -111,7 +91,7 @@ public class PhotoViewModel extends AndroidViewModel {
         intent.putExtra("downloads", photo.getDownloads());
         intent.putExtra("likes", photo.getLikes());
         intent.putExtra("description", photo.getDescription());
-        intent.putExtra("fullUrl", photo.getUrls().getFull());
+        intent.putExtra("fullUrl", photo.getUrls().getRegular());
         intent.putExtra("liked_by_user", photo.isLiked_by_user());
         intent.putExtra("htmlLink", photo.getLinks().getHtml());
         intent.putExtra("downloadLink", photo.getLinks().getDownload());
