@@ -2,7 +2,6 @@ package com.george.unsplash.ui.main.collections;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,31 +10,23 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.george.unsplash.databinding.ActivityCollectionBinding;
-import com.george.unsplash.localdata.AppPreferences;
-import com.george.unsplash.network.api.UnsplashInterface;
-import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
+import com.george.unsplash.network.viewmodel.CollectionViewModel;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
-import com.george.unsplash.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class CollectionActivity extends AppCompatActivity {
 
     private ActivityCollectionBinding binding;
 
-    private PhotoViewModel photoViewModel;
-    private final Utils utils = new Utils();
-
     private final List<Photo> photos = new ArrayList<>();
     private PhotosAdapter photosAdapter;
-    private UnsplashInterface unsplashInterface;
+
+    CollectionViewModel collectionViewModel;
+    PhotoViewModel photoViewModel;
 
     private String collectionId;
     private int page = 1;
@@ -50,11 +41,8 @@ public class CollectionActivity extends AppCompatActivity {
         binding = ActivityCollectionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        AppPreferences appPreferences = new AppPreferences(this);
+        collectionViewModel = new ViewModelProvider(this).get(CollectionViewModel.class);
         photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
-
-        String token = appPreferences.getToken();
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
 
         Bundle extras = getIntent().getExtras();
         collectionId = extras.getString("collectionId");
@@ -66,24 +54,12 @@ public class CollectionActivity extends AppCompatActivity {
         getNewPhotos();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void getNewPhotos() {
-        unsplashInterface.getCollectionPhotos(collectionId, page).enqueue(new Callback<List<Photo>>() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
-                if(response.code() == 200) {
-                    assert response.body() != null;
-                    photos.addAll(response.body());
-                    photosAdapter.notifyDataSetChanged();
-                } else {
-                    utils.showAlertDialog(CollectionActivity.this, response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Photo>> call, @NonNull Throwable t) {
-                Log.e(TAG, "onFailure: ", t);
-            }
+        photos.clear();
+        collectionViewModel.getPhotosCollection(collectionId, page).observe(CollectionActivity.this, photoList -> {
+            photos.addAll(photoList);
+            photosAdapter.notifyDataSetChanged();
         });
 
         page++;

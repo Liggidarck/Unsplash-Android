@@ -18,6 +18,11 @@ class LoginAuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        service = AuthorizationService(this)
+
+        binding.loginBtnFuture.setOnClickListener {
+            auth()
+        }
     }
 
     private val launcher =
@@ -32,10 +37,9 @@ class LoginAuthActivity : AppCompatActivity() {
                     val tokenRequest = result?.createTokenExchangeRequest()
 
                     service.performTokenRequest(tokenRequest!!, secret) { res, exception ->
-                        if(exception == null) {
-
-                        }
-
+                        val token = res?.accessToken
+                        Log.d("Login", "token: $token")
+                        Log.e("Login", "Exception: $exception" )
                     }
                 }
             }
@@ -48,10 +52,17 @@ class LoginAuthActivity : AppCompatActivity() {
 
         val config = AuthorizationServiceConfiguration(authUrl, tokenUri)
         val request = AuthorizationRequest
-            .Builder(config, Keys.USER_ID, ResponseTypeValues.CODE, redirectUrl)
+            .Builder(config, Keys.UNSPLASH_ACCESS_KEY, ResponseTypeValues.CODE, redirectUrl)
+            .setScope(Keys.SCOPE)
             .build()
 
         val intent = service.getAuthorizationRequestIntent(request)
+        launcher.launch(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        service.dispose()
     }
 
 }

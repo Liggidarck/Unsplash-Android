@@ -21,9 +21,7 @@ import com.george.unsplash.R;
 import com.george.unsplash.databinding.SearchFragmentBinding;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
-import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
-import com.george.unsplash.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +35,6 @@ public class SearchFragment extends Fragment {
     private PhotosAdapter photosAdapter;
 
     private PhotoViewModel photoViewModel;
-    private PhotoViewModelFuture photoViewModelFuture;
-
-    private final Utils utils = new Utils();
 
     public static final String TAG = SearchFragment.class.getSimpleName();
     private int page = 1;
@@ -50,9 +45,6 @@ public class SearchFragment extends Fragment {
 
         photoViewModel = new ViewModelProvider(this)
                 .get(PhotoViewModel.class);
-
-        photoViewModelFuture = new ViewModelProvider(this)
-                .get(PhotoViewModelFuture.class);
 
         photos = new ArrayList<>();
     }
@@ -109,7 +101,7 @@ public class SearchFragment extends Fragment {
     void fetchPhotos(String searchQuery, String color, String orientation) {
         photos.clear();
         binding.progressBarSearch.setVisibility(View.VISIBLE);
-        photoViewModelFuture
+        photoViewModel
                 .findPhotos(searchQuery, page, color, orientation)
                 .observe(SearchFragment.this.requireActivity(), search -> {
                     int totalPhotos = search.getTotal();

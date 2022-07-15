@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.george.unsplash.databinding.LikesProfileFragmentBinding;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
-import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.utils.Utils;
 
@@ -26,11 +25,9 @@ public class LikesProfileFragment extends Fragment {
 
     private LikesProfileFragmentBinding binding;
 
-    private PhotoViewModel photoViewModel;
-
     private List<Photo> photos;
     private PhotosAdapter photosAdapter;
-    private PhotoViewModelFuture photoViewModelFuture;
+    private PhotoViewModel photoViewModel;
 
     private String username;
 
@@ -48,9 +45,6 @@ public class LikesProfileFragment extends Fragment {
 
         photoViewModel = new ViewModelProvider(this)
                 .get(PhotoViewModel.class);
-
-        photoViewModelFuture = new ViewModelProvider(this)
-                .get(PhotoViewModelFuture.class);
 
         photos = new ArrayList<>();
     }
@@ -70,7 +64,7 @@ public class LikesProfileFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void getLikedPhotos() {
-        photoViewModelFuture
+        photoViewModel
                 .getUserLikePhotos(username, 1, 10)
                 .observe(LikesProfileFragment.this.requireActivity(), photoList -> {
                     photos.addAll(photoList);

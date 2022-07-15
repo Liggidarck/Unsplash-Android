@@ -21,7 +21,6 @@ import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.photo.Urls;
 import com.george.unsplash.network.models.topic.CoverPhoto;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
-import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
 import com.george.unsplash.network.viewmodel.TopicDatabaseViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.ui.adapters.TopicAdapter;
@@ -35,7 +34,6 @@ public class HomeContentFragment extends Fragment {
 
     private TopicDatabaseViewModel topicDatabaseViewModel;
     private PhotoViewModel photoViewModel;
-    private PhotoViewModelFuture photoViewModelFuture;
 
     TopicAdapter topicAdapter = new TopicAdapter();
     PhotosAdapter photosAdapter;
@@ -103,7 +101,7 @@ public class HomeContentFragment extends Fragment {
     }
 
     void getMainImage(String topicSlug) {
-        photoViewModelFuture
+        photoViewModel
                 .getTopic(topicSlug)
                 .observe(HomeContentFragment.this.requireActivity(), topic -> {
                     Log.d(TAG, "getMainImage: " + topic);
@@ -122,7 +120,7 @@ public class HomeContentFragment extends Fragment {
     void fetchPhotos(String topicSlug) {
         photos.clear();
 
-        photoViewModelFuture
+        photoViewModel
                 .getTopicsPhotos(topicSlug, page)
                 .observe(HomeContentFragment.this.requireActivity(), photoResponse -> {
                     photos.addAll(photoResponse);
@@ -136,8 +134,8 @@ public class HomeContentFragment extends Fragment {
         photoViewModel = new ViewModelProvider(this)
                 .get(PhotoViewModel.class);
 
-        photoViewModelFuture = new ViewModelProvider(this)
-                .get(PhotoViewModelFuture.class);
+        photoViewModel = new ViewModelProvider(this)
+                .get(PhotoViewModel.class);
 
         topicDatabaseViewModel = new ViewModelProvider(this)
                 .get(TopicDatabaseViewModel.class);

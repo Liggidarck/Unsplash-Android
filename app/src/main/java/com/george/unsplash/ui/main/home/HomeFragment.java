@@ -16,7 +16,7 @@ import com.george.unsplash.R;
 import com.george.unsplash.databinding.HomeFragmentBinding;
 import com.george.unsplash.localdata.topic.TopicData;
 import com.george.unsplash.network.models.topic.Topic;
-import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
+import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.network.viewmodel.TopicDatabaseViewModel;
 import com.george.unsplash.ui.adapters.TopicAdapter;
 
@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment {
     private final TopicAdapter topicAdapter = new TopicAdapter();
 
     private TopicDatabaseViewModel topicDatabaseViewModel;
-    private PhotoViewModelFuture photoViewModelFuture;
+    private PhotoViewModel photoViewModel;
 
     public static final String TAG = HomeFragment.class.getSimpleName();
 
@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
         initRecyclerView();
 
         topicDatabaseViewModel = new ViewModelProvider(this).get(TopicDatabaseViewModel.class);
-        photoViewModelFuture = new ViewModelProvider(this).get(PhotoViewModelFuture.class);
+        photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
 
         topicDatabaseViewModel.getAllTopics().observe(HomeFragment.this.requireActivity(), topicData -> {
             if (topicData.isEmpty()) {
@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment {
     }
 
     void getTopicsFromApi() {
-        photoViewModelFuture
+        photoViewModel
                 .getListTopic()
                 .observe(HomeFragment.this.requireActivity(), this::saveTopics);
     }

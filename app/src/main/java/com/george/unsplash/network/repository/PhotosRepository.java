@@ -32,7 +32,7 @@ public class PhotosRepository {
         unsplashInterface.unlikePhoto(id).enqueue(new Callback<Photo>() {
             @Override
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
-                if(response.code() == 200) {
+                if (response.code() == 200) {
                     photo.setValue(response.body());
                 }
             }
@@ -50,9 +50,7 @@ public class PhotosRepository {
         unsplashInterface.likePhoto(id).enqueue(new Callback<Photo>() {
             @Override
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
-                if(response.code() == 201) {
-                    photo.setValue(response.body());
-                }
+                photo.setValue(response.body());
             }
 
             @Override
@@ -67,7 +65,7 @@ public class PhotosRepository {
         unsplashInterface.getPhoto(id).enqueue(new Callback<Photo>() {
             @Override
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
-                if(response.code() == 200) {
+                if (response.code() == 200) {
                     photo.setValue(response.body());
                 }
             }
@@ -85,7 +83,7 @@ public class PhotosRepository {
         unsplashInterface.getUserLikePhotos(username, page, perPage).enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
-                if(response.code() == 200) {
+                if (response.code() == 200) {
                     listPhoto.setValue(response.body());
                 }
             }

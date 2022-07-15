@@ -73,7 +73,7 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
             photoInfoBottomSheet.show(getSupportFragmentManager(), "PhotoInfoBottomSheet");
         });
         binding.likeView.setOnClickListener(v -> photoViewModel
-                .likePhotoBehavior(token, likedByUser, photoId, likes, this,
+                .likePhotoBehavior(likedByUser, photoId, likes,
                         binding.imageLikes, binding.likesTextView));
         binding.userView.setOnClickListener(v -> {
             Intent intent = new Intent(this, UserActivity.class);

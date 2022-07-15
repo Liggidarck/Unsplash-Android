@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.collection.CollectionPhotos;
+import com.george.unsplash.network.models.photo.Photo;
 
 import java.util.List;
 
@@ -19,10 +20,28 @@ public class CollectionRepository {
 
     private final MutableLiveData<List<CollectionPhotos>> listCollection = new MutableLiveData<>();
     private final MutableLiveData<CollectionPhotos> collectionPhotos = new MutableLiveData<>();
-
+    private final MutableLiveData<List<Photo>> listPhoto = new MutableLiveData<>();
 
     public CollectionRepository(String token) {
         unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
+    }
+
+    public MutableLiveData<List<Photo>> getPhotosCollection(String collectionId, int page) {
+        unsplashInterface.getCollectionPhotos(collectionId, page).enqueue(new Callback<List<Photo>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
+                if(response.code() == 200) {
+                    listPhoto.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Photo>> call, @NonNull Throwable t) {
+                listPhoto.postValue(null);
+            }
+        });
+
+        return listPhoto;
     }
 
     public MutableLiveData<CollectionPhotos> createNewCollection(String nameCollection, String descriptionCollection, boolean isPrivate) {

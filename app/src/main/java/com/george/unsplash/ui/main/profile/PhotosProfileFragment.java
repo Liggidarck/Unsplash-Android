@@ -2,7 +2,6 @@ package com.george.unsplash.ui.main.profile;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,36 +13,23 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.george.unsplash.databinding.PhotosProfileFragmentBinding;
-import com.george.unsplash.localdata.AppPreferences;
-import com.george.unsplash.network.api.UnsplashInterface;
-import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
-import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
-import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
-import com.george.unsplash.utils.Utils;
+import com.george.unsplash.ui.adapters.PhotosAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class PhotosProfileFragment extends Fragment {
 
     private PhotosProfileFragmentBinding binding;
 
     private PhotoViewModel photoViewModel;
-    private PhotoViewModelFuture photoViewModelFuture;
 
     private PhotosAdapter photosAdapter;
     private List<Photo> photos;
 
-    private final Utils utils = new Utils();
-
     private String username;
-    private boolean isUser;
     private int page = 1;
 
     public static final String TAG = PhotosProfileFragment.class.getSimpleName();
@@ -54,9 +40,6 @@ public class PhotosProfileFragment extends Fragment {
 
         photoViewModel = new ViewModelProvider(this)
                 .get(PhotoViewModel.class);
-
-        photoViewModelFuture = new ViewModelProvider(this)
-                .get(PhotoViewModelFuture.class);
 
         photos = new ArrayList<>();
     }
@@ -81,7 +64,7 @@ public class PhotosProfileFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     public void getUserPhotos() {
-        photoViewModelFuture
+        photoViewModel
                 .getUserPhotos(username, page, 15)
                 .observe(PhotosProfileFragment.this.requireActivity(), photoList -> {
                     photos.addAll(photoList);

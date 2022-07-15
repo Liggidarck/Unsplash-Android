@@ -9,16 +9,19 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 
-import com.bumptech.glide.Glide;
 import com.george.unsplash.R;
+import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
-import com.george.unsplash.network.models.photo.Urls;
-import com.george.unsplash.ui.main.home.HomeContentFragment;
+import com.george.unsplash.network.models.search.Search;
+import com.george.unsplash.network.models.topic.Topic;
+import com.george.unsplash.network.repository.PhotosRepository;
 import com.george.unsplash.ui.main.photos.FullScreenPhotoActivity;
-import com.george.unsplash.utils.Utils;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,63 +29,74 @@ import retrofit2.Response;
 
 public class PhotoViewModel extends AndroidViewModel {
 
-    UnsplashInterface unsplashInterface;
-    Utils utils = new Utils();
+    PhotosRepository repository;
+    AppPreferences appPreferences;
 
-    public static final String TAG = "PhotoViewModel";
+    MutableLiveData<List<Photo>> listPhoto = new MutableLiveData<>();
+    MutableLiveData<List<Topic>> listTopic = new MutableLiveData<>();
 
     public PhotoViewModel(@NonNull Application application) {
         super(application);
+
+        appPreferences = new AppPreferences(application);
+        String token = appPreferences.getToken();
+        repository = new PhotosRepository(token);
     }
 
-    void init(String token) {
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
+    public MutableLiveData<Photo> unlikePhoto(String id) {
+        return repository.unlikePhoto(id);
     }
 
-    public void likePhotoBehavior(String token, boolean likedByUser, String photoId, int likes,
-                                  Context context, ImageView imageLikes, TextView likesTextView) {
-        init(token);
-        if (!likedByUser) {
-            unsplashInterface.likePhoto(photoId).enqueue(new Callback<Photo>() {
-                @Override
-                public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
-                    Log.d(TAG, "onResponse: " + response.code());
-                    if (response.code() == 201) {
-                        imageLikes.setImageResource(R.drawable.ic_baseline_favorite_24);
-                        int likesPhoto = likes + 1;
-                        String likesText = "Likes: " + likesPhoto;
-                        likesTextView.setText(likesText);
-                    } else {
-                        utils.showAlertDialog(context, response.code());
-                    }
-                }
+    public MutableLiveData<Photo> likePhoto(String id) {
+        return repository.likePhoto(id);
+    }
 
-                @Override
-                public void onFailure(@NonNull Call<Photo> call, @NonNull Throwable t) {
-                    Log.e(TAG, "onFailure: ", t);
-                }
-            });
-        } else {
-            unsplashInterface.unlikePhoto(photoId).enqueue(new Callback<Photo>() {
-                @Override
-                public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
-                    Log.d(TAG, "onResponse: " + response.code());
-                    if (response.code() == 200) {
-                        imageLikes.setImageResource(R.drawable.ic_baseline_favorite_border_24);
-                        int likesPhoto = likes - 1;
-                        String likesText = "Likes: " + likes;
-                        likesTextView.setText(likesPhoto);
-                    } else {
-                        utils.showAlertDialog(context, response.code());
-                    }
-                }
+    public MutableLiveData<Photo> getPhoto(String id) {
+        return repository.getPhoto(id);
+    }
 
-                @Override
-                public void onFailure(@NonNull Call<Photo> call, @NonNull Throwable t) {
-                    Log.e(TAG, "onFailure: ", t);
-                }
-            });
-        }
+    public MutableLiveData<List<Photo>> getUserLikePhotos(String username, int page, int perPage) {
+        listPhoto = loadUserLikePhotos(username, page, perPage);
+        return listPhoto;
+    }
+
+    public MutableLiveData<List<Photo>> getUserPhotos(String username, int page, int perPage) {
+        listPhoto = loadUserPhotos(username, page, perPage);
+        return listPhoto;
+    }
+
+    public MutableLiveData<Search> findPhotos(String query, int page, String color, String orientation) {
+        return repository.findPhotos(query, page, color, orientation);
+    }
+
+    public MutableLiveData<List<Topic>> getListTopic() {
+        listTopic = loadListTopic();
+        return listTopic;
+    }
+
+    public MutableLiveData<Topic> getTopic(String slug) {
+        return repository.getTopic(slug);
+    }
+
+    public MutableLiveData<List<Photo>> getTopicsPhotos(String slug, int page) {
+        listPhoto = loadTopicsPhotos(slug, page);
+        return listPhoto;
+    }
+
+    private MutableLiveData<List<Photo>> loadUserLikePhotos(String username, int page, int perPage) {
+        return repository.getUserLikePhotos(username, page, perPage);
+    }
+
+    private MutableLiveData<List<Photo>> loadUserPhotos(String username, int page, int perPage) {
+        return repository.getUserPhotos(username, page, perPage);
+    }
+
+    private MutableLiveData<List<Topic>> loadListTopic() {
+        return repository.getTopics();
+    }
+
+    private MutableLiveData<List<Photo>> loadTopicsPhotos(String slug, int page) {
+        return repository.getTopicsPhotos(slug, page);
     }
 
     public void showFullScreenImage(Photo photo, Context context) {
@@ -103,5 +117,23 @@ public class PhotoViewModel extends AndroidViewModel {
         intent.putExtra("userProfileImage", photo.getUser().getProfileImage().getLarge());
         context.startActivity(intent);
     }
+
+    public void likePhotoBehavior(boolean likedByUser, String photoId, int likes,
+                                  ImageView imageLikes, TextView likesTextView) {
+        if (!likedByUser) {
+            likePhoto(photoId);
+            imageLikes.setImageResource(R.drawable.ic_baseline_favorite_24);
+            int likesPhoto = likes + 1;
+            String likesText = "Likes: " + likesPhoto;
+            likesTextView.setText(likesText);
+        } else {
+            unlikePhoto(photoId);
+            imageLikes.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+            int likesPhoto = likes - 1;
+            String likesText = "Likes: " + likes;
+            likesTextView.setText(likesPhoto);
+        }
+    }
+
 
 }

@@ -11,14 +11,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.george.unsplash.databinding.PhotoInfoBottomSheetBinding;
 import com.george.unsplash.network.models.photo.Exif;
-import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
+import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class PhotoInfoBottomSheet extends BottomSheetDialogFragment {
 
     private PhotoInfoBottomSheetBinding binding;
-    PhotoViewModelFuture photoViewModelFuture;
+    PhotoViewModel photoViewModel;
 
     private final Utils utils = new Utils();
 
@@ -30,14 +30,14 @@ public class PhotoInfoBottomSheet extends BottomSheetDialogFragment {
         binding = PhotoInfoBottomSheetBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        photoViewModelFuture = new ViewModelProvider(this).get(PhotoViewModelFuture.class);
+        photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
 
         Bundle args = getArguments();
         assert args != null;
 
         String photoId = args.getString("photoId");
 
-        photoViewModelFuture
+        photoViewModel
                 .getPhoto(photoId)
                 .observe(PhotoInfoBottomSheet.this.requireActivity(), photo -> {
                     String fullName = photo.getUser().getFirstName() + " " + photo.getUser().getLastName();
