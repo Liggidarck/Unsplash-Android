@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.ProfileFragmentBinding;
 import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.network.models.user.Me;
+import com.george.unsplash.network.viewmodel.CollectionViewModel;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
@@ -23,6 +25,7 @@ public class ProfileFragment extends Fragment {
 
     private ProfileFragmentBinding binding;
     AppPreferences appPreferences;
+    CollectionViewModel collectionViewModel;
 
     String username;
     Bundle bundle = new Bundle();
@@ -35,21 +38,18 @@ public class ProfileFragment extends Fragment {
         binding = ProfileFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        collectionViewModel = new ViewModelProvider(this).get(CollectionViewModel.class);
+
         getUserData();
 
-
         Fragment fragment = new PhotosProfileFragment();
-
         bundle.putString("username", username);
-
         fragment.setArguments(bundle);
-
         requireActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.profileContainer, fragment)
                 .commit();
-
 
         tabsBehaviour();
 
@@ -99,6 +99,7 @@ public class ProfileFragment extends Fragment {
                     case "Collections":
                         Log.d(TAG, "onTabSelected: Collections");
                         selectedFragment = new CollectionsProfileFragment();
+                        bundle.putBoolean("isUser", true);
                         bundle.putString("username", username);
                         selectedFragment.setArguments(bundle);
                         break;

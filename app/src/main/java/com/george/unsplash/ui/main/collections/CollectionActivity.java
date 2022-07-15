@@ -8,14 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.george.unsplash.databinding.ActivityCollectionBinding;
 import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
-import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
+import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.utils.Utils;
 
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ public class CollectionActivity extends AppCompatActivity {
 
     private String collectionId;
     private int page = 1;
+    private boolean loading = true;
+    int pastVisibleItems, visibleItemCount, totalItemCount;
 
     public static final String TAG = CollectionActivity.class.getSimpleName();
 
@@ -94,5 +97,26 @@ public class CollectionActivity extends AppCompatActivity {
         binding.collectionPhotosRecyclerView.setAdapter(photosAdapter);
 
         photosAdapter.setOnItemClickListener((photo, position) -> photoViewModel.showFullScreenImage(photo, this));
+
+        binding.collectionPhotosRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    visibleItemCount = gridLayoutManager.getChildCount();
+                    totalItemCount = gridLayoutManager.getItemCount();
+                    pastVisibleItems = gridLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            loading = false;
+                            getNewPhotos();
+                            loading = true;
+                        }
+                    }
+                }
+
+            }
+        });
     }
 }

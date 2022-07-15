@@ -43,6 +43,7 @@ public class PhotosProfileFragment extends Fragment {
     private final Utils utils = new Utils();
 
     private String username;
+    private boolean isUser;
     private int page = 1;
 
     public static final String TAG = PhotosProfileFragment.class.getSimpleName();
@@ -70,7 +71,6 @@ public class PhotosProfileFragment extends Fragment {
         assert args != null;
 
         username = args.getString("username");
-        Log.d(TAG, "onCreateView: " + username);
 
         initRecyclerView();
 

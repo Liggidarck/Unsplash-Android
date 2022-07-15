@@ -2,6 +2,7 @@ package com.george.unsplash.ui.main.home;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.george.unsplash.databinding.HomeContentFragmentBinding;
-import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.localdata.topic.TopicData;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.photo.Urls;
@@ -25,7 +25,6 @@ import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
 import com.george.unsplash.network.viewmodel.TopicDatabaseViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.ui.adapters.TopicAdapter;
-import com.george.unsplash.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,6 @@ public class HomeContentFragment extends Fragment {
 
     private HomeContentFragmentBinding binding;
 
-    private AppPreferences appPreferences;
     private TopicDatabaseViewModel topicDatabaseViewModel;
     private PhotoViewModel photoViewModel;
     private PhotoViewModelFuture photoViewModelFuture;
@@ -42,8 +40,6 @@ public class HomeContentFragment extends Fragment {
     TopicAdapter topicAdapter = new TopicAdapter();
     PhotosAdapter photosAdapter;
     private List<Photo> photos;
-
-    private final Utils utils = new Utils();
 
     public static final String TAG = HomeContentFragment.class.getSimpleName();
     private int page = 1;
@@ -66,22 +62,22 @@ public class HomeContentFragment extends Fragment {
 
         initViewModels();
 
-        String token = appPreferences.getToken();
         int position = args.getInt("position");
 
         initRecyclerView();
 
-        initHomePage(token, position);
+        initHomePage(position);
 
         return root;
     }
 
-    private void initHomePage(String token, int position) {
+    private void initHomePage(int position) {
         topicDatabaseViewModel
                 .getAllTopics()
                 .observe(HomeContentFragment.this.requireActivity(), topicData -> {
                     topicAdapter.addTopics(topicData);
-                    try {
+                    Log.d(TAG, "initHomePage: " + topicData);
+                    if (!topicData.isEmpty()) {
                         TopicData topic = topicAdapter.getTopicAt(position);
                         binding.titleHomeTextView.setText(topic.getTitle());
                         binding.descriptionHomeTextView.setText(topic.getDescription());
@@ -98,11 +94,10 @@ public class HomeContentFragment extends Fragment {
                                 });
 
                         binding.swipeRefreshHomeContent.setOnRefreshListener(() -> {
+                            photos.clear();
                             fetchPhotos(topic.getSlug());
                             binding.swipeRefreshHomeContent.setRefreshing(false);
                         });
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 });
     }
@@ -111,6 +106,7 @@ public class HomeContentFragment extends Fragment {
         photoViewModelFuture
                 .getTopic(topicSlug)
                 .observe(HomeContentFragment.this.requireActivity(), topic -> {
+                    Log.d(TAG, "getMainImage: " + topic);
                     CoverPhoto coverPhoto = topic.getCoverPhoto();
                     Urls urls = coverPhoto.getUrls();
 
@@ -142,8 +138,6 @@ public class HomeContentFragment extends Fragment {
 
         photoViewModelFuture = new ViewModelProvider(this)
                 .get(PhotoViewModelFuture.class);
-
-        appPreferences = new AppPreferences(HomeContentFragment.this.requireActivity());
 
         topicDatabaseViewModel = new ViewModelProvider(this)
                 .get(TopicDatabaseViewModel.class);

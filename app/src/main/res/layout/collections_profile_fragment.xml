@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <Button
-        android:id="@+id/createCollectionFragBtn"
+        android:id="@+id/createCollectionBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create new collection"
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:listitem="@layout/item_collection"
-        android:layout_below="@id/createCollectionFragBtn"/>
+        android:layout_below="@id/createCollectionBtn"/>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:layout_width="wrap_content"

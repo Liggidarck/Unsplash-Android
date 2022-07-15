@@ -1,33 +1,29 @@
 package com.george.unsplash.ui.main.profile;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.ProfileFragmentBinding;
-import com.george.unsplash.localdata.AppPreferences;
-import com.george.unsplash.network.api.UnsplashInterface;
-import com.george.unsplash.network.api.UnsplashTokenClient;
-import com.george.unsplash.network.models.user.common.User;
-import com.george.unsplash.utils.Utils;
+import com.george.unsplash.network.viewmodel.UserViewModel;
+import com.google.android.material.tabs.TabLayout;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.Objects;
 
 public class UserActivity extends AppCompatActivity {
 
     private ProfileFragmentBinding binding;
 
-    private AppPreferences appPreferences;
-    private UnsplashInterface unsplashInterface;
+    UserViewModel userViewModel;
 
-    private final Utils utils = new Utils();
+    Bundle bundle = new Bundle();
 
+    String username;
     public static final String TAG = UserActivity.class.getSimpleName();
 
     @Override
@@ -36,50 +32,91 @@ public class UserActivity extends AppCompatActivity {
         binding = ProfileFragmentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        Bundle extras = getIntent().getExtras();
+        username = extras.getString("username");
+
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
         binding.topAppBarProfile.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         binding.topAppBarProfile.setNavigationOnClickListener(view -> onBackPressed());
 
-        Bundle extras = getIntent().getExtras();
+        initTabLayout();
 
-        String username = extras.getString("username");
+        if (savedInstanceState == null) {
+            Fragment fragment = new PhotosProfileFragment();
+            bundle.putString("username", username);
+            fragment.setArguments(bundle);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.profileContainer, fragment)
+                    .commit();
+        }
 
-        appPreferences = new AppPreferences(this);
-        String token = appPreferences.getToken();
+        userViewModel.getUserData(username).observe(UserActivity.this, user -> {
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            String bio = user.getBio();
+            String email = user.getEmail();
+            String profileImage = user.getProfileImage().getLarge();
 
-        //TODO: Добавить отрисовку фотогрфий, лайков и коллекций пользователя
-        unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
-        unsplashInterface.getUserData(username).enqueue(new Callback<User>() {
+            if (bio == null)
+                bio = "Download free, beautiful high-quality photos curated by " + user.getFirstName();
+
+            binding.nameUser.setText(fullName);
+            binding.bioUser.setText(bio);
+            binding.emailUser.setText(email);
+
+            Glide.with(UserActivity.this)
+                    .load(profileImage)
+                    .into(binding.profileImage);
+        });
+    }
+
+    private void initTabLayout() {
+        binding.profileTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                if(response.code() == 200) {
-                    User user = response.body();
-                    assert user != null;
-                    String fullName = user.getFirstName() + " " + user.getLastName();
-                    String bio = user.getBio();
-                    String email = user.getEmail();
-                    String profileImage = user.getProfileImage().getLarge();
+            public void onTabSelected(TabLayout.Tab tab) {
+                Fragment selectedFragment = null;
+                switch (Objects.requireNonNull(tab.getText()).toString()) {
+                    case "Photos":
+                        Log.d(TAG, "onTabSelected: photo");
+                        selectedFragment = new PhotosProfileFragment();
+                        bundle.putString("username", username);
+                        selectedFragment.setArguments(bundle);
 
-                    if(bio == null)
-                        bio = "Download free, beautiful high-quality photos curated by " + user.getFirstName();
+                        break;
+                    case "Likes":
+                        Log.d(TAG, "onTabSelected: Likes");
+                        selectedFragment = new LikesProfileFragment();
+                        bundle.putString("username", username);
+                        selectedFragment.setArguments(bundle);
 
-                    binding.nameUser.setText(fullName);
-                    binding.bioUser.setText(bio);
-                    binding.emailUser.setText(email);
-
-                    Glide.with(UserActivity.this)
-                            .load(profileImage)
-                            .into(binding.profileImage);
-
-                } else {
-                    utils.showAlertDialog(UserActivity.this, response.code());
+                        break;
+                    case "Collections":
+                        Log.d(TAG, "onTabSelected: Collections");
+                        selectedFragment = new CollectionsProfileFragment();
+                        bundle.putString("username", username);
+                        bundle.putBoolean("isUser", false);
+                        selectedFragment.setArguments(bundle);
+                        break;
                 }
+
+                assert selectedFragment != null;
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.profileContainer, selectedFragment)
+                        .commit();
+
             }
 
             @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                Log.e(TAG, "onFailure: ", t);
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
-
     }
 }

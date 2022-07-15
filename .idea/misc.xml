@@ -14,6 +14,7 @@
         <entry key="app/src/main/res/drawable/ic_outline_image_24.xml" value="0.2375" />
         <entry key="app/src/main/res/drawable/ic_outline_info_24.xml" value="0.2375" />
         <entry key="app/src/main/res/drawable/line_black.xml" value="0.294" />
+        <entry key="app/src/main/res/layout/activity_collection.xml" value="0.35052083333333334" />
         <entry key="app/src/main/res/layout/activity_full_screen_photo.xml" value="0.35052083333333334" />
         <entry key="app/src/main/res/layout/activity_loading.xml" value="0.35052083333333334" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.35054347826086957" />

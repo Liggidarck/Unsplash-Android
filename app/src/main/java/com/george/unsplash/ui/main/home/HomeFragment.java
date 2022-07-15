@@ -14,13 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.HomeFragmentBinding;
-import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.localdata.topic.TopicData;
 import com.george.unsplash.network.models.topic.Topic;
 import com.george.unsplash.network.viewmodel.PhotoViewModelFuture;
 import com.george.unsplash.network.viewmodel.TopicDatabaseViewModel;
 import com.george.unsplash.ui.adapters.TopicAdapter;
-import com.george.unsplash.utils.Utils;
 
 import java.util.List;
 
@@ -32,8 +30,6 @@ public class HomeFragment extends Fragment {
 
     private TopicDatabaseViewModel topicDatabaseViewModel;
     private PhotoViewModelFuture photoViewModelFuture;
-
-    private final Utils utils = new Utils();
 
     public static final String TAG = HomeFragment.class.getSimpleName();
 

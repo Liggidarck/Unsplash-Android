@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.george.unsplash.localdata.topic.TopicData;
-import com.george.unsplash.localdata.topic.TopicRepository;
+import com.george.unsplash.network.repository.TopicRepository;
 
 import java.util.List;
 

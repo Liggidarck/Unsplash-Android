@@ -26,7 +26,6 @@ import com.george.unsplash.network.models.collection.CollectionPhotos;
 import com.george.unsplash.network.viewmodel.CollectionViewModel;
 import com.george.unsplash.ui.adapters.CollectionsAdapter;
 import com.george.unsplash.ui.main.collections.CollectionActivity;
-import com.george.unsplash.utils.Utils;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
@@ -42,10 +41,8 @@ public class CollectionsProfileFragment extends Fragment {
 
     private CollectionViewModel collectionViewModel;
 
-    Utils utils = new Utils();
-
     private String username;
-
+    private boolean isUser;
     public static final String TAG = CollectionsProfileFragment.class.getSimpleName();
 
     @Override
@@ -55,6 +52,7 @@ public class CollectionsProfileFragment extends Fragment {
         Bundle args = getArguments();
         assert args != null;
         username = args.getString("username");
+        isUser = args.getBoolean("isUser");
 
         collectionViewModel = new ViewModelProvider(this)
                 .get(CollectionViewModel.class);
@@ -73,7 +71,12 @@ public class CollectionsProfileFragment extends Fragment {
 
         getCollections();
 
-        binding.createCollectionFragBtn.setOnClickListener(v -> showDialogCreateNewCollection());
+        binding.createCollectionBtn.setVisibility(View.INVISIBLE);
+        if (isUser) {
+            binding.createCollectionBtn.setVisibility(View.VISIBLE);
+            binding.createCollectionBtn.setOnClickListener(v -> showDialogCreateNewCollection());
+        }
+
         return root;
     }
 
@@ -101,9 +104,11 @@ public class CollectionsProfileFragment extends Fragment {
             startActivity(intent);
         });
 
-        collectionsAdapter.setOnLongClickListener(collectionPhotos ->
-                showDialogEditCollection(collectionPhotos.getId(), collectionPhotos.getTitle(),
-                        collectionPhotos.getDescription(), collectionPhotos.isPrivateCollection()));
+        if (isUser) {
+            collectionsAdapter.setOnLongClickListener(collectionPhotos ->
+                    showDialogEditCollection(collectionPhotos.getId(), collectionPhotos.getTitle(),
+                            collectionPhotos.getDescription(), collectionPhotos.isPrivateCollection()));
+        }
     }
 
     private void showDialogEditCollection(String id, String title, String description, boolean isPrivate) {

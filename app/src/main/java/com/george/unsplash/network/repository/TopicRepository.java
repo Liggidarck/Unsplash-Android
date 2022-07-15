@@ -1,8 +1,12 @@
-package com.george.unsplash.localdata.topic;
+package com.george.unsplash.network.repository;
 
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+
+import com.george.unsplash.localdata.topic.TopicDao;
+import com.george.unsplash.localdata.topic.TopicData;
+import com.george.unsplash.localdata.topic.TopicDatabase;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
