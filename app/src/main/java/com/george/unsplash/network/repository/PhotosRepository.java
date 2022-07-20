@@ -79,8 +79,8 @@ public class PhotosRepository {
         return photo;
     }
 
-    public MutableLiveData<List<Photo>> getUserLikePhotos(String username, int page, int perPage) {
-        unsplashInterface.getUserLikePhotos(username, page, perPage).enqueue(new Callback<List<Photo>>() {
+    public MutableLiveData<List<Photo>> getUserLikePhotos(String username, int page) {
+        unsplashInterface.getUserLikePhotos(username, page).enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
                 if (response.code() == 200) {
@@ -97,8 +97,8 @@ public class PhotosRepository {
         return listPhoto;
     }
 
-    public MutableLiveData<List<Photo>> getUserPhotos(String username, int page, int perPage) {
-        unsplashInterface.getUserPhotos(username, page, perPage).enqueue(new Callback<List<Photo>>() {
+    public MutableLiveData<List<Photo>> getUserPhotos(String username, int page) {
+        unsplashInterface.getUserPhotos(username, page).enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
                 if (response.code() == 200) {

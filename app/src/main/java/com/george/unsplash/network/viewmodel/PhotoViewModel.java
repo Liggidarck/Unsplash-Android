@@ -3,7 +3,6 @@ package com.george.unsplash.network.viewmodel;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,8 +12,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.george.unsplash.R;
 import com.george.unsplash.localdata.AppPreferences;
-import com.george.unsplash.network.api.UnsplashInterface;
-import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.search.Search;
 import com.george.unsplash.network.models.topic.Topic;
@@ -22,10 +19,6 @@ import com.george.unsplash.network.repository.PhotosRepository;
 import com.george.unsplash.ui.main.photos.FullScreenPhotoActivity;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class PhotoViewModel extends AndroidViewModel {
 
@@ -55,13 +48,13 @@ public class PhotoViewModel extends AndroidViewModel {
         return repository.getPhoto(id);
     }
 
-    public MutableLiveData<List<Photo>> getUserLikePhotos(String username, int page, int perPage) {
-        listPhoto = loadUserLikePhotos(username, page, perPage);
+    public MutableLiveData<List<Photo>> getUserLikePhotos(String username, int page) {
+        listPhoto = loadUserLikePhotos(username, page);
         return listPhoto;
     }
 
-    public MutableLiveData<List<Photo>> getUserPhotos(String username, int page, int perPage) {
-        listPhoto = loadUserPhotos(username, page, perPage);
+    public MutableLiveData<List<Photo>> getUserPhotos(String username, int page) {
+        listPhoto = loadUserPhotos(username, page);
         return listPhoto;
     }
 
@@ -83,12 +76,12 @@ public class PhotoViewModel extends AndroidViewModel {
         return listPhoto;
     }
 
-    private MutableLiveData<List<Photo>> loadUserLikePhotos(String username, int page, int perPage) {
-        return repository.getUserLikePhotos(username, page, perPage);
+    private MutableLiveData<List<Photo>> loadUserLikePhotos(String username, int page) {
+        return repository.getUserLikePhotos(username, page);
     }
 
-    private MutableLiveData<List<Photo>> loadUserPhotos(String username, int page, int perPage) {
-        return repository.getUserPhotos(username, page, perPage);
+    private MutableLiveData<List<Photo>> loadUserPhotos(String username, int page) {
+        return repository.getUserPhotos(username, page);
     }
 
     private MutableLiveData<List<Topic>> loadListTopic() {

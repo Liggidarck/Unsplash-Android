@@ -127,7 +127,7 @@ public class HomeContentFragment extends Fragment {
                     photosAdapter.notifyDataSetChanged();
                 });
 
-        page += 1;
+        page++;
     }
 
     private void initViewModels() {

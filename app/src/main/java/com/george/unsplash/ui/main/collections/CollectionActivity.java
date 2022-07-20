@@ -49,6 +49,7 @@ public class CollectionActivity extends AppCompatActivity {
         String collectionTitle = extras.getString("collectionTitle");
 
         binding.toolbarCollection.setTitle(collectionTitle);
+        binding.toolbarCollection.setNavigationOnClickListener(v -> onBackPressed());
 
         initRecycler();
         getNewPhotos();

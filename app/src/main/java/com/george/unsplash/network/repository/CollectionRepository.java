@@ -98,8 +98,8 @@ public class CollectionRepository {
         return collectionPhotos;
     }
 
-    public MutableLiveData<List<CollectionPhotos>> getUserCollection(String username, int page, int perPage) {
-        unsplashInterface.getUserCollection(username, page, perPage).enqueue(new Callback<List<CollectionPhotos>>() {
+    public MutableLiveData<List<CollectionPhotos>> getUserCollection(String username, int page) {
+        unsplashInterface.getUserCollection(username, page).enqueue(new Callback<List<CollectionPhotos>>() {
             @Override
             public void onResponse(@NonNull Call<List<CollectionPhotos>> call, @NonNull Response<List<CollectionPhotos>> response) {
                 if (response.code() == 200) {

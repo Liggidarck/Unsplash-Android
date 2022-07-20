@@ -10,7 +10,6 @@ import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.network.models.collection.CollectionPhotos;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.repository.CollectionRepository;
-import com.george.unsplash.network.repository.PhotosRepository;
 
 import java.util.List;
 
@@ -47,8 +46,8 @@ public class CollectionViewModel extends AndroidViewModel {
         return repository.updateCollection(id, title, description, isPrivate);
     }
 
-    public MutableLiveData<List<CollectionPhotos>> getCollections(String username, int page, int perPage) {
-        listPhoto = loadCollections(username, page, perPage);
+    public MutableLiveData<List<CollectionPhotos>> getCollections(String username, int page) {
+        listPhoto = loadCollections(username, page);
         return listPhoto;
     }
 
@@ -56,8 +55,8 @@ public class CollectionViewModel extends AndroidViewModel {
         return repository.getPhotosCollection(collectionId, page);
     }
 
-    private MutableLiveData<List<CollectionPhotos>> loadCollections(String username, int page, int perPage) {
-        return repository.getUserCollection(username, page, perPage);
+    private MutableLiveData<List<CollectionPhotos>> loadCollections(String username, int page) {
+        return repository.getUserCollection(username, page);
     }
 
 }

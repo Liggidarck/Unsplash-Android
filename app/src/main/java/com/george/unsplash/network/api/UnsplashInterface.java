@@ -60,18 +60,15 @@ public interface UnsplashInterface {
 
     @GET("users/{username}/photos")
     Call<List<Photo>> getUserPhotos(@Path("username") String username,
-                                    @Query("page") int page,
-                                    @Query("per_page") int per_page);
+                                    @Query("page") int page);
 
     @GET("users/{username}/likes")
     Call<List<Photo>> getUserLikePhotos(@Path("username") String username,
-                                        @Query("page") int page,
-                                        @Query("per_page") int per_page);
+                                        @Query("page") int page);
 
     @GET("/users/{username}/collections")
     Call<List<CollectionPhotos>> getUserCollection(@Path("username") String username,
-                                                   @Query("page") int page,
-                                                   @Query("per_page") int per_page);
+                                                   @Query("page") int page);
 
     @GET("/collections/{id}/photos")
     Call<List<Photo>> getCollectionPhotos(@Path("id") String id,
