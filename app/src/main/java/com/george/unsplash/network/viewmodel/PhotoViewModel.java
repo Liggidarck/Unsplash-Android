@@ -36,12 +36,16 @@ public class PhotoViewModel extends AndroidViewModel {
         repository = new PhotosRepository(token);
     }
 
-    public MutableLiveData<Photo> unlikePhoto(String id) {
-        return repository.unlikePhoto(id);
+    public void clearPhotos() {
+        listPhoto.setValue(null);
     }
 
-    public MutableLiveData<Photo> likePhoto(String id) {
-        return repository.likePhoto(id);
+    public void unlikePhoto(String id) {
+        repository.unlikePhoto(id);
+    }
+
+    public void likePhoto(String id) {
+        repository.likePhoto(id);
     }
 
     public MutableLiveData<Photo> getPhoto(String id) {
@@ -123,8 +127,8 @@ public class PhotoViewModel extends AndroidViewModel {
             unlikePhoto(photoId);
             imageLikes.setImageResource(R.drawable.ic_baseline_favorite_border_24);
             int likesPhoto = likes - 1;
-            String likesText = "Likes: " + likes;
-            likesTextView.setText(likesPhoto);
+            String likesText = "Likes: " + likesPhoto;
+            likesTextView.setText(likesText);
         }
     }
 

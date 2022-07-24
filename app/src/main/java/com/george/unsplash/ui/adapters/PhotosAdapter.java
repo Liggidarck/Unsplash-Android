@@ -48,8 +48,8 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         return photoList.size();
     }
 
-    public void clear(List<Photo> photoList) {
-        photoList.removeAll(photoList);
+    public void clear() {
+        photoList.clear();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -41,33 +41,48 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    android:text="Views"
-                    android:textSize="25sp"
+                    android:text="Views. Last 30 days"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <com.anychart.AnyChartView
-                    android:id="@+id/chart"
+                    android:id="@+id/viewsChartView"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_marginTop="10dp" />
-
+                    android:layout_height="320dp"
+                    android:layout_margin="10dp" />
 
                 <TextView
+                    android:id="@+id/viewsTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Downloads"
+                    android:textColor="@color/black"
                     android:textSize="25sp"
                     android:textStyle="bold" />
 
-                <com.anychart.AnyChartView
-                    android:id="@+id/chartDownloads"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
 
+                        <TextView
+                            android:id="@+id/downloadsTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Downloads"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
 
             </LinearLayout>

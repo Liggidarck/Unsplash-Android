@@ -1,19 +1,14 @@
 package com.george.unsplash.network.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.anychart.chart.common.dataentry.DataEntry;
 import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.network.models.Statistic.Statistic;
 import com.george.unsplash.network.repository.StatisticRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class StatisticViewModel extends AndroidViewModel {
 

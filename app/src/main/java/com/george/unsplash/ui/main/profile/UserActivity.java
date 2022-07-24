@@ -2,12 +2,11 @@ package com.george.unsplash.ui.main.profile;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -18,38 +17,33 @@ import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.network.viewmodel.UserViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserActivity extends AppCompatActivity {
 
     private ProfileFragmentBinding binding;
 
-    UserViewModel userViewModel;
+    private UserViewModel userViewModel;
+    private PhotoViewModel photoViewModel;
+    private PhotosAdapter photosAdapter;
+    private List<Photo> photoList;
 
-    NavController navController;
-    Bundle bundle = new Bundle();
-
-    PhotoViewModel photoViewModel;
-    PhotosAdapter photosAdapter;
-    List<Photo> photoList;
-
-    String username;
-    int page = 1;
-    public static final String TAG = UserActivity.class.getSimpleName();
+    private String username;
+    private int page = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ProfileFragmentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        photoList = new ArrayList<>();
 
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
-        navController = Navigation.findNavController(this,
-                R.id.nav_host_fragment_activity_main);
 
         binding.topAppBarProfile.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         binding.topAppBarProfile.setNavigationOnClickListener(view -> onBackPressed());
@@ -58,16 +52,7 @@ public class UserActivity extends AppCompatActivity {
         initRecyclerView();
         getPhotos();
 
-        binding.likesBtn.setOnClickListener(v -> {
-            bundle.putString("username", username);
-            navController.navigate(R.id.action_navigation_profile_to_likesFragment, bundle);
-        });
-
-        binding.collectionsBtn.setOnClickListener(v -> {
-            bundle.putString("username", username);
-            bundle.putBoolean("isUser", false);
-            navController.navigate(R.id.action_navigation_profile_to_userCollectionsFragment, bundle);
-        });
+        binding.collectionsBtn.setVisibility(View.INVISIBLE);
     }
 
     private void initRecyclerView() {
@@ -98,7 +83,7 @@ public class UserActivity extends AppCompatActivity {
         photoViewModel
                 .getUserPhotos(username, page)
                 .observe(UserActivity.this, photoList -> {
-                    this.photoList.removeAll(photoList);
+                    this.photoList.addAll(photoList);
                     photosAdapter.notifyDataSetChanged();
                 });
 
@@ -107,7 +92,10 @@ public class UserActivity extends AppCompatActivity {
 
     private void getUserData() {
         userViewModel.getUserData(username).observe(UserActivity.this, user -> {
-            String fullName = user.getFirstName() + " " + user.getLastName();
+            String lastName = user.getLastName();
+            if (lastName == null)
+                lastName = "";
+            String fullName = user.getFirstName() + " " + lastName;
             String bio = user.getBio();
             String email = user.getEmail();
             String profileImage = user.getProfileImage().getLarge();

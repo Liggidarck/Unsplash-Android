@@ -1,7 +1,5 @@
 package com.george.unsplash.network.repository;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 

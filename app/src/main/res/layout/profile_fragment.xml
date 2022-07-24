@@ -72,35 +72,14 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp" />
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/collectionsBtn"
+                    style="@style/ThemeOverlay.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/collectionsBtn"
-                        style="@style/ThemeOverlay.Material3.Button.TextButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1.5"
-                        android:text="Collections" />
-
-                    <Button
-                        android:id="@+id/likesBtn"
-                        style="@style/ThemeOverlay.Material3.Button.TextButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1.5"
-                        android:text="Likes" />
-
-
-                </LinearLayout>
-
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="Collections" />
 
                 <TextView
                     android:layout_width="wrap_content"

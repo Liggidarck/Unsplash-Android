@@ -28,7 +28,7 @@ public class PhotosRepository {
         unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
     }
 
-    public MutableLiveData<Photo> unlikePhoto(String id) {
+    public void unlikePhoto(String id) {
         unsplashInterface.unlikePhoto(id).enqueue(new Callback<Photo>() {
             @Override
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
@@ -43,10 +43,9 @@ public class PhotosRepository {
             }
         });
 
-        return photo;
     }
 
-    public MutableLiveData<Photo> likePhoto(String id) {
+    public void likePhoto(String id) {
         unsplashInterface.likePhoto(id).enqueue(new Callback<Photo>() {
             @Override
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
@@ -58,7 +57,6 @@ public class PhotosRepository {
                 photo.postValue(null);
             }
         });
-        return photo;
     }
 
     public MutableLiveData<Photo> getPhoto(String id) {

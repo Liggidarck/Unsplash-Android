@@ -66,11 +66,6 @@ public class ProfileFragment extends Fragment {
         initRecyclerViewPhotos();
         fetchUserPhotos();
 
-        binding.likesBtn.setOnClickListener(v -> {
-            bundle.putString("username", username);
-            navController.navigate(R.id.action_navigation_profile_to_likesFragment, bundle);
-        });
-
         binding.collectionsBtn.setOnClickListener(v -> {
             bundle.putString("username", username);
             bundle.putBoolean("isUser", true);
