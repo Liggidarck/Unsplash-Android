@@ -54,8 +54,9 @@ import com.george.unsplash.network.models.user.Token;
 import com.george.unsplash.network.models.user.common.ProfileImage;
 import com.george.unsplash.network.models.user.common.User;
 import com.george.unsplash.ui.main.MainActivity;
+import com.george.unsplash.utils.DialogUtils;
 import com.george.unsplash.utils.Keys;
-import com.george.unsplash.utils.Utils;
+import com.george.unsplash.utils.NetworkUtils;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
@@ -79,7 +80,8 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
-    Utils utils = new Utils();
+    NetworkUtils networkUtils = new NetworkUtils();
+    DialogUtils dialogUtils = new DialogUtils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            if(!utils.isOnline(LoginActivity.this)) {
+            if(!networkUtils.isOnline(LoginActivity.this)) {
                 Snackbar.make(binding.loginCoordinator, "Проверьте подключение к интернету", Snackbar.LENGTH_SHORT).show();
                 binding.progressBarLogin.setVisibility(View.INVISIBLE);
                 return;
@@ -139,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             getMeData(accessToken);
                         } else {
-                            utils.showAlertDialog(LoginActivity.this, response.code());
+                            dialogUtils.showAlertDialog(LoginActivity.this, response.code());
                         }
                     }
 
@@ -211,8 +213,7 @@ public class LoginActivity extends AppCompatActivity {
                     getPublicData(token, username);
 
                 } else {
-                    Utils utils = new Utils();
-                    utils.showAlertDialog(LoginActivity.this, response.code());
+                    dialogUtils.showAlertDialog(LoginActivity.this, response.code());
                 }
             }
 
@@ -246,7 +247,7 @@ public class LoginActivity extends AppCompatActivity {
                     binding.progressBarLogin.setVisibility(View.INVISIBLE);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 } else {
-                    utils.showAlertDialog(LoginActivity.this, response.code());
+                    dialogUtils.showAlertDialog(LoginActivity.this, response.code());
                 }
             }
 

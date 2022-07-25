@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.george.unsplash.databinding.PhotoInfoBottomSheetBinding;
 import com.george.unsplash.network.models.photo.Exif;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
-import com.george.unsplash.utils.Utils;
+import com.george.unsplash.utils.NetworkUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class PhotoInfoBottomSheet extends BottomSheetDialogFragment {
@@ -20,7 +20,7 @@ public class PhotoInfoBottomSheet extends BottomSheetDialogFragment {
     private PhotoInfoBottomSheetBinding binding;
     PhotoViewModel photoViewModel;
 
-    private final Utils utils = new Utils();
+    private final NetworkUtils networkUtils = new NetworkUtils();
 
     public static final String TAG = PhotoInfoBottomSheet.class.getSimpleName();
 

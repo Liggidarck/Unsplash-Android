@@ -2,21 +2,8 @@ package com.george.unsplash.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-public class Utils {
-
-    public boolean isOnline(Context context) {
-        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
+public class DialogUtils {
 
     public void showAlertDialog(Context context, int codeError) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
