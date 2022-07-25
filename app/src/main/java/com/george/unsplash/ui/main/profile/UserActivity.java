@@ -78,8 +78,6 @@ public class UserActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void getPhotos() {
-        photoList.clear();
-
         photoViewModel
                 .getUserPhotos(username, page)
                 .observe(UserActivity.this, photoList -> {

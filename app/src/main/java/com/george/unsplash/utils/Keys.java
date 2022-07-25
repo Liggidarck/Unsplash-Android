@@ -1,14 +1,19 @@
 package com.george.unsplash.utils;
 
+import com.george.unsplash.BuildConfig;
+
 public class Keys {
+
+    // Old keys don't worked ;)
+    public static final String UNSPLASH_ACCESS_KEY = BuildConfig.UNSPLASH_ACCESS_KEY;
+    public final static String SECRET_KEY = BuildConfig.SECRET_KEY;
+
     public final static String BASE_URL_AUTH = "https://unsplash.com/oauth";
-    public static final String UNSPLASH_ACCESS_KEY = "_9A6f_i10Aj8CKIHRi_QWuWGA7FwR6e8bhlWfDyxuR4";
     public static final String BASE_URL_UNSPLASH = "https://unsplash.com/";
     public static final String BASE_API_URL_UNSPLASH = "https://api.unsplash.com/";
 
     public final static String SCOPE = "public+read_user+write_user+read_photos+write_photos+write_likes+write_followers+read_collections+write_collections";
     public final static String RESPONSE_URL = "urn:ietf:wg:oauth:2.0:oob";
-    public final static String SECRET_KEY = "TvIYnJPsamWqhZMnA7iiaSwvxdlkxAGz6Un3FSQnSr4";
 
     public static final String USER_PREFERENCES = "DATA_USER";
     public static final String USER_TOKEN = "user_token";

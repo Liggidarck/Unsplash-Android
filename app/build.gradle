@@ -3,6 +3,10 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+def apikeyPropertiesFile = rootProject.file("local.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
     compileSdk 31
 
@@ -16,6 +20,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders = [appAuthRedirectScheme: 'urn:ietf:wg:oauth:2.0:oob']
+
+        buildConfigField("String", "UNSPLASH_ACCESS_KEY", apikeyProperties['UNSPLASH_ACCESS_KEY'])
+        buildConfigField("String", "SECRET_KEY", apikeyProperties['SECRET_KEY'])
     }
 
     buildTypes {
