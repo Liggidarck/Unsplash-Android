@@ -14,13 +14,14 @@ import retrofit2.Response;
 public class StatisticRepository {
 
     UnsplashInterface unsplashInterface;
-    private final MutableLiveData<Statistic> statistic = new MutableLiveData<>();
 
     public StatisticRepository(String token){
         unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
     }
 
     public MutableLiveData<Statistic> getStatistic(String username) {
+        MutableLiveData<Statistic> statistic = new MutableLiveData<>();
+
         unsplashInterface.getUserStatistic(username).enqueue(new Callback<Statistic>() {
             @Override
             public void onResponse(@NonNull Call<Statistic> call, @NonNull Response<Statistic> response) {

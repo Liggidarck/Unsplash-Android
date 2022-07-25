@@ -18,9 +18,6 @@ public class CollectionViewModel extends AndroidViewModel {
     AppPreferences appPreferences;
     CollectionRepository repository;
 
-    MutableLiveData<List<CollectionPhotos>> listPhoto = new MutableLiveData<>();
-    MutableLiveData<List<Photo>> photos = new MutableLiveData<>();
-
     public CollectionViewModel(@NonNull Application application) {
         super(application);
 
@@ -30,8 +27,7 @@ public class CollectionViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<Photo>> getPhotosCollection(String collectionId, int page) {
-        photos = loadPhotos(collectionId, page);
-        return photos;
+        return loadPhotos(collectionId, page);
     }
 
     public MutableLiveData<CollectionPhotos> createNewCollection(String nameCollection, String descriptionCollection, boolean isPrivate) {
@@ -47,8 +43,7 @@ public class CollectionViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<CollectionPhotos>> getCollections(String username, int page) {
-        listPhoto = loadCollections(username, page);
-        return listPhoto;
+        return loadCollections(username, page);
     }
 
     private MutableLiveData<List<Photo>> loadPhotos(String collectionId, int page) {

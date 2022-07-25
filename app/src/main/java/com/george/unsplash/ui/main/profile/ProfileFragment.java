@@ -98,14 +98,12 @@ public class ProfileFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     void fetchUserPhotos() {
-        photoList.clear();
         photoViewModel
                 .getUserPhotos(username, page)
                 .observe(ProfileFragment.this.requireActivity(), photos -> {
                     photoList.addAll(photos);
                     photosAdapter.notifyDataSetChanged();
                 });
-
         page++;
     }
 

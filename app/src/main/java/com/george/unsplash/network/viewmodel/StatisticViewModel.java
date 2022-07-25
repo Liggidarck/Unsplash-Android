@@ -15,8 +15,6 @@ public class StatisticViewModel extends AndroidViewModel {
     StatisticRepository statisticRepository;
     AppPreferences appPreferences;
 
-    private MutableLiveData<Statistic> statistic = new MutableLiveData<>();
-
     public StatisticViewModel(@NonNull Application application) {
         super(application);
 
@@ -26,8 +24,7 @@ public class StatisticViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<Statistic> getStatistic(String username) {
-        statistic = loadStatistic(username);
-        return statistic;
+        return loadStatistic(username);
     }
 
     private MutableLiveData<Statistic> loadStatistic(String username) {

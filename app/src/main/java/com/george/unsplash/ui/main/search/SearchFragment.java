@@ -99,7 +99,6 @@ public class SearchFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     void fetchPhotos(String searchQuery, String color, String orientation) {
-        photos.clear();
         binding.progressBarSearch.setVisibility(View.VISIBLE);
         photoViewModel
                 .findPhotos(searchQuery, page, color, orientation)

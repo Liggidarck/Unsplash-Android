@@ -18,15 +18,13 @@ public class CollectionRepository {
 
     UnsplashInterface unsplashInterface;
 
-    private final MutableLiveData<List<CollectionPhotos>> listCollection = new MutableLiveData<>();
-    private final MutableLiveData<CollectionPhotos> collectionPhotos = new MutableLiveData<>();
-    private final MutableLiveData<List<Photo>> listPhoto = new MutableLiveData<>();
-
     public CollectionRepository(String token) {
         unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
     }
 
     public MutableLiveData<List<Photo>> getPhotosCollection(String collectionId, int page) {
+        MutableLiveData<List<Photo>> listPhoto = new MutableLiveData<>();
+
         unsplashInterface.getCollectionPhotos(collectionId, page).enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
@@ -45,6 +43,8 @@ public class CollectionRepository {
     }
 
     public MutableLiveData<CollectionPhotos> createNewCollection(String nameCollection, String descriptionCollection, boolean isPrivate) {
+        MutableLiveData<CollectionPhotos> collectionPhotos = new MutableLiveData<>();
+
         unsplashInterface.createNewCollection(nameCollection, descriptionCollection, isPrivate).enqueue(new Callback<CollectionPhotos>() {
             @Override
             public void onResponse(@NonNull Call<CollectionPhotos> call, @NonNull Response<CollectionPhotos> response) {
@@ -63,6 +63,8 @@ public class CollectionRepository {
     }
 
     public MutableLiveData<CollectionPhotos> deleteCollection(String id) {
+        MutableLiveData<CollectionPhotos> collectionPhotos = new MutableLiveData<>();
+
         unsplashInterface.deleteCollection(id).enqueue(new Callback<CollectionPhotos>() {
             @Override
             public void onResponse(@NonNull Call<CollectionPhotos> call, @NonNull Response<CollectionPhotos> response) {
@@ -81,6 +83,8 @@ public class CollectionRepository {
     }
 
     public MutableLiveData<CollectionPhotos> updateCollection(String id, String title, String description, boolean isPrivate) {
+        MutableLiveData<CollectionPhotos> collectionPhotos = new MutableLiveData<>();
+
         unsplashInterface.updateCollection(id, title, description, isPrivate).enqueue(new Callback<CollectionPhotos>() {
             @Override
             public void onResponse(@NonNull Call<CollectionPhotos> call, @NonNull Response<CollectionPhotos> response) {
@@ -99,6 +103,8 @@ public class CollectionRepository {
     }
 
     public MutableLiveData<List<CollectionPhotos>> getUserCollection(String username, int page) {
+        MutableLiveData<List<CollectionPhotos>> listCollection = new MutableLiveData<>();
+
         unsplashInterface.getUserCollection(username, page).enqueue(new Callback<List<CollectionPhotos>>() {
             @Override
             public void onResponse(@NonNull Call<List<CollectionPhotos>> call, @NonNull Response<List<CollectionPhotos>> response) {

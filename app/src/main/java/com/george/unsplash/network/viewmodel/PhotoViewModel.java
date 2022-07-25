@@ -25,19 +25,12 @@ public class PhotoViewModel extends AndroidViewModel {
     PhotosRepository repository;
     AppPreferences appPreferences;
 
-    MutableLiveData<List<Photo>> listPhoto = new MutableLiveData<>();
-    MutableLiveData<List<Topic>> listTopic = new MutableLiveData<>();
-
     public PhotoViewModel(@NonNull Application application) {
         super(application);
 
         appPreferences = new AppPreferences(application);
         String token = appPreferences.getToken();
         repository = new PhotosRepository(token);
-    }
-
-    public void clearPhotos() {
-        listPhoto.setValue(null);
     }
 
     public void unlikePhoto(String id) {
@@ -53,13 +46,11 @@ public class PhotoViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<Photo>> getUserLikePhotos(String username, int page) {
-        listPhoto = loadUserLikePhotos(username, page);
-        return listPhoto;
+        return loadUserLikePhotos(username, page);
     }
 
     public MutableLiveData<List<Photo>> getUserPhotos(String username, int page) {
-        listPhoto = loadUserPhotos(username, page);
-        return listPhoto;
+        return loadUserPhotos(username, page);
     }
 
     public MutableLiveData<Search> findPhotos(String query, int page, String color, String orientation) {
@@ -67,8 +58,7 @@ public class PhotoViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<Topic>> getListTopic() {
-        listTopic = loadListTopic();
-        return listTopic;
+        return loadListTopic();
     }
 
     public MutableLiveData<Topic> getTopic(String slug) {
@@ -76,8 +66,7 @@ public class PhotoViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<Photo>> getTopicsPhotos(String slug, int page) {
-        listPhoto = loadTopicsPhotos(slug, page);
-        return listPhoto;
+        return loadTopicsPhotos(slug, page);
     }
 
     private MutableLiveData<List<Photo>> loadUserLikePhotos(String username, int page) {

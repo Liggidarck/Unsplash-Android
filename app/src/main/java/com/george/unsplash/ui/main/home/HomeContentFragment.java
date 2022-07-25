@@ -118,15 +118,12 @@ public class HomeContentFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     void fetchPhotos(String topicSlug) {
-        photos.clear();
-
         photoViewModel
                 .getTopicsPhotos(topicSlug, page)
                 .observe(HomeContentFragment.this.requireActivity(), photoResponse -> {
                     photos.addAll(photoResponse);
                     photosAdapter.notifyDataSetChanged();
                 });
-
         page++;
     }
 

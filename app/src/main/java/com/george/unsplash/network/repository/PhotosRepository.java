@@ -18,17 +18,14 @@ import retrofit2.Response;
 public class PhotosRepository {
 
     UnsplashInterface unsplashInterface;
-    private final MutableLiveData<List<Photo>> listPhoto = new MutableLiveData<>();
-    private final MutableLiveData<Photo> photo = new MutableLiveData<>();
-    private final MutableLiveData<Topic> topic = new MutableLiveData<>();
-    private final MutableLiveData<List<Topic>> listTopic = new MutableLiveData<>();
-    private final MutableLiveData<Search> search = new MutableLiveData<>();
 
     public PhotosRepository(String token) {
         unsplashInterface = UnsplashTokenClient.getUnsplashTokenClient(token).create(UnsplashInterface.class);
     }
 
     public void unlikePhoto(String id) {
+        MutableLiveData<Photo> photo = new MutableLiveData<>();
+
         unsplashInterface.unlikePhoto(id).enqueue(new Callback<Photo>() {
             @Override
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
@@ -46,6 +43,8 @@ public class PhotosRepository {
     }
 
     public void likePhoto(String id) {
+        MutableLiveData<Photo> photo = new MutableLiveData<>();
+
         unsplashInterface.likePhoto(id).enqueue(new Callback<Photo>() {
             @Override
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
@@ -60,6 +59,8 @@ public class PhotosRepository {
     }
 
     public MutableLiveData<Photo> getPhoto(String id) {
+        MutableLiveData<Photo> photo = new MutableLiveData<>();
+
         unsplashInterface.getPhoto(id).enqueue(new Callback<Photo>() {
             @Override
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
@@ -78,42 +79,48 @@ public class PhotosRepository {
     }
 
     public MutableLiveData<List<Photo>> getUserLikePhotos(String username, int page) {
+        MutableLiveData<List<Photo>> photos = new MutableLiveData<>();
+
         unsplashInterface.getUserLikePhotos(username, page).enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
                 if (response.code() == 200) {
-                    listPhoto.setValue(response.body());
+                    photos.setValue(response.body());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Photo>> call, @NonNull Throwable t) {
-                listPhoto.postValue(null);
+                photos.postValue(null);
             }
         });
 
-        return listPhoto;
+        return photos;
     }
 
     public MutableLiveData<List<Photo>> getUserPhotos(String username, int page) {
+        MutableLiveData<List<Photo>> photos = new MutableLiveData<>();
+
         unsplashInterface.getUserPhotos(username, page).enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
                 if (response.code() == 200) {
-                    listPhoto.setValue(response.body());
+                    photos.setValue(response.body());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Photo>> call, @NonNull Throwable t) {
-                listPhoto.postValue(null);
+                photos.postValue(null);
             }
         });
 
-        return listPhoto;
+        return photos;
     }
 
     public MutableLiveData<Search> findPhotos(String query, int page, String color, String orientation) {
+        MutableLiveData<Search> search = new MutableLiveData<>();
+
         unsplashInterface.findPhotos(query, page, color, orientation).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(@NonNull Call<Search> call, @NonNull Response<Search> response) {
@@ -132,6 +139,8 @@ public class PhotosRepository {
     }
 
     public MutableLiveData<List<Topic>> getTopics() {
+        MutableLiveData<List<Topic>> listTopic = new MutableLiveData<>();
+
         unsplashInterface.getTopics().enqueue(new Callback<List<Topic>>() {
             @Override
             public void onResponse(@NonNull Call<List<Topic>> call, @NonNull Response<List<Topic>> response) {
@@ -150,6 +159,8 @@ public class PhotosRepository {
     }
 
     public MutableLiveData<Topic> getTopic(String slug) {
+        MutableLiveData<Topic> topic = new MutableLiveData<>();
+
         unsplashInterface.getTopic(slug).enqueue(new Callback<Topic>() {
             @Override
             public void onResponse(@NonNull Call<Topic> call, @NonNull Response<Topic> response) {
@@ -168,21 +179,23 @@ public class PhotosRepository {
     }
 
     public MutableLiveData<List<Photo>> getTopicsPhotos(String slug, int page) {
+        MutableLiveData<List<Photo>> photos = new MutableLiveData<>();
+
         unsplashInterface.getTopicPhotos(slug, page).enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
                 if (response.code() == 200) {
-                    listPhoto.setValue(response.body());
+                    photos.setValue(response.body());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Photo>> call, @NonNull Throwable t) {
-                listPhoto.postValue(null);
+                photos.postValue(null);
             }
         });
 
-        return listPhoto;
+        return photos;
     }
 
 }
