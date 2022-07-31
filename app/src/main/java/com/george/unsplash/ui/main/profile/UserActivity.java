@@ -35,6 +35,7 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.Theme_UnsplashApp);
         binding = ProfileFragmentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         photoList = new ArrayList<>();

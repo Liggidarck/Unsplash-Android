@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.UnsplashApp" >
+        android:theme="@style/Theme.Loading" >
         <activity
             android:name=".ui.main.profile.UserActivity"
             android:exported="false" />
@@ -37,8 +37,19 @@
             android:exported="false" />
         <activity
             android:name=".ui.login.LoginActivity"
-            android:exported="true"
-            android:launchMode="singleTop" />
+            android:exported="true" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="urn:ietf:wg:oauth:2.0:oob" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true" />

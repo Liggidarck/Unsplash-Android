@@ -2,7 +2,9 @@ package com.george.unsplash.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
 
 import com.george.unsplash.databinding.ActivityLoadingBinding;
 import com.george.unsplash.localdata.AppPreferences;
@@ -16,6 +18,7 @@ public class LoadingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SplashScreen.installSplashScreen(this);
         binding = ActivityLoadingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         appPreferences = new AppPreferences(this);

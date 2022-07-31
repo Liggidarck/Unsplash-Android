@@ -131,9 +131,6 @@ public class HomeContentFragment extends Fragment {
         photoViewModel = new ViewModelProvider(this)
                 .get(PhotoViewModel.class);
 
-        photoViewModel = new ViewModelProvider(this)
-                .get(PhotoViewModel.class);
-
         topicDatabaseViewModel = new ViewModelProvider(this)
                 .get(TopicDatabaseViewModel.class);
     }

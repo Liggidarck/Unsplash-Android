@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.george.unsplash.R;
 import com.george.unsplash.databinding.ActivityCollectionBinding;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.viewmodel.CollectionViewModel;
@@ -38,6 +39,7 @@ public class CollectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.Theme_UnsplashApp);
         binding = ActivityCollectionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
