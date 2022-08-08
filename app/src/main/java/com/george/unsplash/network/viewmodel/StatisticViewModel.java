@@ -1,25 +1,30 @@
 package com.george.unsplash.network.viewmodel;
 
+import static com.george.unsplash.utils.Keys.USER_PREFERENCES;
+import static com.george.unsplash.utils.Keys.USER_TOKEN;
+
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.network.models.Statistic.Statistic;
 import com.george.unsplash.network.repository.StatisticRepository;
 
 public class StatisticViewModel extends AndroidViewModel {
 
     StatisticRepository statisticRepository;
-    AppPreferences appPreferences;
+    SharedPreferences sharedPreferences;
 
     public StatisticViewModel(@NonNull Application application) {
         super(application);
 
-        appPreferences = new AppPreferences(application);
-        String token = appPreferences.getToken();
+
+        sharedPreferences = application.getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString(USER_TOKEN, "");
         statisticRepository = new StatisticRepository(token);
     }
 

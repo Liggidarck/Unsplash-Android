@@ -22,6 +22,7 @@ import com.george.unsplash.databinding.SearchFragmentBinding;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
+import com.george.unsplash.utils.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,8 @@ public class SearchFragment extends Fragment {
     private PhotosAdapter photosAdapter;
 
     private PhotoViewModel photoViewModel;
+
+    private final DialogUtils dialogUtils = new DialogUtils();
 
     public static final String TAG = SearchFragment.class.getSimpleName();
     private int page = 1;
@@ -103,6 +106,10 @@ public class SearchFragment extends Fragment {
         photoViewModel
                 .findPhotos(searchQuery, page, color, orientation)
                 .observe(SearchFragment.this.requireActivity(), search -> {
+                    if(search == null) {
+                        dialogUtils.showAlertDialog(SearchFragment.this.requireActivity());
+                        return;
+                    }
                     int totalPhotos = search.getTotal();
                     photos.addAll(search.getResults());
                     photosAdapter.notifyDataSetChanged();

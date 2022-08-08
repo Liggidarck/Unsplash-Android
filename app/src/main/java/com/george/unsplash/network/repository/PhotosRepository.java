@@ -3,6 +3,7 @@ package com.george.unsplash.network.repository;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.george.unsplash.localdata.preferences.PreferencesViewModel;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;

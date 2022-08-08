@@ -24,6 +24,7 @@ import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.network.viewmodel.TopicDatabaseViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.ui.adapters.TopicAdapter;
+import com.george.unsplash.utils.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,8 @@ public class HomeContentFragment extends Fragment {
     TopicAdapter topicAdapter = new TopicAdapter();
     PhotosAdapter photosAdapter;
     private List<Photo> photos;
+
+    private final DialogUtils dialogUtils = new DialogUtils();
 
     public static final String TAG = HomeContentFragment.class.getSimpleName();
     private int page = 1;
@@ -105,12 +108,14 @@ public class HomeContentFragment extends Fragment {
                 .getTopic(topicSlug)
                 .observe(HomeContentFragment.this.requireActivity(), topic -> {
                     Log.d(TAG, "getMainImage: " + topic);
-                    CoverPhoto coverPhoto = topic.getCoverPhoto();
-                    Urls urls = coverPhoto.getUrls();
+                    if (topic != null) {
+                        CoverPhoto coverPhoto = topic.getCoverPhoto();
+                        Urls urls = coverPhoto.getUrls();
 
-                    Glide.with(HomeContentFragment.this.requireActivity())
-                            .load(urls.getRegular())
-                            .into(binding.homeMainImage);
+                        Glide.with(HomeContentFragment.this.requireActivity())
+                                .load(urls.getRegular())
+                                .into(binding.homeMainImage);
+                    }
                 });
 
         fetchPhotos(topicSlug);
@@ -121,6 +126,10 @@ public class HomeContentFragment extends Fragment {
         photoViewModel
                 .getTopicsPhotos(topicSlug, page)
                 .observe(HomeContentFragment.this.requireActivity(), photoResponse -> {
+                    if(photoResponse == null) {
+                        dialogUtils.showAlertDialog(HomeContentFragment.this.requireActivity());
+                        return;
+                    }
                     photos.addAll(photoResponse);
                     photosAdapter.notifyDataSetChanged();
                 });

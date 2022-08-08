@@ -28,6 +28,7 @@ import com.george.unsplash.network.models.collection.CollectionPhotos;
 import com.george.unsplash.network.viewmodel.CollectionViewModel;
 import com.george.unsplash.ui.adapters.CollectionsAdapter;
 import com.george.unsplash.ui.main.collections.CollectionActivity;
+import com.george.unsplash.utils.DialogUtils;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
@@ -37,15 +38,17 @@ public class CollectionsFragment extends Fragment {
 
     UserCollectionFragmentBinding binding;
 
-    CollectionViewModel collectionViewModel;
-    CollectionsAdapter collectionsAdapter;
-    List<CollectionPhotos> collectionPhotosList;
+    private CollectionViewModel collectionViewModel;
+    private CollectionsAdapter collectionsAdapter;
+    private List<CollectionPhotos> collectionPhotosList;
+
+    private final DialogUtils dialogUtils = new DialogUtils();
 
     private boolean loading = true;
-    int pastVisibleItems, visibleItemCount, totalItemCount;
-    String username;
-    boolean isUser;
-    int page = 1;
+    private int pastVisibleItems, visibleItemCount, totalItemCount;
+    private String username;
+    private boolean isUser;
+    private int page = 1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,6 +89,10 @@ public class CollectionsFragment extends Fragment {
         collectionViewModel
                 .getCollections(username, page)
                 .observe(CollectionsFragment.this.requireActivity(), collectionPhotos -> {
+                    if(collectionPhotos == null) {
+                        dialogUtils.showAlertDialog(CollectionsFragment.this.requireActivity());
+                        return;
+                    }
                     collectionPhotosList.addAll(collectionPhotos);
                     collectionsAdapter.notifyDataSetChanged();
                 });

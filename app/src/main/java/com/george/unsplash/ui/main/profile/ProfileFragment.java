@@ -18,11 +18,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.bumptech.glide.Glide;
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.ProfileFragmentBinding;
-import com.george.unsplash.localdata.AppPreferences;
+import com.george.unsplash.localdata.preferences.PreferencesViewModel;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.user.Me;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
+import com.george.unsplash.utils.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,23 +32,25 @@ public class ProfileFragment extends Fragment {
 
     private ProfileFragmentBinding binding;
 
-    AppPreferences appPreferences;
-    PhotoViewModel photoViewModel;
+    private PhotoViewModel photoViewModel;
+    private PreferencesViewModel preferencesViewModel;
 
-    PhotosAdapter photosAdapter;
-    List<Photo> photoList;
+    private PhotosAdapter photosAdapter;
+    private List<Photo> photoList;
 
-    NavController navController;
-    Bundle bundle = new Bundle();
+    private final DialogUtils dialogUtils = new DialogUtils();
+    private NavController navController;
+    private final Bundle bundle = new Bundle();
 
-    int page = 1;
-    String username;
+    private int page = 1;
+    private String username;
     public static final String TAG = ProfileFragment.class.getSimpleName();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appPreferences = new AppPreferences(ProfileFragment.this.requireActivity());
+
+        preferencesViewModel = new ViewModelProvider(ProfileFragment.this.requireActivity()).get(PreferencesViewModel.class);
         photoViewModel = new ViewModelProvider(ProfileFragment.this.requireActivity()).get(PhotoViewModel.class);
         photoList = new ArrayList<>();
 
@@ -101,6 +104,10 @@ public class ProfileFragment extends Fragment {
         photoViewModel
                 .getUserPhotos(username, page)
                 .observe(ProfileFragment.this.requireActivity(), photos -> {
+                    if(photos == null) {
+                        dialogUtils.showAlertDialog(ProfileFragment.this.requireActivity());
+                        return;
+                    }
                     photoList.addAll(photos);
                     photosAdapter.notifyDataSetChanged();
                 });
@@ -108,11 +115,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getUserData() {
-        Me me = appPreferences.getUserData();
+        Me me = preferencesViewModel.getMe();
 
         String fullName = me.getFirstName() + " " + me.getLastName();
         String bio = me.getBio();
-        String profileImage = appPreferences.getUserLargeImage();
+        String profileImage = preferencesViewModel.getProfileImage();
         username = me.getUsername();
 
         if (bio.equals(""))

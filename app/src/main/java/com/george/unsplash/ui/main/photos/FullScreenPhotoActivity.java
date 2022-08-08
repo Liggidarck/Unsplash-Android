@@ -26,7 +26,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.ActivityFullScreenPhotoBinding;
-import com.george.unsplash.localdata.AppPreferences;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.ui.main.profile.UserActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -55,10 +54,8 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
         setTheme(R.style.Theme_UnsplashApp);
         binding = ActivityFullScreenPhotoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        AppPreferences appPreferences = new AppPreferences(this);
-        photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
 
-        String token = appPreferences.getToken();
+        photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
 
         binding.toolbarPhotoScreen.setNavigationOnClickListener(v -> onBackPressed());
 

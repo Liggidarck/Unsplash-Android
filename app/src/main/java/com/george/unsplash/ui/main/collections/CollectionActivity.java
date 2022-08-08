@@ -15,6 +15,7 @@ import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.viewmodel.CollectionViewModel;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
+import com.george.unsplash.utils.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,8 @@ public class CollectionActivity extends AppCompatActivity {
     private int page = 1;
     private boolean loading = true;
     int pastVisibleItems, visibleItemCount, totalItemCount;
+
+    private final DialogUtils dialogUtils = new DialogUtils();
 
     public static final String TAG = CollectionActivity.class.getSimpleName();
 
@@ -60,10 +63,16 @@ public class CollectionActivity extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     private void getNewPhotos() {
         photos.clear();
-        collectionViewModel.getPhotosCollection(collectionId, page).observe(CollectionActivity.this, photoList -> {
-            photos.addAll(photoList);
-            photosAdapter.notifyDataSetChanged();
-        });
+        collectionViewModel
+                .getPhotosCollection(collectionId, page)
+                .observe(CollectionActivity.this, photoList -> {
+                    if(photoList == null) {
+                        dialogUtils.showAlertDialog(this);
+                        return;
+                    }
+                    photos.addAll(photoList);
+                    photosAdapter.notifyDataSetChanged();
+                });
 
         page++;
     }

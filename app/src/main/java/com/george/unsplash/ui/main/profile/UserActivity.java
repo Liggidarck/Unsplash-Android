@@ -16,6 +16,7 @@ import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.network.viewmodel.UserViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
+import com.george.unsplash.utils.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class UserActivity extends AppCompatActivity {
     private PhotoViewModel photoViewModel;
     private PhotosAdapter photosAdapter;
     private List<Photo> photoList;
+
+    private final DialogUtils dialogUtils = new DialogUtils();
 
     private String username;
     private int page = 1;
@@ -90,26 +93,33 @@ public class UserActivity extends AppCompatActivity {
     }
 
     private void getUserData() {
-        userViewModel.getUserData(username).observe(UserActivity.this, user -> {
-            String lastName = user.getLastName();
-            if (lastName == null)
-                lastName = "";
-            String fullName = user.getFirstName() + " " + lastName;
-            String bio = user.getBio();
-            String email = user.getEmail();
-            String profileImage = user.getProfileImage().getLarge();
+        userViewModel
+                .getUserData(username)
+                .observe(UserActivity.this, user -> {
+                    if(user == null) {
+                        dialogUtils.showAlertDialog(this);
+                        return;
+                    }
 
-            if (bio == null)
-                bio = "Download free, beautiful high-quality photos curated by " + user.getFirstName();
+                    String lastName = user.getLastName();
+                    if (lastName == null)
+                        lastName = "";
+                    String fullName = user.getFirstName() + " " + lastName;
+                    String bio = user.getBio();
+                    String email = user.getEmail();
+                    String profileImage = user.getProfileImage().getLarge();
 
-            binding.nameUser.setText(fullName);
-            binding.bioUser.setText(bio);
-            binding.emailUser.setText(email);
+                    if (bio == null)
+                        bio = "Download free, beautiful high-quality photos curated by " + user.getFirstName();
 
-            Glide.with(UserActivity.this)
-                    .load(profileImage)
-                    .into(binding.profileImage);
-        });
+                    binding.nameUser.setText(fullName);
+                    binding.bioUser.setText(bio);
+                    binding.emailUser.setText(email);
+
+                    Glide.with(UserActivity.this)
+                            .load(profileImage)
+                            .into(binding.profileImage);
+                });
     }
 
 }

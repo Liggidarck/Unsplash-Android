@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.george.unsplash.databinding.PhotoInfoBottomSheetBinding;
 import com.george.unsplash.network.models.photo.Exif;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
+import com.george.unsplash.utils.DialogUtils;
 import com.george.unsplash.utils.NetworkUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -21,6 +22,7 @@ public class PhotoInfoBottomSheet extends BottomSheetDialogFragment {
     PhotoViewModel photoViewModel;
 
     private final NetworkUtils networkUtils = new NetworkUtils();
+    private final DialogUtils dialogUtils = new DialogUtils();
 
     public static final String TAG = PhotoInfoBottomSheet.class.getSimpleName();
 
@@ -40,6 +42,11 @@ public class PhotoInfoBottomSheet extends BottomSheetDialogFragment {
         photoViewModel
                 .getPhoto(photoId)
                 .observe(PhotoInfoBottomSheet.this.requireActivity(), photo -> {
+                    if(photo == null) {
+                        dialogUtils.showAlertDialog(PhotoInfoBottomSheet.this.requireActivity());
+                        return;
+                    }
+
                     String fullName = photo.getUser().getFirstName() + " " + photo.getUser().getLastName();
                     String username = "@" + photo.getUser().getUsername();
                     String likes = "Likes: " + photo.getLikes();

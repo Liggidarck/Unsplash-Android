@@ -1,13 +1,19 @@
 package com.george.unsplash.ui.main.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,8 +25,11 @@ import com.george.unsplash.network.models.topic.Topic;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.network.viewmodel.TopicDatabaseViewModel;
 import com.george.unsplash.ui.adapters.TopicAdapter;
+import com.george.unsplash.ui.main.SettingsActivity;
+import com.george.unsplash.utils.DialogUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -39,17 +48,26 @@ public class HomeFragment extends Fragment {
         binding = HomeFragmentBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        binding.topAppBarHome.inflateMenu(R.menu.home_menu);
+        binding.topAppBarHome.setOnMenuItemClickListener(item -> {
+            if(item.getItemId() == R.id.settingsItem)
+                startActivity(new Intent(HomeFragment.this.requireActivity(), SettingsActivity.class));
+            return false;
+        });
+
         initRecyclerView();
 
         topicDatabaseViewModel = new ViewModelProvider(this).get(TopicDatabaseViewModel.class);
         photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
 
-        topicDatabaseViewModel.getAllTopics().observe(HomeFragment.this.requireActivity(), topicData -> {
-            if (topicData.isEmpty()) {
-                getTopicsFromApi();
-            }
-            topicAdapter.addTopics(topicData);
-        });
+        topicDatabaseViewModel
+                .getAllTopics()
+                .observe(HomeFragment.this.requireActivity(), topicData -> {
+                    if (topicData.isEmpty()) {
+                        getTopicsFromApi();
+                    }
+                    topicAdapter.addTopics(topicData);
+                });
 
         topicAdapter.setOnClickItemListener((topic, position) -> startContentFragment(position));
 
