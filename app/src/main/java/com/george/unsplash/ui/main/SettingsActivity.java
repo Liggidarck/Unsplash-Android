@@ -3,20 +3,19 @@ package com.george.unsplash.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.SettingsActivityBinding;
-import com.george.unsplash.localdata.preferences.PreferencesViewModel;
+import com.george.unsplash.localdata.preferences.user.UserDataViewModel;
 import com.george.unsplash.ui.login.LoginActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 
     SettingsActivityBinding binding;
-    PreferencesViewModel preferencesViewModel;
+    UserDataViewModel userDataViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,12 +24,12 @@ public class SettingsActivity extends AppCompatActivity {
         binding = SettingsActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
+        userDataViewModel = new ViewModelProvider(this).get(UserDataViewModel.class);
 
         binding.settingsToolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         binding.btnLogout.setOnClickListener(v -> {
-            preferencesViewModel.logout();
+            userDataViewModel.logout();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         });

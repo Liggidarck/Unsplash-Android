@@ -53,12 +53,12 @@ public class PhotoViewModel extends AndroidViewModel {
         return loadUserLikePhotos(username, page);
     }
 
-    public MutableLiveData<List<Photo>> getUserPhotos(String username, int page) {
-        return loadUserPhotos(username, page);
+    public MutableLiveData<List<Photo>> getUserPhotos(String username, int page, int perPage) {
+        return loadUserPhotos(username, page, perPage);
     }
 
-    public MutableLiveData<Search> findPhotos(String query, int page, String color, String orientation) {
-        return repository.findPhotos(query, page, color, orientation);
+    public MutableLiveData<Search> findPhotos(String query, int page, String color, String orientation, int perPage) {
+        return repository.findPhotos(query, page, color, orientation, perPage);
     }
 
     public MutableLiveData<List<Topic>> getListTopic() {
@@ -69,24 +69,24 @@ public class PhotoViewModel extends AndroidViewModel {
         return repository.getTopic(slug);
     }
 
-    public MutableLiveData<List<Photo>> getTopicsPhotos(String slug, int page) {
-        return loadTopicsPhotos(slug, page);
+    public MutableLiveData<List<Photo>> getTopicsPhotos(String slug, int page, int perPage) {
+        return loadTopicsPhotos(slug, page, perPage);
     }
 
     private MutableLiveData<List<Photo>> loadUserLikePhotos(String username, int page) {
         return repository.getUserLikePhotos(username, page);
     }
 
-    private MutableLiveData<List<Photo>> loadUserPhotos(String username, int page) {
-        return repository.getUserPhotos(username, page);
+    private MutableLiveData<List<Photo>> loadUserPhotos(String username, int page, int perPage) {
+        return repository.getUserPhotos(username, page, perPage);
     }
 
     private MutableLiveData<List<Topic>> loadListTopic() {
         return repository.getTopics();
     }
 
-    private MutableLiveData<List<Photo>> loadTopicsPhotos(String slug, int page) {
-        return repository.getTopicsPhotos(slug, page);
+    private MutableLiveData<List<Photo>> loadTopicsPhotos(String slug, int page, int perPage) {
+        return repository.getTopicsPhotos(slug, page, perPage);
     }
 
     public void showFullScreenImage(Photo photo, Context context) {

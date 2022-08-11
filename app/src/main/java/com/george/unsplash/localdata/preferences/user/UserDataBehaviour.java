@@ -1,8 +1,8 @@
-package com.george.unsplash.localdata.preferences;
+package com.george.unsplash.localdata.preferences.user;
 
 import com.george.unsplash.network.models.user.Me;
 
-public interface PreferencesBehaviour {
+public interface UserDataBehaviour {
 
     void saveToken(String token);
 

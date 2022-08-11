@@ -1,4 +1,4 @@
-package com.george.unsplash.localdata.preferences;
+package com.george.unsplash.localdata.preferences.user;
 
 import static com.george.unsplash.utils.Keys.SCOPE;
 import static com.george.unsplash.utils.Keys.USER_BIO;
@@ -35,12 +35,12 @@ import android.content.SharedPreferences;
 import com.george.unsplash.network.models.user.Links;
 import com.george.unsplash.network.models.user.Me;
 
-public class PreferencesRepository implements PreferencesBehaviour {
+public class UserDataRepository implements UserDataBehaviour {
 
     final SharedPreferences sharedPreferences;
     final SharedPreferences.Editor editor;
 
-    public PreferencesRepository(Application application) {
+    public UserDataRepository(Application application) {
         sharedPreferences = application.getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
     }

@@ -8,13 +8,13 @@ import androidx.core.splashscreen.SplashScreen;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.george.unsplash.databinding.ActivityLoadingBinding;
-import com.george.unsplash.localdata.preferences.PreferencesViewModel;
+import com.george.unsplash.localdata.preferences.user.UserDataViewModel;
 import com.george.unsplash.ui.main.MainActivity;
 
 public class LoadingActivity extends AppCompatActivity {
 
     ActivityLoadingBinding binding;
-    PreferencesViewModel preferencesViewModel;
+    UserDataViewModel userDataViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +23,9 @@ public class LoadingActivity extends AppCompatActivity {
         binding = ActivityLoadingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
+        userDataViewModel = new ViewModelProvider(this).get(UserDataViewModel.class);
 
-        String token = preferencesViewModel.getToken();
+        String token = userDataViewModel.getToken();
         if(!token.equals("")) {
             startActivity(new Intent(this, MainActivity.class));
         } else {

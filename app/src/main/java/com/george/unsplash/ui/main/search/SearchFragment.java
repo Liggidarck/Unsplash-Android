@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.SearchFragmentBinding;
+import com.george.unsplash.localdata.preferences.app.AppPreferenceViewModel;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
@@ -36,6 +37,7 @@ public class SearchFragment extends Fragment {
     private PhotosAdapter photosAdapter;
 
     private PhotoViewModel photoViewModel;
+    private AppPreferenceViewModel appPreferenceViewModel;
 
     private final DialogUtils dialogUtils = new DialogUtils();
 
@@ -48,6 +50,9 @@ public class SearchFragment extends Fragment {
 
         photoViewModel = new ViewModelProvider(this)
                 .get(PhotoViewModel.class);
+
+        appPreferenceViewModel = new ViewModelProvider(this)
+                .get(AppPreferenceViewModel.class);
 
         photos = new ArrayList<>();
     }
@@ -104,7 +109,7 @@ public class SearchFragment extends Fragment {
     void fetchPhotos(String searchQuery, String color, String orientation) {
         binding.progressBarSearch.setVisibility(View.VISIBLE);
         photoViewModel
-                .findPhotos(searchQuery, page, color, orientation)
+                .findPhotos(searchQuery, page, color, orientation, appPreferenceViewModel.getPerPage())
                 .observe(SearchFragment.this.requireActivity(), search -> {
                     if(search == null) {
                         dialogUtils.showAlertDialog(SearchFragment.this.requireActivity());
@@ -179,7 +184,7 @@ public class SearchFragment extends Fragment {
 
     private void initRecyclerView() {
         photosAdapter = new PhotosAdapter(SearchFragment.this.requireActivity(), photos);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), appPreferenceViewModel.getGridPhotos());
         binding.searchRecyclerView.setLayoutManager(gridLayoutManager);
         binding.searchRecyclerView.setHasFixedSize(true);
         binding.searchRecyclerView.setAdapter(photosAdapter);

@@ -18,7 +18,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.bumptech.glide.Glide;
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.ProfileFragmentBinding;
-import com.george.unsplash.localdata.preferences.PreferencesViewModel;
+import com.george.unsplash.localdata.preferences.app.AppPreferenceViewModel;
+import com.george.unsplash.localdata.preferences.user.UserDataViewModel;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.user.Me;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
@@ -33,7 +34,8 @@ public class ProfileFragment extends Fragment {
     private ProfileFragmentBinding binding;
 
     private PhotoViewModel photoViewModel;
-    private PreferencesViewModel preferencesViewModel;
+    private UserDataViewModel userDataViewModel;
+    private AppPreferenceViewModel appPreferenceViewModel;
 
     private PhotosAdapter photosAdapter;
     private List<Photo> photoList;
@@ -50,8 +52,15 @@ public class ProfileFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferencesViewModel = new ViewModelProvider(ProfileFragment.this.requireActivity()).get(PreferencesViewModel.class);
-        photoViewModel = new ViewModelProvider(ProfileFragment.this.requireActivity()).get(PhotoViewModel.class);
+        userDataViewModel = new ViewModelProvider(ProfileFragment.this.requireActivity())
+                .get(UserDataViewModel.class);
+
+        photoViewModel = new ViewModelProvider(ProfileFragment.this.requireActivity())
+                .get(PhotoViewModel.class);
+
+        appPreferenceViewModel = new ViewModelProvider(ProfileFragment.this.requireActivity())
+                .get(AppPreferenceViewModel.class);
+
         photoList = new ArrayList<>();
 
         navController = Navigation.findNavController(ProfileFragment.this.requireActivity(),
@@ -80,7 +89,9 @@ public class ProfileFragment extends Fragment {
 
     private void initRecyclerViewPhotos() {
         photosAdapter = new PhotosAdapter(ProfileFragment.this.requireActivity(), photoList);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(ProfileFragment.this.requireActivity(), 2);
+        GridLayoutManager gridLayoutManager =
+                new GridLayoutManager(ProfileFragment.this.requireActivity(),
+                        appPreferenceViewModel.getGridPhotos());
         binding.profileRecyclerView.setHasFixedSize(true);
         binding.profileRecyclerView.setLayoutManager(gridLayoutManager);
         binding.profileRecyclerView.setAdapter(photosAdapter);
@@ -102,9 +113,9 @@ public class ProfileFragment extends Fragment {
     @SuppressLint("NotifyDataSetChanged")
     void fetchUserPhotos() {
         photoViewModel
-                .getUserPhotos(username, page)
+                .getUserPhotos(username, page, appPreferenceViewModel.getPerPage())
                 .observe(ProfileFragment.this.requireActivity(), photos -> {
-                    if(photos == null) {
+                    if (photos == null) {
                         dialogUtils.showAlertDialog(ProfileFragment.this.requireActivity());
                         return;
                     }
@@ -115,11 +126,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getUserData() {
-        Me me = preferencesViewModel.getMe();
+        Me me = userDataViewModel.getMe();
 
         String fullName = me.getFirstName() + " " + me.getLastName();
         String bio = me.getBio();
-        String profileImage = preferencesViewModel.getProfileImage();
+        String profileImage = userDataViewModel.getProfileImage();
         username = me.getUsername();
 
         if (bio.equals(""))

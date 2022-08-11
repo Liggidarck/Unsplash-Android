@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.ActivityLoginBinding;
-import com.george.unsplash.localdata.preferences.PreferencesViewModel;
+import com.george.unsplash.localdata.preferences.user.UserDataViewModel;
 import com.george.unsplash.network.api.UnsplashBaseClient;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
             + "&redirect_uri=" + RESPONSE_URL;
 
     private UnsplashInterface unsplashInterface;
-    private PreferencesViewModel preferencesViewModel;
+    private UserDataViewModel userDataViewModel;
 
     private final NetworkUtils networkUtils = new NetworkUtils();
     private final DialogUtils dialogUtils = new DialogUtils();
@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
+        userDataViewModel = new ViewModelProvider(this).get(UserDataViewModel.class);
 
         unsplashInterface = UnsplashBaseClient.getBaseUnsplashClient().create(UnsplashInterface.class);
 
@@ -106,9 +106,9 @@ public class LoginActivity extends AppCompatActivity {
                             String scope = token.getScope();
                             Log.i(TAG, "onResponse: token: " + accessToken);
 
-                            preferencesViewModel.saveToken(accessToken);
-                            preferencesViewModel.saveTokenType(tokenType);
-                            preferencesViewModel.saveScope(scope);
+                            userDataViewModel.saveToken(accessToken);
+                            userDataViewModel.saveTokenType(tokenType);
+                            userDataViewModel.saveScope(scope);
 
                             getMeData(accessToken);
                         } else {
@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                     Me me = response.body();
                     assert me != null;
                     String username = me.getUsername();
-                    preferencesViewModel.saveMe(me);
+                    userDataViewModel.saveMe(me);
                     getPublicData(token, username);
                 } else {
                     dialogUtils.showAlertDialog(LoginActivity.this);
@@ -161,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                     ProfileImage profileImage = user.getProfileImage();
                     String large = profileImage.getLarge();
 
-                    preferencesViewModel.saveProfileImage(large);
+                    userDataViewModel.saveProfileImage(large);
 
                     binding.progressBarLogin.setVisibility(View.INVISIBLE);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));

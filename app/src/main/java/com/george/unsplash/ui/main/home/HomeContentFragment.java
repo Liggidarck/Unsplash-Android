@@ -13,9 +13,11 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.george.unsplash.databinding.HomeContentFragmentBinding;
+import com.george.unsplash.localdata.preferences.app.AppPreferenceViewModel;
 import com.george.unsplash.localdata.topic.TopicData;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.photo.Urls;
@@ -34,6 +36,7 @@ public class HomeContentFragment extends Fragment {
     private HomeContentFragmentBinding binding;
 
     private TopicDatabaseViewModel topicDatabaseViewModel;
+    private AppPreferenceViewModel appPreferenceViewModel;
     private PhotoViewModel photoViewModel;
 
     TopicAdapter topicAdapter = new TopicAdapter();
@@ -123,15 +126,17 @@ public class HomeContentFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     void fetchPhotos(String topicSlug) {
+        binding.progressBarHomeContent.setVisibility(View.VISIBLE);
         photoViewModel
-                .getTopicsPhotos(topicSlug, page)
+                .getTopicsPhotos(topicSlug, page, appPreferenceViewModel.getPerPage())
                 .observe(HomeContentFragment.this.requireActivity(), photoResponse -> {
-                    if(photoResponse == null) {
+                    if (photoResponse == null) {
                         dialogUtils.showAlertDialog(HomeContentFragment.this.requireActivity());
                         return;
                     }
                     photos.addAll(photoResponse);
                     photosAdapter.notifyDataSetChanged();
+                    binding.progressBarHomeContent.setVisibility(View.INVISIBLE);
                 });
         page++;
     }
@@ -142,12 +147,19 @@ public class HomeContentFragment extends Fragment {
 
         topicDatabaseViewModel = new ViewModelProvider(this)
                 .get(TopicDatabaseViewModel.class);
+
+        appPreferenceViewModel = new ViewModelProvider(this)
+                .get(AppPreferenceViewModel.class);
     }
 
     private void initRecyclerView() {
         photosAdapter = new PhotosAdapter(HomeContentFragment.this.requireActivity(), photos);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+
+        Log.e(TAG, "initRecyclerView: " + appPreferenceViewModel.isGrid() );
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), appPreferenceViewModel.getGridPhotos());
         binding.homeRecyclerView.setLayoutManager(gridLayoutManager);
+
         binding.homeRecyclerView.setHasFixedSize(true);
         binding.homeRecyclerView.setAdapter(photosAdapter);
 

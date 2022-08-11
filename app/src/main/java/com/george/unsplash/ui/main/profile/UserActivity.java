@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.bumptech.glide.Glide;
 import com.george.unsplash.R;
 import com.george.unsplash.databinding.ProfileFragmentBinding;
+import com.george.unsplash.localdata.preferences.app.AppPreferenceViewModel;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.network.viewmodel.UserViewModel;
@@ -27,6 +28,8 @@ public class UserActivity extends AppCompatActivity {
 
     private UserViewModel userViewModel;
     private PhotoViewModel photoViewModel;
+    private AppPreferenceViewModel appPreferenceViewModel;
+
     private PhotosAdapter photosAdapter;
     private List<Photo> photoList;
 
@@ -48,6 +51,7 @@ public class UserActivity extends AppCompatActivity {
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
+        appPreferenceViewModel = new ViewModelProvider(this).get(AppPreferenceViewModel.class);
 
         binding.topAppBarProfile.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         binding.topAppBarProfile.setNavigationOnClickListener(view -> onBackPressed());
@@ -61,7 +65,8 @@ public class UserActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         photosAdapter = new PhotosAdapter(UserActivity.this, photoList);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(UserActivity.this, 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(UserActivity.this,
+                appPreferenceViewModel.getGridPhotos());
         binding.profileRecyclerView.setHasFixedSize(true);
         binding.profileRecyclerView.setLayoutManager(gridLayoutManager);
         binding.profileRecyclerView.setAdapter(photosAdapter);
@@ -83,7 +88,7 @@ public class UserActivity extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     private void getPhotos() {
         photoViewModel
-                .getUserPhotos(username, page)
+                .getUserPhotos(username, page, appPreferenceViewModel.getPerPage())
                 .observe(UserActivity.this, photoList -> {
                     this.photoList.addAll(photoList);
                     photosAdapter.notifyDataSetChanged();

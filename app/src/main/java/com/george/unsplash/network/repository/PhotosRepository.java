@@ -3,7 +3,6 @@ package com.george.unsplash.network.repository;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.george.unsplash.localdata.preferences.PreferencesViewModel;
 import com.george.unsplash.network.api.UnsplashInterface;
 import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
@@ -99,10 +98,10 @@ public class PhotosRepository {
         return photos;
     }
 
-    public MutableLiveData<List<Photo>> getUserPhotos(String username, int page) {
+    public MutableLiveData<List<Photo>> getUserPhotos(String username, int page, int perPage) {
         MutableLiveData<List<Photo>> photos = new MutableLiveData<>();
 
-        unsplashInterface.getUserPhotos(username, page).enqueue(new Callback<List<Photo>>() {
+        unsplashInterface.getUserPhotos(username, page, perPage).enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
                 if (response.code() == 200) {
@@ -119,10 +118,11 @@ public class PhotosRepository {
         return photos;
     }
 
-    public MutableLiveData<Search> findPhotos(String query, int page, String color, String orientation) {
+    public MutableLiveData<Search> findPhotos(String query, int page, String color,
+                                              String orientation, int perPage) {
         MutableLiveData<Search> search = new MutableLiveData<>();
 
-        unsplashInterface.findPhotos(query, page, color, orientation).enqueue(new Callback<Search>() {
+        unsplashInterface.findPhotos(query, page, color, orientation, perPage).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(@NonNull Call<Search> call, @NonNull Response<Search> response) {
                 if (response.code() == 200) {
@@ -179,10 +179,10 @@ public class PhotosRepository {
         return topic;
     }
 
-    public MutableLiveData<List<Photo>> getTopicsPhotos(String slug, int page) {
+    public MutableLiveData<List<Photo>> getTopicsPhotos(String slug, int page, int perPage) {
         MutableLiveData<List<Photo>> photos = new MutableLiveData<>();
 
-        unsplashInterface.getTopicPhotos(slug, page).enqueue(new Callback<List<Photo>>() {
+        unsplashInterface.getTopicPhotos(slug, page, perPage).enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
                 if (response.code() == 200) {

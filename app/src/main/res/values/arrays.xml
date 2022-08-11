@@ -1,5 +1,5 @@
 <resources>
-    <string-array name="searchColors" >
+    <string-array name="searchColors">
         <item>Any</item>
         <item>black_and_white</item>
         <item>black</item>
@@ -20,5 +20,22 @@
         <item>portrait</item>
         <item>squarish</item>
     </string-array>
+
+    <string-array name="perPageData">
+        <item>2</item>
+        <item>3</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+    </string-array>
+
+    <string-array name="gridPhotos" >
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
 
 </resources>

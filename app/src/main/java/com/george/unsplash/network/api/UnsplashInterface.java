@@ -41,7 +41,8 @@ public interface UnsplashInterface {
 
     @GET("/topics/{id_or_slug}/photos")
     Call<List<Photo>> getTopicPhotos(@Path("id_or_slug") String slug,
-                                     @Query("page") int page);
+                                     @Query("page") int page,
+                                     @Query("per_page") int perPage);
 
     @GET("photos/{id}")
     Call<Photo> getPhoto(@Path("id") String id);
@@ -56,11 +57,13 @@ public interface UnsplashInterface {
     Call<Search> findPhotos(@Query("query") String query,
                             @Query("page") int page,
                             @Query("color") String color,
-                            @Query("orientation") String orientation);
+                            @Query("orientation") String orientation,
+                            @Query("per_page") int perPage);
 
     @GET("users/{username}/photos")
     Call<List<Photo>> getUserPhotos(@Path("username") String username,
-                                    @Query("page") int page);
+                                    @Query("page") int page,
+                                    @Query("per_page") int perPage);
 
     @GET("users/{username}/likes")
     Call<List<Photo>> getUserLikePhotos(@Path("username") String username,

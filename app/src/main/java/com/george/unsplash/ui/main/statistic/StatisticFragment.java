@@ -23,7 +23,7 @@ import com.anychart.enums.MarkerType;
 import com.anychart.enums.TooltipPositionMode;
 import com.anychart.graphics.vector.Stroke;
 import com.george.unsplash.databinding.StatisticFragmentBinding;
-import com.george.unsplash.localdata.preferences.PreferencesViewModel;
+import com.george.unsplash.localdata.preferences.user.UserDataViewModel;
 import com.george.unsplash.network.models.Statistic.Statistic;
 import com.george.unsplash.network.models.Statistic.Values;
 import com.george.unsplash.network.viewmodel.StatisticViewModel;
@@ -38,11 +38,11 @@ public class StatisticFragment extends Fragment {
     private StatisticFragmentBinding binding;
 
     private StatisticViewModel statisticViewModel;
-    private PreferencesViewModel preferencesViewModel;
+    private UserDataViewModel userDataViewModel;
 
     private final DialogUtils dialogUtils = new DialogUtils();
 
-    private AnyChartView viewsChart;
+    private AnyChartView chart;
     private double views = 0.0;
     private double downloads = 0.0;
 
@@ -54,32 +54,13 @@ public class StatisticFragment extends Fragment {
         binding = StatisticFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
+        userDataViewModel = new ViewModelProvider(this).get(UserDataViewModel.class);
         statisticViewModel = new ViewModelProvider(this).get(StatisticViewModel.class);
-        String username = preferencesViewModel.getMe().getUsername();
+        String username = userDataViewModel.getMe().getUsername();
 
-        viewsChart = binding.viewsChartView;
+        chart = binding.viewsChartView;
 
         getViewsStatistic(username);
-
-        statisticViewModel
-                .getStatistic(username)
-                .observe(StatisticFragment.this.requireActivity(), statistic -> {
-                    if(statistic == null) {
-                        dialogUtils.showAlertDialog(StatisticFragment.this.requireActivity());
-                        binding.progressBarStats.setVisibility(View.INVISIBLE);
-                        return;
-                    }
-
-                    List<Values> valuesDownloads = statistic.getDownloads().getHistorical().getValues();
-                    for(Values value: valuesDownloads) {
-                        downloads += value.getValue();
-                    }
-
-                    int lastMothDownloads = (int) downloads;
-                    String textDownloads = "Downloads: " + lastMothDownloads;
-                    binding.downloadsTextView.setText(textDownloads);
-                });
 
         return root;
     }
@@ -88,7 +69,7 @@ public class StatisticFragment extends Fragment {
         statisticViewModel
                 .getStatistic(username)
                 .observe(StatisticFragment.this.requireActivity(), statistic -> {
-                    if(statistic == null) {
+                    if (statistic == null) {
                         dialogUtils.showAlertDialog(StatisticFragment.this.requireActivity());
                         binding.progressBarStats.setVisibility(View.INVISIBLE);
                         return;
@@ -98,6 +79,8 @@ public class StatisticFragment extends Fragment {
                     Cartesian cartesian = initLineChart();
 
                     List<Values> valuesViews = statistic.getViews().getHistorical().getValues();
+                    List<Values> valuesDownloads = statistic.getDownloads().getHistorical().getValues();
+
                     LocalDate localDate;
 
                     for (Values value : valuesViews) {
@@ -112,9 +95,16 @@ public class StatisticFragment extends Fragment {
                         }
                     }
 
-                    setViewsText();
-                    setViews(viewsData, cartesian);
+                    for (Values value : valuesDownloads) {
+                        downloads += value.getValue();
+                    }
 
+                    int lastMothDownloads = (int) downloads;
+                    String textDownloads = "Downloads: " + lastMothDownloads;
+                    binding.downloadsTextView.setText(textDownloads);
+
+                    setViewsText();
+                    setData(viewsData, cartesian);
                     binding.progressBarStats.setVisibility(View.INVISIBLE);
                 });
     }
@@ -125,24 +115,25 @@ public class StatisticFragment extends Fragment {
         binding.viewsTextView.setText(textViews);
     }
 
-    private void setViews(List<DataEntry> viewsData, Cartesian cartesian) {
+    private void setData(List<DataEntry> viewsData, Cartesian cartesian) {
         Set set = Set.instantiate();
         set.data(viewsData);
-        Mapping mapping = set.mapAs("{ x: 'x', value: 'value' }");
 
-        Line line = cartesian.line(mapping);
-        line.name("Views");
-        line.hovered().markers().enabled(true);
-        line.hovered().markers()
+        Mapping mappingViews = set.mapAs("{ x: 'x', value: 'value' }");
+
+        Line views = cartesian.line(mappingViews);
+        views.name("Views");
+        views.hovered().markers().enabled(true);
+        views.hovered().markers()
                 .type(MarkerType.CIRCLE)
                 .size(4d);
-        line.tooltip()
+        views.tooltip()
                 .position("right")
                 .anchor(Anchor.LEFT_CENTER)
                 .offsetX(5d)
                 .offsetY(5d);
 
-        viewsChart.setChart(cartesian);
+        chart.setChart(cartesian);
     }
 
     @NonNull

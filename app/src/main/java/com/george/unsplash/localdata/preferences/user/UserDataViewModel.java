@@ -1,4 +1,4 @@
-package com.george.unsplash.localdata.preferences;
+package com.george.unsplash.localdata.preferences.user;
 
 import android.app.Application;
 
@@ -7,13 +7,13 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.george.unsplash.network.models.user.Me;
 
-public class PreferencesViewModel extends AndroidViewModel {
+public class UserDataViewModel extends AndroidViewModel {
 
-    PreferencesRepository repository;
+    UserDataRepository repository;
 
-    public PreferencesViewModel(@NonNull Application application) {
+    public UserDataViewModel(@NonNull Application application) {
         super(application);
-        repository = new PreferencesRepository(application);
+        repository = new UserDataRepository(application);
     }
 
     public void saveToken(String token) {
