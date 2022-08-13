@@ -18,10 +18,6 @@ public class AppPreferenceViewModel extends AndroidViewModel {
         return repository.getPerPage();
     }
 
-    public boolean isGrid() {
-        return repository.isGrid();
-    }
-
     public int getGridPhotos() {
         return repository.getGridPhotos();
     }

@@ -4,8 +4,6 @@ public interface AppPreferencesBehaviour {
 
     int getPerPage();
 
-    boolean isGrid();
-
     int getGridPhotos();
 
 }

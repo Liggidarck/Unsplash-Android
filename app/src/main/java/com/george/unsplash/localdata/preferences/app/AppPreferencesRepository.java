@@ -20,11 +20,6 @@ public class AppPreferencesRepository implements AppPreferencesBehaviour {
     }
 
     @Override
-    public boolean isGrid() {
-        return sharedPreferences.getBoolean("grid_shows_preference", true);
-    }
-
-    @Override
     public int getGridPhotos() {
         return Integer.parseInt(sharedPreferences.getString("grid_photos_preference", "2"));
     }

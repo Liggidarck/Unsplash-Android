@@ -155,8 +155,6 @@ public class HomeContentFragment extends Fragment {
     private void initRecyclerView() {
         photosAdapter = new PhotosAdapter(HomeContentFragment.this.requireActivity(), photos);
 
-        Log.e(TAG, "initRecyclerView: " + appPreferenceViewModel.isGrid() );
-
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), appPreferenceViewModel.getGridPhotos());
         binding.homeRecyclerView.setLayoutManager(gridLayoutManager);
 

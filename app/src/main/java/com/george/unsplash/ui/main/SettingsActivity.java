@@ -26,7 +26,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         userDataViewModel = new ViewModelProvider(this).get(UserDataViewModel.class);
 
-        binding.settingsToolbar.setNavigationOnClickListener(v -> onBackPressed());
+        binding.settingsToolbar.setNavigationOnClickListener(v ->
+                startActivity(new Intent(this, MainActivity.class))
+        );
 
         binding.btnLogout.setOnClickListener(v -> {
             userDataViewModel.logout();
@@ -47,5 +49,10 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 }

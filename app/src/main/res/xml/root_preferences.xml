@@ -1,5 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Photos">
+    <PreferenceCategory android:title="Photos" >
+
         <ListPreference
             android:defaultValue="10"
             android:entries="@array/perPageData"
@@ -7,19 +8,12 @@
             android:key="per_page_preference"
             android:title="Max number of images to upload" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="grid_shows_preference"
-            android:persistent="false"
-            android:title="Display grid photos" />
-
         <ListPreference
             android:defaultValue="2"
             android:entries="@array/gridPhotos"
             android:entryValues="@array/gridPhotos"
             android:key="grid_photos_preference"
-            android:title="Max displaying photos in grid"
-            android:dependency="grid_shows_preference" />
+            android:title="Max displaying photos in grid" />
 
     </PreferenceCategory>
 </PreferenceScreen>
