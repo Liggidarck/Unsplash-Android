@@ -26,8 +26,8 @@ public class TopicDatabaseViewModel extends AndroidViewModel {
         repository.insert(topicData);
     }
 
-    public void update(TopicData topicData) {
-        repository.update(topicData);
+    public void clear() {
+        repository.clear();
     }
 
     public LiveData<List<TopicData>> getAllTopics() {

@@ -52,12 +52,6 @@ public class UserDataRepository implements UserDataBehaviour {
     }
 
     @Override
-    public void saveTokenType(String tokenType) {
-        editor.putString(USER_TOKEN_TYPE, tokenType);
-        editor.apply();
-    }
-
-    @Override
     public void saveScope(String scope) {
         editor.putString(USER_SCOPE, scope);
         editor.apply();
@@ -122,7 +116,7 @@ public class UserDataRepository implements UserDataBehaviour {
 
     @Override
     public String getToken() {
-        return sharedPreferences.getString(USER_TOKEN, "");
+        return sharedPreferences.getString(USER_TOKEN, null);
     }
 
     @Override
@@ -168,6 +162,32 @@ public class UserDataRepository implements UserDataBehaviour {
     }
 
     @Override
+    public void clearMe() {
+        editor.putString(USER_FIRST_NAME, null);
+        editor.putString(USER_LAST_NAME, null);
+        editor.putString(USER_TWITTER_USERNAME, null);
+        editor.putString(USER_PORTFOLIO_URL, null);
+        editor.putString(USER_BIO, null);
+        editor.putString(USER_LOCATION, null);
+        editor.putInt(USER_TOTAL_LIKES, 0);
+        editor.putInt(USER_TOTAL_PHOTOS, 0);
+        editor.putInt(USER_TOTAL_COLLECTIONS, 0);
+        editor.putBoolean(USER_FOLLOWED_BY_USER, false);
+        editor.putInt(USER_DOWNLOADS, 0);
+        editor.putInt(USER_UPLOADS_REMAINING, 0);
+        editor.putString(USER_INSTAGRAM_USERNAME,null);
+        editor.putString(USER_EMAIL, null);
+        editor.putString(USER_SELF, null);
+        editor.putString(USER_HTML, null);
+        editor.putString(USER_PHOTOS, null);
+        editor.putString(USER_LIKES, null);
+        editor.putString(USER_PORTFOLIO, null);
+        editor.putString(USER_PROFILE_IMAGE_LARGE, null);
+
+        editor.apply();
+    }
+
+    @Override
     public String getProfileImage() {
         return sharedPreferences.getString(USER_PROFILE_IMAGE_LARGE, "");
     }
@@ -195,6 +215,7 @@ public class UserDataRepository implements UserDataBehaviour {
         editor.putString(USER_PHOTOS, null);
         editor.putString(USER_LIKES, null);
         editor.putString(USER_PORTFOLIO, null);
+        editor.putString(USER_PROFILE_IMAGE_LARGE, null);
 
         editor.putString(USER_TOKEN, null);
         editor.putString(USER_TOKEN_TYPE, null);

@@ -3,17 +3,12 @@ package com.george.unsplash.ui.main.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,10 +21,8 @@ import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.network.viewmodel.TopicDatabaseViewModel;
 import com.george.unsplash.ui.adapters.TopicAdapter;
 import com.george.unsplash.ui.main.SettingsActivity;
-import com.george.unsplash.utils.DialogUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -63,10 +56,11 @@ public class HomeFragment extends Fragment {
         topicDatabaseViewModel
                 .getAllTopics()
                 .observe(HomeFragment.this.requireActivity(), topicData -> {
-                    if (topicData.isEmpty()) {
+                    if(topicData.isEmpty()) {
                         getTopicsFromApi();
+                    } else {
+                        topicAdapter.addTopics(topicData);
                     }
-                    topicAdapter.addTopics(topicData);
                 });
 
         topicAdapter.setOnClickItemListener((topic, position) -> startContentFragment(position));
@@ -107,13 +101,13 @@ public class HomeFragment extends Fragment {
     }
 
     void saveTopics(List<Topic> topics) {
-        for (int i = 0; i < topics.size(); i++) {
-            Topic topic = topics.get(i);
+        for(Topic topic : topics) {
             String title = topic.getTitle();
             String description = topic.getDescription();
             String slug = topic.getSlug();
             int totalPhotos = topic.getTotalPhotos();
             TopicData topicData = new TopicData(title, description, totalPhotos, slug);
+            Log.d(TAG, "saveTopics: " + title);
             topicDatabaseViewModel.insert(topicData);
         }
     }

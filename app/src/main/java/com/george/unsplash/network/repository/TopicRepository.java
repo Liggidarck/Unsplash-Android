@@ -28,8 +28,8 @@ public class TopicRepository {
         service.execute(() -> topicDao.insert(topicData));
     }
 
-    public void update(TopicData topicData) {
-        service.execute(() -> topicDao.update(topicData));
+    public void clear() {
+        service.execute(topicDao::clear);
     }
 
     public LiveData<List<TopicData>> getAllTopics() {

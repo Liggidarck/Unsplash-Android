@@ -6,8 +6,6 @@ public interface UserDataBehaviour {
 
     void saveToken(String token);
 
-    void saveTokenType(String tokenType);
-
     void saveScope(String scope);
 
     void saveMe(Me me);
@@ -21,6 +19,8 @@ public interface UserDataBehaviour {
     String getScope();
 
     Me getMe();
+
+    void clearMe();
 
     String getProfileImage();
 

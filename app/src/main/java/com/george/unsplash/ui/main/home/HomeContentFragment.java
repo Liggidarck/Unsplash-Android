@@ -13,7 +13,6 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.george.unsplash.databinding.HomeContentFragmentBinding;
@@ -100,6 +99,7 @@ public class HomeContentFragment extends Fragment {
                         binding.swipeRefreshHomeContent.setOnRefreshListener(() -> {
                             photos.clear();
                             fetchPhotos(topic.getSlug());
+                            topicDatabaseViewModel.clear();
                             binding.swipeRefreshHomeContent.setRefreshing(false);
                         });
                     }

@@ -20,10 +20,6 @@ public class UserDataViewModel extends AndroidViewModel {
         repository.saveToken(token);
     }
 
-    public void saveTokenType(String tokenType) {
-        repository.saveTokenType(tokenType);
-    }
-
     public void saveScope(String scope) {
         repository.saveScope(scope);
     }
@@ -40,16 +36,12 @@ public class UserDataViewModel extends AndroidViewModel {
         return repository.getToken();
     }
 
-    public String getTokenType() {
-        return repository.getTokenType();
-    }
-
-    public String getScope() {
-        return repository.getScope();
-    }
-
     public Me getMe() {
         return repository.getMe();
+    }
+
+    public void clearMe() {
+        repository.clearMe();
     }
 
     public String getProfileImage() {

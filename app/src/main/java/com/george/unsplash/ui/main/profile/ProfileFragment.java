@@ -2,6 +2,7 @@ package com.george.unsplash.ui.main.profile;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +21,22 @@ import com.george.unsplash.R;
 import com.george.unsplash.databinding.ProfileFragmentBinding;
 import com.george.unsplash.localdata.preferences.app.AppPreferenceViewModel;
 import com.george.unsplash.localdata.preferences.user.UserDataViewModel;
+import com.george.unsplash.network.api.UnsplashInterface;
+import com.george.unsplash.network.api.UnsplashTokenClient;
 import com.george.unsplash.network.models.photo.Photo;
 import com.george.unsplash.network.models.user.Me;
+import com.george.unsplash.network.models.user.common.ProfileImage;
+import com.george.unsplash.network.models.user.common.User;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
 import com.george.unsplash.utils.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileFragment extends Fragment {
 
@@ -82,6 +91,51 @@ public class ProfileFragment extends Fragment {
             bundle.putString("username", username);
             bundle.putBoolean("isUser", true);
             navController.navigate(R.id.action_navigation_profile_to_userCollectionsFragment, bundle);
+        });
+
+        binding.swipeRefreshProfile.setOnRefreshListener(() -> {
+            userDataViewModel.clearMe();
+
+            UnsplashInterface unsplashInterface = UnsplashTokenClient
+                    .getUnsplashTokenClient(userDataViewModel.getToken())
+                    .create(UnsplashInterface.class);
+
+            unsplashInterface.getMeData().enqueue(new Callback<Me>() {
+                @Override
+                public void onResponse(@NonNull Call<Me> call, @NonNull Response<Me> response) {
+                    if (response.code() == 200) {
+                        Me me = response.body();
+                        assert me != null;
+                        userDataViewModel.saveMe(me);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Me> call, @NonNull Throwable t) {
+                    Log.e(TAG, "onFailure: " + t.getMessage());
+                }
+            });
+
+            unsplashInterface.getUserData(username).enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                    if (response.code() == 200) {
+                        User user = response.body();
+                        assert user != null;
+                        ProfileImage profileImage = user.getProfileImage();
+                        String large = profileImage.getLarge();
+
+                        userDataViewModel.saveProfileImage(large);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                    Log.e(TAG, "onFailure: " + t.getMessage());
+                }
+            });
+
+            binding.swipeRefreshProfile.setRefreshing(false);
         });
 
         return root;

@@ -9,19 +9,18 @@
         android:id="@+id/navigation_home"
         android:name="com.george.unsplash.ui.main.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/home_fragment"/>
+        tools:layout="@layout/home_fragment" />
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.george.unsplash.ui.main.profile.ProfileFragment"
         android:label="ProfileFragment"
-        tools:layout="@layout/profile_fragment" >
+        tools:layout="@layout/profile_fragment">
+
         <action
             android:id="@+id/action_navigation_profile_to_userCollectionsFragment"
             app:destination="@id/userCollectionsFragment" />
-        <action
-            android:id="@+id/action_navigation_profile_to_likesFragment"
-            app:destination="@id/likesFragment" />
+
     </fragment>
 
     <fragment
@@ -34,16 +33,12 @@
         android:id="@+id/navigation_search"
         android:name="com.george.unsplash.ui.main.search.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/search_fragment"/>
+        tools:layout="@layout/search_fragment" />
+
     <fragment
         android:id="@+id/userCollectionsFragment"
         android:name="com.george.unsplash.ui.main.profile.CollectionsFragment"
         android:label="UserCollectionsFragment"
-        tools:layout="@layout/user_collection_fragment"/>
-    <fragment
-        android:id="@+id/likesFragment"
-        android:name="com.george.unsplash.ui.main.profile.LikesFragment"
-        android:label="LikesFragment"
-        tools:layout="@layout/likes_profile_fragment"/>
+        tools:layout="@layout/user_collection_fragment" />
 
 </navigation>

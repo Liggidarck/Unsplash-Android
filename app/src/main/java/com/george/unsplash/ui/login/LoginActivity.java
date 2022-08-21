@@ -102,12 +102,10 @@ public class LoginActivity extends AppCompatActivity {
                             Token token = response.body();
                             assert token != null;
                             String accessToken = token.getAccess_token();
-                            String tokenType = token.getToken_type();
                             String scope = token.getScope();
                             Log.i(TAG, "onResponse: token: " + accessToken);
 
                             userDataViewModel.saveToken(accessToken);
-                            userDataViewModel.saveTokenType(tokenType);
                             userDataViewModel.saveScope(scope);
 
                             getMeData(accessToken);
