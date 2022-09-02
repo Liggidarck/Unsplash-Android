@@ -13,7 +13,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -72,8 +72,7 @@ public class ProfileFragment extends Fragment {
 
         photoList = new ArrayList<>();
 
-        navController = Navigation.findNavController(ProfileFragment.this.requireActivity(),
-                R.id.nav_host_fragment_activity_main);
+        navController = NavHostFragment.findNavController(this);
     }
 
     @Nullable
@@ -93,52 +92,54 @@ public class ProfileFragment extends Fragment {
             navController.navigate(R.id.action_navigation_profile_to_userCollectionsFragment, bundle);
         });
 
-        binding.swipeRefreshProfile.setOnRefreshListener(() -> {
-            userDataViewModel.clearMe();
-
-            UnsplashInterface unsplashInterface = UnsplashTokenClient
-                    .getUnsplashTokenClient(userDataViewModel.getToken())
-                    .create(UnsplashInterface.class);
-
-            unsplashInterface.getMeData().enqueue(new Callback<Me>() {
-                @Override
-                public void onResponse(@NonNull Call<Me> call, @NonNull Response<Me> response) {
-                    if (response.code() == 200) {
-                        Me me = response.body();
-                        assert me != null;
-                        userDataViewModel.saveMe(me);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<Me> call, @NonNull Throwable t) {
-                    Log.e(TAG, "onFailure: " + t.getMessage());
-                }
-            });
-
-            unsplashInterface.getUserData(username).enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                    if (response.code() == 200) {
-                        User user = response.body();
-                        assert user != null;
-                        ProfileImage profileImage = user.getProfileImage();
-                        String large = profileImage.getLarge();
-
-                        userDataViewModel.saveProfileImage(large);
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                    Log.e(TAG, "onFailure: " + t.getMessage());
-                }
-            });
-
-            binding.swipeRefreshProfile.setRefreshing(false);
-        });
+        binding.topAppBarProfile.setNavigationOnClickListener(v -> updateUserInfo());
 
         return root;
+    }
+
+    private void updateUserInfo() {
+        userDataViewModel.clearMe();
+
+        UnsplashInterface unsplashInterface = UnsplashTokenClient
+                .getUnsplashTokenClient(userDataViewModel.getToken())
+                .create(UnsplashInterface.class);
+
+        unsplashInterface.getMeData().enqueue(new Callback<Me>() {
+            @Override
+            public void onResponse(@NonNull Call<Me> call, @NonNull Response<Me> response) {
+                if (response.code() == 200) {
+                    Me me = response.body();
+                    assert me != null;
+                    userDataViewModel.saveMe(me);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Me> call, @NonNull Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+
+        unsplashInterface.getUserData(username).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if (response.code() == 200) {
+                    User user = response.body();
+                    assert user != null;
+                    ProfileImage profileImage = user.getProfileImage();
+                    String large = profileImage.getLarge();
+
+                    userDataViewModel.saveProfileImage(large);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+
+        navController.popBackStack();
     }
 
     private void initRecyclerViewPhotos() {

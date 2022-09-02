@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -41,6 +43,7 @@ public class HomeContentFragment extends Fragment {
     TopicAdapter topicAdapter = new TopicAdapter();
     PhotosAdapter photosAdapter;
     private List<Photo> photos;
+    private NavController navController;
 
     private final DialogUtils dialogUtils = new DialogUtils();
 
@@ -52,6 +55,10 @@ public class HomeContentFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         photos = new ArrayList<>();
+
+        initViewModels();
+
+        navController = NavHostFragment.findNavController(this);
     }
 
     @Nullable
@@ -62,8 +69,6 @@ public class HomeContentFragment extends Fragment {
 
         Bundle args = getArguments();
         assert args != null;
-
-        initViewModels();
 
         int position = args.getInt("position");
 
@@ -101,6 +106,8 @@ public class HomeContentFragment extends Fragment {
                             fetchPhotos(topic.getSlug());
                             topicDatabaseViewModel.clear();
                             binding.swipeRefreshHomeContent.setRefreshing(false);
+
+                            navController.popBackStack();
                         });
                     }
                 });
