@@ -12,8 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -43,7 +41,6 @@ public class HomeContentFragment extends Fragment {
     TopicAdapter topicAdapter = new TopicAdapter();
     PhotosAdapter photosAdapter;
     private List<Photo> photos;
-    private NavController navController;
 
     private final DialogUtils dialogUtils = new DialogUtils();
 
@@ -57,8 +54,6 @@ public class HomeContentFragment extends Fragment {
         photos = new ArrayList<>();
 
         initViewModels();
-
-        navController = NavHostFragment.findNavController(this);
     }
 
     @Nullable
@@ -83,33 +78,26 @@ public class HomeContentFragment extends Fragment {
         topicDatabaseViewModel
                 .getAllTopics()
                 .observe(HomeContentFragment.this.requireActivity(), topicData -> {
-                    topicAdapter.addTopics(topicData);
-                    Log.d(TAG, "initHomePage: " + topicData);
-                    if (!topicData.isEmpty()) {
-                        TopicData topic = topicAdapter.getTopicAt(position);
-                        binding.titleHomeTextView.setText(topic.getTitle());
-                        binding.descriptionHomeTextView.setText(topic.getDescription());
-                        getMainImage(topic.getSlug());
-
-                        binding.homeContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
-                                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                                    if (v.getChildAt(v.getChildCount() - 1) != null) {
-                                        if ((scrollY >= (v.getChildAt(v.getChildCount() - 1)
-                                                .getMeasuredHeight() - v.getMeasuredHeight())) && scrollY > oldScrollY) {
-                                            fetchPhotos(topic.getSlug());
-                                        }
-                                    }
-                                });
-
-                        binding.swipeRefreshHomeContent.setOnRefreshListener(() -> {
-                            photos.clear();
-                            fetchPhotos(topic.getSlug());
-                            topicDatabaseViewModel.clear();
-                            binding.swipeRefreshHomeContent.setRefreshing(false);
-
-                            navController.popBackStack();
-                        });
+                    if (topicData.isEmpty()) {
+                        return;
                     }
+                    topicAdapter.addTopics(topicData);
+
+                    TopicData topic = topicAdapter.getTopicAt(position);
+                    binding.titleHomeTextView.setText(topic.getTitle());
+                    binding.descriptionHomeTextView.setText(topic.getDescription());
+                    getMainImage(topic.getSlug());
+
+                    binding.homeContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                            (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                                if (v.getChildAt(v.getChildCount() - 1) != null) {
+                                    if ((scrollY >= (v.getChildAt(v.getChildCount() - 1)
+                                            .getMeasuredHeight() - v.getMeasuredHeight())) && scrollY > oldScrollY) {
+                                        fetchPhotos(topic.getSlug());
+                                    }
+                                }
+                            });
+
                 });
     }
 
