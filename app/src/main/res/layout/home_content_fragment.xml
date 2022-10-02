@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipeRefreshHomeContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/homeContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -15,7 +16,7 @@
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="230dp" >
 
                 <ImageView
                     android:id="@+id/homeMainImage"
@@ -24,15 +25,21 @@
                     android:scaleType="center"
                     android:src="@color/black" />
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:src="@color/black"
+                    android:alpha="0.25" />
+
                 <TextView
                     android:id="@+id/titleHomeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="30dp"
+                    android:textColor="@color/white"
                     android:textSize="40sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/descriptionHomeTextView"
@@ -42,7 +49,7 @@
                     android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
                     android:layout_marginBottom="30dp"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white" />
 
             </RelativeLayout>
 
@@ -69,4 +76,4 @@
 
     </androidx.core.widget.NestedScrollView>
 
-</RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment {
 
         binding.topAppBarHome.inflateMenu(R.menu.home_menu);
         binding.topAppBarHome.setOnMenuItemClickListener(item -> {
-            if(item.getItemId() == R.id.settingsItem)
+            if (item.getItemId() == R.id.settingsItem)
                 startActivity(new Intent(HomeFragment.this.requireActivity(), SettingsActivity.class));
             return false;
         });
@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment {
         topicDatabaseViewModel
                 .getAllTopics()
                 .observe(HomeFragment.this.requireActivity(), topicData -> {
-                    if(topicData.isEmpty()) {
+                    if (topicData.isEmpty()) {
                         getTopicsFromApi();
                     } else {
                         topicAdapter.addTopics(topicData);
@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment {
         topicAdapter.setOnClickItemListener((topic, position) -> startContentFragment(position));
 
         if (savedInstanceState == null)
-            startContentFragment(1);
+            startContentFragment(0);
 
         return view;
     }
@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment {
     }
 
     void saveTopics(List<Topic> topics) {
-        for(Topic topic : topics) {
+        for (Topic topic : topics) {
             String title = topic.getTitle();
             String description = topic.getDescription();
             String slug = topic.getSlug();
@@ -110,6 +110,7 @@ public class HomeFragment extends Fragment {
             Log.d(TAG, "saveTopics: " + title);
             topicDatabaseViewModel.insert(topicData);
         }
+        topicDatabaseViewModel.getAllTopics().observe(this, topicAdapter::addTopics);
     }
 
     @Override

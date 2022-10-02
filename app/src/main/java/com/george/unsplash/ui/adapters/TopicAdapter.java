@@ -44,10 +44,6 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    public TopicData getTopicAt(int position) {
-        return topics.get(position);
-    }
-
     class ViewHolder extends RecyclerView.ViewHolder {
         final TextView titleTopic;
         public ViewHolder(@NonNull View itemView) {

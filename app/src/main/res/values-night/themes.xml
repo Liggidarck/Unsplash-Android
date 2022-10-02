@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.UnsplashApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/gray</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorPrimaryContainer">@color/black</item>
+        <item name="colorOnPrimaryContainer">@color/black</item>
+        <item name="colorPrimaryInverse">@color/black</item>
+
+        <item name="colorSurface">@color/black</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnSurfaceVariant">@color/white</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondaryContainer">@color/black</item>
+        <item name="colorTertiary">@color/black</item>
+        <item name="colorOnTertiary">@color/black</item>
+        <item name="colorTertiaryContainer">@color/black</item>
+        <item name="colorOnTertiaryContainer">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" >@color/black</item>
+        <!-- Customize your theme here. -->
+        <item name="fontFamily">@font/roboto_flex</item>
+        <item name="textColor">@color/white</item>
+        <item name="grayColor">#1A1A1A</item>
+
+    </style>
+</resources>

@@ -1,4 +1,14 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="General">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="dark_theme_preference"
+            android:title="Dark theme" />
+    </PreferenceCategory>
+
+
     <PreferenceCategory android:title="Photos" >
 
         <ListPreference

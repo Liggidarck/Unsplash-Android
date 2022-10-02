@@ -24,7 +24,6 @@ import com.george.unsplash.network.models.topic.CoverPhoto;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
 import com.george.unsplash.network.viewmodel.TopicDatabaseViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
-import com.george.unsplash.ui.adapters.TopicAdapter;
 import com.george.unsplash.utils.DialogUtils;
 
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ public class HomeContentFragment extends Fragment {
     private AppPreferenceViewModel appPreferenceViewModel;
     private PhotoViewModel photoViewModel;
 
-    TopicAdapter topicAdapter = new TopicAdapter();
     PhotosAdapter photosAdapter;
     private List<Photo> photos;
 
@@ -46,15 +44,6 @@ public class HomeContentFragment extends Fragment {
 
     public static final String TAG = HomeContentFragment.class.getSimpleName();
     private int page = 1;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        photos = new ArrayList<>();
-
-        initViewModels();
-    }
 
     @Nullable
     @Override
@@ -64,11 +53,12 @@ public class HomeContentFragment extends Fragment {
 
         Bundle args = getArguments();
         assert args != null;
-
         int position = args.getInt("position");
 
-        initRecyclerView();
+        photos = new ArrayList<>();
 
+        initViewModels();
+        initRecyclerView();
         initHomePage(position);
 
         return root;
@@ -78,26 +68,25 @@ public class HomeContentFragment extends Fragment {
         topicDatabaseViewModel
                 .getAllTopics()
                 .observe(HomeContentFragment.this.requireActivity(), topicData -> {
-                    if (topicData.isEmpty()) {
-                        return;
-                    }
-                    topicAdapter.addTopics(topicData);
 
-                    TopicData topic = topicAdapter.getTopicAt(position);
+                    TopicData topic = topicData.get(position);
                     binding.titleHomeTextView.setText(topic.getTitle());
                     binding.descriptionHomeTextView.setText(topic.getDescription());
                     getMainImage(topic.getSlug());
 
-                    binding.homeContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
-                            (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                                if (v.getChildAt(v.getChildCount() - 1) != null) {
-                                    if ((scrollY >= (v.getChildAt(v.getChildCount() - 1)
-                                            .getMeasuredHeight() - v.getMeasuredHeight())) && scrollY > oldScrollY) {
-                                        fetchPhotos(topic.getSlug());
-                                    }
-                                }
-                            });
+                    binding.homeContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                        if (v.getChildAt(v.getChildCount() - 1) != null) {
+                            if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) && scrollY > oldScrollY) {
+                                fetchPhotos(topic.getSlug());
+                            }
+                        }
+                    });
 
+                    binding.swipeRefreshHomeContent.setOnRefreshListener(() -> {
+                        photos.clear();
+                        fetchPhotos(topic.getSlug());
+                        binding.swipeRefreshHomeContent.setRefreshing(false);
+                    });
                 });
     }
 
