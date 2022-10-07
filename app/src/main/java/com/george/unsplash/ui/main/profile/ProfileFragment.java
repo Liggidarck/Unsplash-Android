@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -92,6 +91,12 @@ public class ProfileFragment extends Fragment {
             navController.navigate(R.id.action_navigation_profile_to_userCollectionsFragment, bundle);
         });
 
+        binding.btnNextPage.setOnClickListener(v -> {
+            binding.profileContent.fullScroll(View.FOCUS_DOWN);
+            binding.profileContent.fullScroll(View.FOCUS_UP);
+            fetchUserPhotos();
+        });
+
         binding.topAppBarProfile.setNavigationOnClickListener(v -> updateUserInfo());
 
         return root;
@@ -144,22 +149,12 @@ public class ProfileFragment extends Fragment {
 
     private void initRecyclerViewPhotos() {
         photosAdapter = new PhotosAdapter(ProfileFragment.this.requireActivity(), photoList);
-        GridLayoutManager gridLayoutManager =
-                new GridLayoutManager(ProfileFragment.this.requireActivity(),
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(ProfileFragment.this.requireActivity(),
                         appPreferenceViewModel.getGridPhotos());
+
         binding.profileRecyclerView.setHasFixedSize(true);
         binding.profileRecyclerView.setLayoutManager(gridLayoutManager);
         binding.profileRecyclerView.setAdapter(photosAdapter);
-
-        binding.profileContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
-                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                    if (v.getChildAt(v.getChildCount() - 1) != null) {
-                        if ((scrollY >= (v.getChildAt(v.getChildCount() - 1)
-                                .getMeasuredHeight() - v.getMeasuredHeight())) && scrollY > oldScrollY) {
-                            fetchUserPhotos();
-                        }
-                    }
-                });
 
         photosAdapter.setOnItemClickListener((photo, position) -> photoViewModel
                 .showFullScreenImage(photo, ProfileFragment.this.requireActivity()));
@@ -174,6 +169,8 @@ public class ProfileFragment extends Fragment {
                         dialogUtils.showAlertDialog(ProfileFragment.this.requireActivity());
                         return;
                     }
+
+                    photoList.clear();
                     photoList.addAll(photos);
                     photosAdapter.notifyDataSetChanged();
                 });

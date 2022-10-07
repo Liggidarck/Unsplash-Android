@@ -68,18 +68,20 @@ public class HomeContentFragment extends Fragment {
         topicDatabaseViewModel
                 .getAllTopics()
                 .observe(HomeContentFragment.this.requireActivity(), topicData -> {
+                    if (topicData.isEmpty()) {
+                        return;
+                    }
 
                     TopicData topic = topicData.get(position);
                     binding.titleHomeTextView.setText(topic.getTitle());
                     binding.descriptionHomeTextView.setText(topic.getDescription());
                     getMainImage(topic.getSlug());
 
-                    binding.homeContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                        if (v.getChildAt(v.getChildCount() - 1) != null) {
-                            if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) && scrollY > oldScrollY) {
-                                fetchPhotos(topic.getSlug());
-                            }
-                        }
+                    binding.btnNextPage.setOnClickListener(v -> {
+                        binding.homeContent.fullScroll(View.FOCUS_DOWN);
+                        binding.homeContent.fullScroll(View.FOCUS_UP);
+
+                        fetchPhotos(topic.getSlug());
                     });
 
                     binding.swipeRefreshHomeContent.setOnRefreshListener(() -> {
@@ -94,15 +96,17 @@ public class HomeContentFragment extends Fragment {
         photoViewModel
                 .getTopic(topicSlug)
                 .observe(HomeContentFragment.this.requireActivity(), topic -> {
-                    Log.d(TAG, "getMainImage: " + topic);
-                    if (topic != null) {
-                        CoverPhoto coverPhoto = topic.getCoverPhoto();
-                        Urls urls = coverPhoto.getUrls();
-
-                        Glide.with(HomeContentFragment.this.requireActivity())
-                                .load(urls.getRegular())
-                                .into(binding.homeMainImage);
+                    if (topic == null) {
+                        return;
                     }
+
+                    CoverPhoto coverPhoto = topic.getCoverPhoto();
+                    Urls urls = coverPhoto.getUrls();
+
+                    Glide.with(HomeContentFragment.this.requireActivity())
+                            .load(urls.getRegular())
+                            .into(binding.homeMainImage);
+
                 });
 
         fetchPhotos(topicSlug);
@@ -110,7 +114,6 @@ public class HomeContentFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     void fetchPhotos(String topicSlug) {
-        binding.progressBarHomeContent.setVisibility(View.VISIBLE);
         photoViewModel
                 .getTopicsPhotos(topicSlug, page, appPreferenceViewModel.getPerPage())
                 .observe(HomeContentFragment.this.requireActivity(), photoResponse -> {
@@ -118,9 +121,10 @@ public class HomeContentFragment extends Fragment {
                         dialogUtils.showAlertDialog(HomeContentFragment.this.requireActivity());
                         return;
                     }
+
+                    photos.clear();
                     photos.addAll(photoResponse);
                     photosAdapter.notifyDataSetChanged();
-                    binding.progressBarHomeContent.setVisibility(View.INVISIBLE);
                 });
         page++;
     }
