@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -67,15 +67,7 @@ public class SearchFragment extends Fragment {
 
         binding.searchBtn.setOnClickListener(v -> search());
 
-        binding.searchContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
-                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                    if (v.getChildAt(v.getChildCount() - 1) != null) {
-                        if ((scrollY >= (v.getChildAt(v.getChildCount() - 1)
-                                .getMeasuredHeight() - v.getMeasuredHeight())) && scrollY > oldScrollY) {
-                            startSearch();
-                        }
-                    }
-                });
+        binding.btnNextPage.setOnClickListener(v -> startSearch());
 
         return root;
     }
@@ -89,6 +81,8 @@ public class SearchFragment extends Fragment {
 
         if (orientation.isEmpty() | orientation.equals("Any"))
             orientation = null;
+
+        binding.navigationButtons.setVisibility(View.VISIBLE);
 
         fetchPhotos(Objects.requireNonNull(binding.searchQueryTextLayout.getEditText()).getText().toString(),
                 color, orientation);
@@ -116,15 +110,22 @@ public class SearchFragment extends Fragment {
                         return;
                     }
                     int totalPhotos = search.getTotal();
+                    int totalPages = search.getTotalPages();
+
                     photos.addAll(search.getResults());
                     photosAdapter.notifyDataSetChanged();
 
-                    String findResultsText = "Images found: " + totalPhotos;
+                    String findResultsText = "Images found: " + totalPhotos + " Total pages: " + totalPages;
                     binding.pages.setText(findResultsText);
                     binding.progressBarSearch.setVisibility(View.INVISIBLE);
-                });
 
-        page += 1;
+                    if(totalPages != page) {
+                        page += 1;
+                    } else {
+                        Toast.makeText(SearchFragment.this.requireActivity(), "This is final page", Toast.LENGTH_SHORT).show();
+                    }
+
+                });
     }
 
     private void initFragmentViews() {

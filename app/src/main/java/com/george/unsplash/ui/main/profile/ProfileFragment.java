@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -92,14 +93,31 @@ public class ProfileFragment extends Fragment {
         });
 
         binding.btnNextPage.setOnClickListener(v -> {
-            binding.profileContent.fullScroll(View.FOCUS_DOWN);
-            binding.profileContent.fullScroll(View.FOCUS_UP);
+            scrollToTop();
+
+            page++;
             fetchUserPhotos();
+        });
+
+        binding.btnPreviousPage.setOnClickListener(v -> {
+            scrollToTop();
+
+            if(page != 1) {
+                page--;
+                fetchUserPhotos();
+            } else {
+                Toast.makeText(ProfileFragment.this.requireActivity(), "This is first page", Toast.LENGTH_SHORT).show();
+            }
         });
 
         binding.topAppBarProfile.setNavigationOnClickListener(v -> updateUserInfo());
 
         return root;
+    }
+
+    private void scrollToTop() {
+        binding.profileContent.fullScroll(View.FOCUS_DOWN);
+        binding.profileContent.fullScroll(View.FOCUS_UP);
     }
 
     private void updateUserInfo() {
@@ -165,8 +183,7 @@ public class ProfileFragment extends Fragment {
         photoViewModel
                 .getUserPhotos(username, page, appPreferenceViewModel.getPerPage())
                 .observe(ProfileFragment.this.requireActivity(), photos -> {
-                    if (photos == null) {
-                        dialogUtils.showAlertDialog(ProfileFragment.this.requireActivity());
+                    if (photos.size() == 0) {
                         return;
                     }
 
@@ -174,7 +191,6 @@ public class ProfileFragment extends Fragment {
                     photoList.addAll(photos);
                     photosAdapter.notifyDataSetChanged();
                 });
-        page++;
     }
 
     private void getUserData() {

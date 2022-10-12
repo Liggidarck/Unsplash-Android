@@ -78,18 +78,33 @@ public class HomeContentFragment extends Fragment {
                     getMainImage(topic.getSlug());
 
                     binding.btnNextPage.setOnClickListener(v -> {
-                        binding.homeContent.fullScroll(View.FOCUS_DOWN);
-                        binding.homeContent.fullScroll(View.FOCUS_UP);
+                        scrollToTop();
+                        binding.swipeRefreshHomeContent.setRefreshing(true);
 
+                        page += 1;
+                        fetchPhotos(topic.getSlug());
+                    });
+
+                    binding.btnPreviousPage.setOnClickListener(v -> {
+                        scrollToTop();
+
+                        page -= 1;
                         fetchPhotos(topic.getSlug());
                     });
 
                     binding.swipeRefreshHomeContent.setOnRefreshListener(() -> {
+                        page = 1;
+
                         photos.clear();
                         fetchPhotos(topic.getSlug());
                         binding.swipeRefreshHomeContent.setRefreshing(false);
                     });
                 });
+    }
+
+    private void scrollToTop() {
+        binding.homeContent.fullScroll(View.FOCUS_DOWN);
+        binding.homeContent.fullScroll(View.FOCUS_UP);
     }
 
     void getMainImage(String topicSlug) {
@@ -126,7 +141,8 @@ public class HomeContentFragment extends Fragment {
                     photos.addAll(photoResponse);
                     photosAdapter.notifyDataSetChanged();
                 });
-        page++;
+
+        binding.swipeRefreshHomeContent.setRefreshing(false);
     }
 
     private void initViewModels() {

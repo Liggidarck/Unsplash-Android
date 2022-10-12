@@ -15,7 +15,7 @@ public class Search implements Serializable {
 
     @SerializedName("total_pages")
     @Expose
-    private int total_pages;
+    private int totalPages;
 
     @SerializedName("results")
     @Expose
@@ -26,8 +26,8 @@ public class Search implements Serializable {
         return total;
     }
 
-    public int getTotal_pages() {
-        return total_pages;
+    public int getTotalPages() {
+        return totalPages;
     }
 
     public List<Photo> getResults() {
