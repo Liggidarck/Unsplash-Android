@@ -31,6 +31,8 @@ public class PhotosRepository {
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
                 if (response.code() == 200) {
                     photo.setValue(response.body());
+                } else {
+                    photo.setValue(null);
                 }
             }
 
@@ -48,7 +50,11 @@ public class PhotosRepository {
         unsplashInterface.likePhoto(id).enqueue(new Callback<Photo>() {
             @Override
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
-                photo.setValue(response.body());
+                if(response.code() == 200) {
+                    photo.setValue(response.body());
+                } else {
+                    photo.setValue(null);
+                }
             }
 
             @Override
@@ -66,6 +72,8 @@ public class PhotosRepository {
             public void onResponse(@NonNull Call<Photo> call, @NonNull Response<Photo> response) {
                 if (response.code() == 200) {
                     photo.setValue(response.body());
+                } else {
+                    photo.setValue(null);
                 }
             }
 
@@ -86,6 +94,8 @@ public class PhotosRepository {
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
                 if (response.code() == 200) {
                     photos.setValue(response.body());
+                } else {
+                    photos.setValue(null);
                 }
             }
 
@@ -106,6 +116,8 @@ public class PhotosRepository {
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
                 if (response.code() == 200) {
                     photos.setValue(response.body());
+                } else {
+                    photos.setValue(null);
                 }
             }
 
@@ -127,6 +139,8 @@ public class PhotosRepository {
             public void onResponse(@NonNull Call<Search> call, @NonNull Response<Search> response) {
                 if (response.code() == 200) {
                     search.setValue(response.body());
+                } else {
+                    search.setValue(null);
                 }
             }
 
@@ -147,6 +161,8 @@ public class PhotosRepository {
             public void onResponse(@NonNull Call<List<Topic>> call, @NonNull Response<List<Topic>> response) {
                 if (response.code() == 200) {
                     listTopic.setValue(response.body());
+                } else {
+                    listTopic.setValue(null);
                 }
             }
 
@@ -167,6 +183,8 @@ public class PhotosRepository {
             public void onResponse(@NonNull Call<Topic> call, @NonNull Response<Topic> response) {
                 if (response.code() == 200) {
                     topic.setValue(response.body());
+                } else {
+                    topic.setValue(null);
                 }
             }
 
@@ -187,6 +205,8 @@ public class PhotosRepository {
             public void onResponse(@NonNull Call<List<Photo>> call, @NonNull Response<List<Photo>> response) {
                 if (response.code() == 200) {
                     photos.setValue(response.body());
+                } else {
+                    photos.setValue(null);
                 }
             }
 

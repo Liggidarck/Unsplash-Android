@@ -6,10 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -59,12 +59,15 @@ public class HomeContentFragment extends Fragment {
 
         initViewModels();
         initRecyclerView();
-        initHomePage(position);
+        initHomeView(position);
 
         return root;
     }
 
-    private void initHomePage(int position) {
+    private void initHomeView(int position) {
+        String currentPage = "Page: " + page;
+        binding.textViewPage.setText(currentPage);
+
         topicDatabaseViewModel
                 .getAllTopics()
                 .observe(HomeContentFragment.this.requireActivity(), topicData -> {
@@ -77,32 +80,44 @@ public class HomeContentFragment extends Fragment {
                     binding.descriptionHomeTextView.setText(topic.getDescription());
                     getMainImage(topic.getSlug());
 
-                    binding.btnNextPage.setOnClickListener(v -> {
-                        scrollToTop();
-                        binding.swipeRefreshHomeContent.setRefreshing(true);
-
-                        page += 1;
-                        fetchPhotos(topic.getSlug());
-                    });
-
-                    binding.btnPreviousPage.setOnClickListener(v -> {
-                        scrollToTop();
-
-                        page -= 1;
-                        fetchPhotos(topic.getSlug());
-                    });
-
-                    binding.swipeRefreshHomeContent.setOnRefreshListener(() -> {
-                        page = 1;
-
-                        photos.clear();
-                        fetchPhotos(topic.getSlug());
-                        binding.swipeRefreshHomeContent.setRefreshing(false);
-                    });
+                    binding.btnNextPage.setOnClickListener(v -> goToNextPage(topic));
+                    binding.btnPreviousPage.setOnClickListener(v -> goToPreviousPage(topic));
+                    binding.swipeRefreshHomeContent.setOnRefreshListener(() -> refreshPages(topic));
                 });
     }
 
+    private void refreshPages(TopicData topic) {
+        page = 1;
+        scrollToTop();
+
+        photos.clear();
+        fetchPhotos(topic.getSlug());
+        binding.swipeRefreshHomeContent.setRefreshing(false);
+    }
+
+    private void goToPreviousPage(TopicData topic) {
+        if (page == 1) {
+            Toast.makeText(HomeContentFragment.this.requireActivity(),
+                    "This is first page",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
+        scrollToTop();
+        page -= 1;
+        fetchPhotos(topic.getSlug());
+    }
+
+    private void goToNextPage(TopicData topic) {
+        page += 1;
+        scrollToTop();
+        fetchPhotos(topic.getSlug());
+    }
+
     private void scrollToTop() {
+        String currentPage = "Page: " + page;
+        binding.textViewPage.setText(currentPage);
         binding.homeContent.fullScroll(View.FOCUS_DOWN);
         binding.homeContent.fullScroll(View.FOCUS_UP);
     }
@@ -111,6 +126,7 @@ public class HomeContentFragment extends Fragment {
         photoViewModel
                 .getTopic(topicSlug)
                 .observe(HomeContentFragment.this.requireActivity(), topic -> {
+                    Log.d(TAG, "getMainImage: " + topic);
                     if (topic == null) {
                         return;
                     }
@@ -132,17 +148,19 @@ public class HomeContentFragment extends Fragment {
         photoViewModel
                 .getTopicsPhotos(topicSlug, page, appPreferenceViewModel.getPerPage())
                 .observe(HomeContentFragment.this.requireActivity(), photoResponse -> {
+                    binding.swipeRefreshHomeContent.setRefreshing(true);
                     if (photoResponse == null) {
                         dialogUtils.showAlertDialog(HomeContentFragment.this.requireActivity());
+                        binding.relativeLayoutNavigationBtn.setVisibility(View.INVISIBLE);
+                        binding.swipeRefreshHomeContent.setRefreshing(false);
                         return;
                     }
 
                     photos.clear();
                     photos.addAll(photoResponse);
                     photosAdapter.notifyDataSetChanged();
+                    binding.swipeRefreshHomeContent.setRefreshing(false);
                 });
-
-        binding.swipeRefreshHomeContent.setRefreshing(false);
     }
 
     private void initViewModels() {

@@ -34,6 +34,8 @@ public class UserRepository {
             public void onResponse(@NonNull Call<Me> call, @NonNull Response<Me> response) {
                 if (response.code() == 200) {
                     me.setValue(response.body());
+                } else {
+                    me.setValue(null);
                 }
             }
 
@@ -53,6 +55,8 @@ public class UserRepository {
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.code() == 200) {
                     user.setValue(response.body());
+                } else {
+                    user.setValue(null);
                 }
             }
 

@@ -26,7 +26,7 @@ public class LoadingActivity extends AppCompatActivity {
         userDataViewModel = new ViewModelProvider(this).get(UserDataViewModel.class);
 
         String token = userDataViewModel.getToken();
-        if(token != null) {
+        if (token != null) {
             startActivity(new Intent(this, MainActivity.class));
         } else {
             startActivity(new Intent(this, LoginActivity.class));

@@ -27,6 +27,8 @@ public class StatisticRepository {
             public void onResponse(@NonNull Call<Statistic> call, @NonNull Response<Statistic> response) {
                 if(response.code() == 200) {
                     statistic.setValue(response.body());
+                } else {
+                    statistic.setValue(null);
                 }
             }
 

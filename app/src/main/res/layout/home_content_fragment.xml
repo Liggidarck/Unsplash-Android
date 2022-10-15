@@ -59,16 +59,24 @@
                 android:layout_height="match_parent" />
 
             <RelativeLayout
+                android:id="@+id/relativeLayoutNavigationBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:gravity="center">
 
+                <TextView
+                    android:id="@+id/textViewPage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"/>
+
                 <Button
                     android:id="@+id/btnPreviousPage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Previous page" />
+                    android:text="Previous page"
+                    android:layout_below="@id/textViewPage"/>
 
                 <Button
                     android:id="@+id/btnNextPage"
@@ -76,7 +84,8 @@
                     android:layout_height="wrap_content"
                     android:text="Next page"
                     android:layout_toEndOf="@id/btnPreviousPage"
-                    android:layout_marginStart="20dp" />
+                    android:layout_marginStart="20dp"
+                    android:layout_below="@id/textViewPage"/>
 
 
             </RelativeLayout>

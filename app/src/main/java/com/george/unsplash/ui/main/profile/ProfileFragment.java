@@ -28,7 +28,9 @@ import com.george.unsplash.network.models.user.Me;
 import com.george.unsplash.network.models.user.common.ProfileImage;
 import com.george.unsplash.network.models.user.common.User;
 import com.george.unsplash.network.viewmodel.PhotoViewModel;
+import com.george.unsplash.network.viewmodel.UserViewModel;
 import com.george.unsplash.ui.adapters.PhotosAdapter;
+import com.george.unsplash.ui.main.home.HomeContentFragment;
 import com.george.unsplash.utils.DialogUtils;
 
 import java.util.ArrayList;
@@ -45,35 +47,18 @@ public class ProfileFragment extends Fragment {
     private PhotoViewModel photoViewModel;
     private UserDataViewModel userDataViewModel;
     private AppPreferenceViewModel appPreferenceViewModel;
+    private UserViewModel userViewModel;
 
     private PhotosAdapter photosAdapter;
     private List<Photo> photoList;
 
-    private final DialogUtils dialogUtils = new DialogUtils();
     private NavController navController;
     private final Bundle bundle = new Bundle();
+    private final DialogUtils dialogUtils = new DialogUtils();
 
     private int page = 1;
     private String username;
     public static final String TAG = ProfileFragment.class.getSimpleName();
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        userDataViewModel = new ViewModelProvider(ProfileFragment.this.requireActivity())
-                .get(UserDataViewModel.class);
-
-        photoViewModel = new ViewModelProvider(ProfileFragment.this.requireActivity())
-                .get(PhotoViewModel.class);
-
-        appPreferenceViewModel = new ViewModelProvider(ProfileFragment.this.requireActivity())
-                .get(AppPreferenceViewModel.class);
-
-        photoList = new ArrayList<>();
-
-        navController = NavHostFragment.findNavController(this);
-    }
 
     @Nullable
     @Override
@@ -81,8 +66,11 @@ public class ProfileFragment extends Fragment {
         binding = ProfileFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        getUserData();
+        photoList = new ArrayList<>();
+        navController = NavHostFragment.findNavController(this);
 
+        initViewModels();
+        getUserData();
         initRecyclerViewPhotos();
         fetchUserPhotos();
 
@@ -92,27 +80,40 @@ public class ProfileFragment extends Fragment {
             navController.navigate(R.id.action_navigation_profile_to_userCollectionsFragment, bundle);
         });
 
-        binding.btnNextPage.setOnClickListener(v -> {
-            scrollToTop();
+        binding.btnNextPage.setOnClickListener(v -> goToNextPage());
 
-            page++;
-            fetchUserPhotos();
+        binding.btnPreviousPage.setOnClickListener(v -> goToPreviousPage());
+
+        binding.swipeRefreshProfile.setOnRefreshListener(() -> {
+            binding.swipeRefreshProfile.setRefreshing(true);
+            updateUserInfo();
         });
-
-        binding.btnPreviousPage.setOnClickListener(v -> {
-            scrollToTop();
-
-            if(page != 1) {
-                page--;
-                fetchUserPhotos();
-            } else {
-                Toast.makeText(ProfileFragment.this.requireActivity(), "This is first page", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        binding.topAppBarProfile.setNavigationOnClickListener(v -> updateUserInfo());
 
         return root;
+    }
+
+    private void initViewModels() {
+        userDataViewModel = new ViewModelProvider(this).get(UserDataViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
+        appPreferenceViewModel = new ViewModelProvider(this).get(AppPreferenceViewModel.class);
+    }
+
+    private void goToPreviousPage() {
+        if (page == 1) {
+            Toast.makeText(ProfileFragment.this.requireActivity(), "This is first page", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        page--;
+        scrollToTop();
+        fetchUserPhotos();
+    }
+
+    private void goToNextPage() {
+        page++;
+        scrollToTop();
+        fetchUserPhotos();
     }
 
     private void scrollToTop() {
@@ -121,54 +122,37 @@ public class ProfileFragment extends Fragment {
     }
 
     private void updateUserInfo() {
-        userDataViewModel.clearMe();
+        userViewModel.getMeData(userDataViewModel.getToken())
+                .observe(ProfileFragment.this.requireActivity(), me -> {
+                    if(me == null) {
+                        dialogUtils.showAlertDialog(ProfileFragment.this.requireActivity());
+                        binding.swipeRefreshProfile.setRefreshing(false);
+                        return;
+                    }
+                    userDataViewModel.clearMe();
 
-        UnsplashInterface unsplashInterface = UnsplashTokenClient
-                .getUnsplashTokenClient(userDataViewModel.getToken())
-                .create(UnsplashInterface.class);
-
-        unsplashInterface.getMeData().enqueue(new Callback<Me>() {
-            @Override
-            public void onResponse(@NonNull Call<Me> call, @NonNull Response<Me> response) {
-                if (response.code() == 200) {
-                    Me me = response.body();
-                    assert me != null;
                     userDataViewModel.saveMe(me);
-                }
-            }
+                    updateProfileImage();
+                });
+    }
 
-            @Override
-            public void onFailure(@NonNull Call<Me> call, @NonNull Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage());
-            }
-        });
-
-        unsplashInterface.getUserData(username).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                if (response.code() == 200) {
-                    User user = response.body();
-                    assert user != null;
+    private void updateProfileImage() {
+        userViewModel.getUserData(username)
+                .observe(ProfileFragment.this.requireActivity(), user -> {
                     ProfileImage profileImage = user.getProfileImage();
                     String large = profileImage.getLarge();
 
                     userDataViewModel.saveProfileImage(large);
-                }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage());
-            }
-        });
-
-        navController.popBackStack();
+                    binding.swipeRefreshProfile.setRefreshing(false);
+                    requireActivity().recreate();
+                });
     }
 
     private void initRecyclerViewPhotos() {
         photosAdapter = new PhotosAdapter(ProfileFragment.this.requireActivity(), photoList);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(ProfileFragment.this.requireActivity(),
-                        appPreferenceViewModel.getGridPhotos());
+                appPreferenceViewModel.getGridPhotos());
 
         binding.profileRecyclerView.setHasFixedSize(true);
         binding.profileRecyclerView.setLayoutManager(gridLayoutManager);
@@ -183,13 +167,28 @@ public class ProfileFragment extends Fragment {
         photoViewModel
                 .getUserPhotos(username, page, appPreferenceViewModel.getPerPage())
                 .observe(ProfileFragment.this.requireActivity(), photos -> {
+                    binding.swipeRefreshProfile.setRefreshing(true);
+
+                    if(photos == null) {
+                        dialogUtils.showAlertDialog(ProfileFragment.this.requireActivity());
+                        binding.relativeLayoutNavigationProfile.setVisibility(View.INVISIBLE);
+                        binding.swipeRefreshProfile.setRefreshing(false);
+                        return;
+                    }
+
                     if (photos.size() == 0) {
+                        Toast.makeText(
+                                ProfileFragment.this.requireActivity(),
+                                "This is final page",
+                                Toast.LENGTH_SHORT
+                        ).show();
                         return;
                     }
 
                     photoList.clear();
                     photoList.addAll(photos);
                     photosAdapter.notifyDataSetChanged();
+                    binding.swipeRefreshProfile.setRefreshing(false);
                 });
     }
 
@@ -207,6 +206,7 @@ public class ProfileFragment extends Fragment {
         binding.nameUser.setText(fullName);
         binding.bioUser.setText(bio);
         binding.emailUser.setText(me.getEmail());
+
         Glide.with(this)
                 .load(profileImage)
                 .into(binding.profileImage);
